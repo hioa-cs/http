@@ -1,6 +1,6 @@
 // This file is a part of the IncludeOS unikernel - www.includeos.org
 //
-// Copyright 2015 Oslo and Akershus University College of Applied Sciences
+// Copyright 2015-2016 Oslo and Akershus University College of Applied Sciences
 // and Alfred Bratterud
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,25 +15,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef HTTP_METHODS_HPP
-#define HTTP_METHODS_HPP
+#ifndef HTTP_METHOD_CONSTANTS_HPP
+#define HTTP_METHOD_CONSTANTS_HPP
 
-#include <string>
+#define HTTP_OPTIONS 0x0000
+#define HTTP_GET     0x0001
+#define HTTP_HEAD    0x0002
+#define HTTP_POST    0x0003
+#define HTTP_PUT     0x0004
+#define HTTP_DELETE  0x0005
+#define HTTP_TRACE   0x0006
+#define HTTP_CONNECT 0x0007
+#define HTTP_PATCH   0x0008
+#define HTTP_INVALID 0xffff
 
-namespace HTTP_METHODS {
-//-------------------------------
-using Method = const std::string;
-//-------------------------------
-Method OPTIONS {"OPTIONS"};
-Method GET     {"GET"};
-Method HEAD    {"HEAD"};
-Method POST    {"POST"};
-Method PUT     {"PUT"};
-Method DELETE  {"DELETE"};
-Method TRACE   {"TRACE"};
-Method CONNECT {"CONNECT"};
-Method PATCH   {"PATCH"};
-//-------------------------------
-} //< namespace HTTP_METHOD
-
-#endif //< HTTP_METHODS_HPP
+#endif //< HTTP_METHOD_CONSTANTS_HPP

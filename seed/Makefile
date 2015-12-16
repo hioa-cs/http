@@ -3,7 +3,7 @@
 #################################################
 
 # The name of your service
-SERVICE = My_IncludeOS_Service
+SERVICE = IncludeOS-HTTP-Service
 
 # Your service parts
 FILES = service.cpp
@@ -39,7 +39,7 @@ DEBUG_OPTS = -ggdb3 -v
 CPP = clang++-3.6 -target i686-elf
 LD  = ld 
 
-INCLUDES = -I$(INC_LIBCXX) -I$(INSTALL)/api/sys -I$(INC_NEWLIB) -I$(INSTALL)/api 
+INCLUDES = -I$(INC_LIBCXX) -I$(INSTALL)/api/sys -I$(INC_NEWLIB) -I$(INSTALL)/api -I../http
 
 CAPABS_COMMON = -msse3 -mstackrealign # Needed for 16-byte stack alignment (SSE)
 
