@@ -121,6 +121,21 @@ public:
   //----------------------------------------
   template <typename Payload>
   Response& add_body(Payload&& message_body);
+
+  //----------------------------------------
+  // Remove the entity from the message
+  //
+  // @return - The object that invoked this method
+  //----------------------------------------
+  Response& clear_body() noexcept;
+
+  //----------------------------------------
+  // Reset the message as if it was now
+  // default constructed
+  //
+  // @return - The object that invoked this method
+  //----------------------------------------
+  Response& reset() noexcept;
   
   //-----------------------------------
   // Get a string representation of this
@@ -194,6 +209,15 @@ inline Response& Response::add_body(Payload&& message_body) {
   message_body_ = std::forward<Payload>(message_body);
   return add_header(header_fields::Entity::Content_Length,
                     std::to_string(message_body_.size()));
+}
+
+inline Response& Response::clear_body() noexcept {
+  message_body_.clear();
+  return erase_header(header_fields::Entity::Content_Length);
+}
+
+inline Response& Response::reset() noexcept {
+  return set_status_code(OK).clear_headers().clear_body();
 }
 
 inline std::string Response::to_string() const {
