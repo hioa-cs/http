@@ -18,6 +18,8 @@
 #ifndef HTTP_MESSAGE_HPP
 #define HTTP_MESSAGE_HPP
 
+#include <sstream>
+
 #include "header.hpp"
 
 namespace http {
