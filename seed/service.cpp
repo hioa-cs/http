@@ -1,6 +1,6 @@
 // This file is a part of the IncludeOS unikernel - www.includeos.org
 //
-// Copyright 2015 Oslo and Akershus University College of Applied Sciences
+// Copyright 2015-2016 Oslo and Akershus University College of Applied Sciences
 // and Alfred Bratterud
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,11 +16,16 @@
 // limitations under the License.
 
 #include <os>
-#include <stdio.h>
+#include <http>
 
-void Service::start()
-{
- 
-  printf("Hello world - OS included!\n");
-
+void Service::start() {
+  auto& server = http::createServer();
+  //-------------------------------
+  server.router().on_get("/"s, [](const auto& req, auto& res) {
+    res.add_header(header_fields::Response::Server, "IncludeOS/v0.7.0"s)
+       .add_header(header_fields::Entity::Content_Type, "text/html"s)
+       .add_body("<h1>WELCOME TO IncludeOS</h1>"s);
+  });
+  //-------------------------------
+  server.listen(8080);
 }
