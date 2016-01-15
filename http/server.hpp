@@ -56,6 +56,18 @@ public:
   Router& router() noexcept;
 
   //-------------------------------
+  // Install a new route table for
+  // route resolutions
+  //
+  // @tparam (http::Router) new_routes - The new route table
+  //                                     to install
+  //
+  // @return - The object that invoked this method
+  //-------------------------------
+  template <typename Route_Table>
+  Server& set_routes(Route_Table&& routes);
+
+  //-------------------------------
   // Start the server to listen for
   // incoming connections on the
   // specified port
@@ -93,6 +105,12 @@ inline Server::Server() {
 
 inline Router& Server::router() noexcept {
   return router_;
+}
+
+template <typename Route_Table>
+inline Server& Server::set_routes(Route_Table&& routes) {
+  router_.install_new_configuration(std::forward<Route_Table>(routes));
+  return *this;
 }
 
 inline void Server::listen(Port port) {

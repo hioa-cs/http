@@ -60,6 +60,21 @@ public:
   explicit Router();
 
   //-------------------------------
+  // Default destructor
+  //-------------------------------
+  ~Router() noexcept = default;
+
+  //-------------------------------
+  // Default move constructor
+  //-------------------------------
+  Router(Router&&) = default;
+
+  //-------------------------------
+  // Default move assignment operator
+  //-------------------------------
+  Router& operator = (Router&&) = default;
+
+  //-------------------------------
   // Add a route mapping for route
   // resolution upon request
   //
@@ -184,6 +199,18 @@ public:
   //-------------------------------
   template <typename Routee>
   Router& on_patch(Routee&& route, Result result);
+
+  //-------------------------------
+  // Install a new route table for
+  // route resolutions
+  //
+  // @tparam (http::Router) new_routes - The new route table
+  //                                     to install
+  //
+  // @return - The object that invoked this method
+  //-------------------------------
+  template <typename Routee_Table>
+  Router& install_new_configuration(Routee_Table&& new_routes);
   
   //-------------------------------
   // Send route informaton to retrieve
@@ -212,22 +239,20 @@ private:
   //-------------------------------
   static Route_Table route_table_;
 
-  //-----------------------------------
-  // Deleted move and copy operations
-  //-----------------------------------
+  //-------------------------------
+  // Deleted copy operation
+  //-------------------------------
   Router(const Router&) = delete;
-  Router(Router&&) = delete;
 
-  //-----------------------------------
-  // Deleted move and copy assignment operations
-  //-----------------------------------
+  //-------------------------------
+  // Deleted copy assignment operation
+  //-------------------------------
   Router& operator = (const Router&) = delete;
-  Router& operator = (Router&&) = delete;
 
-  //-----------------------------------
+  //-------------------------------
   // This method initializes the route
   // table with default route resolutions
-  //-----------------------------------
+  //-------------------------------
   void initialize_default_configuration();
 }; //< class Router
 
@@ -288,6 +313,12 @@ inline Router& Router::on_connect(Routee&& route, Result result) {
 template <typename Routee>
 inline Router& Router::on_patch(Routee&& route, Result result) {
   route_table_.emplace(std::make_pair(http::method::PATCH, std::forward<Routee>(route)), result);
+  return *this;
+}
+
+template <typename Routee_Table>
+inline Router& Router::install_new_configuration(Routee_Table&& new_routes) {
+  route_table_ = std::forward<Routee_Table>(new_routes).route_table_;
   return *this;
 }
 
