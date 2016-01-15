@@ -46,7 +46,7 @@ public:
   //-------------------------------
   // Default destructor
   //-------------------------------
-  ~HTTP_Server() noexcept = default;
+  ~Server() noexcept = default;
 
   //-------------------------------
   // Get the underlying router
@@ -72,14 +72,14 @@ private:
   //-----------------------------------
   // Deleted move and copy operations
   //-----------------------------------
-  HTTP_Server(const HTTP_Server&) = delete;
-  HTTP_Server(HTTP_Server&&) = delete;
+  Server(const Server&) = delete;
+  Server(Server&&) = delete;
 
   //-----------------------------------
   // Deleted move and copy assignment operations
   //-----------------------------------
-  HTTP_Server& operator = (const HTTP_Server&) = delete;
-  HTTP_Server& operator = (HTTP_Server&&) = delete;
+  Server& operator = (const Server&) = delete;
+  Server& operator = (Server&&) = delete;
 
   //-------------------------------
   // Set up the network stack
@@ -87,7 +87,7 @@ private:
   void initialize();
 }; //< class Server
 
-inline HTTP_Server::HTTP_Server() {
+inline Server::Server() {
   initialize();
 }
 
@@ -105,11 +105,11 @@ inline void Server::listen(Port port) {
     //-------------------------------
     router_[{req.get_method(), req.get_uri()}](req, res);
     //-------------------------------
-    conn.write(response);
+    conn.write(res);
   });
 }
 
-inline void HTTP_Server::initialize() {
+inline void Server::initialize() {
   Nic<VirtioNet>& eth0 = Dev::eth<0,VirtioNet>();
   //-------------------------------
   inet_ = std::make_unique<net::Inet4<VirtioNet>>(eth0);
