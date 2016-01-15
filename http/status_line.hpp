@@ -34,7 +34,7 @@ private:
   //----------------------------
   // Internal class type aliases
   //----------------------------
-  using Code = unsigned;
+  using Code = int;
   //----------------------------
 public:
   //----------------------------
@@ -46,6 +46,17 @@ public:
   // @param code    - The status code
   //----------------------------
   explicit constexpr Status_Line(const Version& version, const Code code) noexcept;
+
+  //-----------------------------------
+  // Constructor to construct a status-line
+  // from the incoming character stream of
+  // data which is a <std::string> object
+  //
+  // @tparam (std::string) response - The character stream of
+  //                                 data
+  //-----------------------------------
+  template <typename Response>
+  explicit Status_Line(Response&& response);
 
   //----------------------------
   // Default destructor
@@ -118,6 +129,30 @@ inline constexpr Status_Line::Status_Line(const Version& version, const Code cod
   version_{version},
   code_{code}
 {}
+
+template <typename Response>
+Status_Line::Status_Line(Response&& response) {
+  std::string start {response.substr(response.find_first_not_of("\f\t\v "))};
+  //-----------------------------------
+  std::string sl {start.substr(0, start.find("\r\n"))};
+  //-----------------------------------
+  auto version_data = sl.substr(sl.find_first_of("/") + 1);
+  //-----------------------------------
+  std::string major {version_data.substr(0, version_data.find("."))};
+  std::string minor {version_data.substr(version_data.find(".") + 1),
+                                         version_data.find_first_of(' ')};
+  //-----------------------------------
+  unsigned maj = static_cast<unsigned>(std::stoul(major));
+  unsigned min = static_cast<unsigned>(std::stoul(minor));
+  //-----------------------------------
+  version_ = Version{maj, min};
+  //-----------------------------------
+  auto code = sl.substr(sl.find_first_of(' ') + 1, 3 /*<-(3) number of digits in code */);
+  //-----------------------------------
+  code_ = static_cast<int>(std::stoul(code));
+  //-----------------------------------
+  response = response.substr(response.find_first_of("\r\n") + 2);
+}
 
 inline constexpr const Version& Status_Line::get_version() const noexcept {
   return version_;

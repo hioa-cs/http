@@ -18,8 +18,8 @@
 #ifndef HTTP_REQUEST_HPP
 #define HTTP_REQUEST_HPP
 
+#include "message.hpp"
 #include "request_line.hpp"
-#include "header.hpp"
 
 namespace http {
 
@@ -27,16 +27,14 @@ namespace http {
 // This class is used to represent
 // an http request message
 //----------------------------------------
-class Request {
+class Request : public Message {
 private:
   //----------------------------------------
   // Internal class type aliases
   //----------------------------------------
-  using Method       = std::string;
-  using URI          = std::string;
-  using Limit        = std::size_t;
-  using HSize        = std::size_t;
-  using Message_Body = std::string;
+  using Method = std::string;
+  using URI    = std::string;
+  using Limit  = std::size_t;
   //----------------------------------------
 public:
   //----------------------------------------
@@ -56,9 +54,12 @@ public:
   //
   // @tparam (std::string) request - The character stream
   //                                 of data
+  //
+  // @param limit - Capacity of how many fields can
+  //                be added
   //----------------------------------------
   template <typename Ingress>
-  explicit Request(Ingress&& request);
+  explicit Request(Ingress&& request, const Limit limit = 100);
 
   //----------------------------------------
   // Default destructor
@@ -117,122 +118,6 @@ public:
   Request& set_version(const Version& version) noexcept;
 
   //----------------------------------------
-  // Set a header limit for this request message
-  //
-  // @param limit - The limit to set
-  //
-  // @return - The object that invoked this
-  //           method
-  //----------------------------------------
-  Request& set_header_limit(const Limit limit) noexcept;
-
-  //----------------------------------------
-  // Get the current header limit for this
-  // request message
-  //
-  // @return - The current header limit
-  //----------------------------------------
-  Limit get_header_limit() const noexcept;
-
-  //----------------------------------------
-  // Add a header to this request message
-  // which will only be added if the limit
-  // set hasn't been reached
-  //
-  // @tparam (std::string) field - The field name
-  // @tparam (std::string) value - The field value
-  //
-  // @return - The object that invoked this
-  //           method
-  //----------------------------------------
-  template <typename Field, typename Value>
-  Request& add_header(Field&& field, Value&& value);
-
-  //----------------------------------------
-  // Change the value of the specified field
-  //
-  // If the field is absent from the message it
-  // will be added with the associated value once its
-  // within capacity
-  //
-  // @tparam (std::string) field - The field name
-  // @tparam (std::string) value - The field value
-  //
-  // @return - The object that invoked this
-  //           method
-  //----------------------------------------
-  template <typename Field, typename Value>
-  Request& set_header(Field&& field, Value&& value);
-
-  //----------------------------------------
-  // Get the value associated with the
-  // specified header field name
-  //
-  // Should call <has_header> before
-  // calling this
-  //
-  // @tparam (std::string) field - The header field name to
-  //                               get associated value
-  //
-  // @return - The value associated with the
-  //           specified field name
-  //----------------------------------------
-  template <typename Field>
-  const std::string& get_header_value(Field&& field) const noexcept;
-
-  //----------------------------------------
-  // Check if the specified header field
-  // is within this message
-  //
-  // @tparam (std::string) field - The header field name to
-  //                               search for
-  //
-  // @return - true is present, false otherwise
-  //----------------------------------------
-  template <typename Field>
-  bool has_header(Field&& field) const noexcept;
-
-  //----------------------------------------
-  // Check if there are no headers in this
-  // message
-  //
-  // @return - true if the message has no
-  //           header fields, false otherwise
-  //----------------------------------------
-  bool is_header_empty() const noexcept;
-
-  //----------------------------------------
-  // Get the number of headers in this
-  // message
-  //
-  // @return - The number of fields in this
-  //           message
-  //----------------------------------------
-  HSize header_size() const noexcept;
-
-  //----------------------------------------
-  // Remove the specified header field from
-  // this message
-  //
-  // @tparam (std::string) field - The header field name to
-  //                               remove from this message
-  //
-  // @return - The object that invoked this
-  //           method
-  //----------------------------------------
-  template <typename Field>
-  Request& erase_header(Field&& field) noexcept;
-
-  //----------------------------------------
-  // Remove all header fields from this
-  // message
-  //
-  // @return - The object that invoked this
-  //           method
-  //----------------------------------------
-  Request& clear_headers() noexcept;
-
-  //----------------------------------------
   // Get the value associated with the name
   // field from a query string
   //
@@ -259,6 +144,14 @@ public:
   std::string get_post_value(Name&& name) const noexcept;
 
   //----------------------------------------
+  // Reset the request message as if it was now
+  // default constructed
+  //
+  // @return - The object that invoked this method
+  //----------------------------------------
+  Request& reset() noexcept;
+
+  //----------------------------------------
   // Get a string representation of this
   // class
   //
@@ -277,8 +170,6 @@ private:
   // Class data members
   //----------------------------------------
   Request_Line request_line_;
-  Header       header_fields_;
-  Message_Body message_body_;
 
   //----------------------------------------
   // Find the value associated with a name
@@ -298,11 +189,13 @@ private:
 }; //< class HTTP_Request
 
 template <typename Ingress>
-inline Request::Request(Ingress&& request) :
-  request_line_{std::forward<Ingress>(request)},
-  header_fields_{std::forward<Ingress>(request)},
-  message_body_{request.substr(request.find("\r\n\r\n") + 4)}
-{}
+inline Request::Request(Ingress&& request, const Limit limit) :
+  Message{limit},
+  request_line_{std::forward<Ingress>(request)}
+{
+  add_headers(std::forward<Ingress>(request));
+  add_body(request.substr(request.find("\r\n\r\n") + 4));
+}
 
 inline const Request::Method& Request::get_method() const noexcept {
   return request_line_.get_method();
@@ -331,56 +224,6 @@ inline Request& Request::set_version(const Version& version) noexcept {
   return *this;
 }
 
-inline Request& Request::set_header_limit(const Limit limit) noexcept {
-  header_fields_.set_limit(limit);
-  return *this;
-}
-
-inline Request::Limit Request::get_header_limit() const noexcept {
-  return header_fields_.get_limit();
-}
-
-template <typename Field, typename Value>
-inline Request& Request::add_header(Field&& field, Value&& value) {
-  header_fields_.add_field(std::forward<Field>(field), std::forward<Value>(value));
-  return *this;
-}
-
-template <typename Field, typename Value>
-inline Request& Request::set_header(Field&& field, Value&& value) {
-  header_fields_.set_field(std::forward<Field>(field), std::forward<Value>(value));
-  return *this;
-}
-
-template <typename Field>
-inline const std::string& Request::get_header_value(Field&& field) const noexcept {
-  return header_fields_.get_value(std::forward<Field>(field));
-}
-
-template <typename Field>
-inline bool Request::has_header(Field&& field) const noexcept {
-  return header_fields_.has_field(std::forward<Field>(field));
-}
-
-inline bool Request::is_header_empty() const noexcept {
-  return header_fields_.is_empty();
-}
-
-inline Request::HSize Request::header_size() const noexcept {
-  return header_fields_.size();
-}
-
-template <typename Field>
-inline Request& Request::erase_header(Field&& field) noexcept {
-  header_fields_.erase(std::forward<Field>(field));
-  return *this;
-}
-
-inline Request& Request::clear_headers() noexcept {
-  header_fields_.clear();
-  return *this;
-}
-
 template <typename Name>
 inline std::string Request::get_query_value(Name&& name) const noexcept {
   return get_value(get_uri(), std::forward<Name>(name));
@@ -389,7 +232,12 @@ inline std::string Request::get_query_value(Name&& name) const noexcept {
 template <typename Name>
 inline std::string Request::get_post_value(Name&& name) const noexcept {
   if (get_method() not_eq method::POST) return std::string{};
-  return get_value(message_body_, std::forward<Name>(name));
+  return get_value(get_body(), std::forward<Name>(name));
+}
+
+inline Request& Request::reset() noexcept {
+  clear_headers().clear_body();
+  return set_method(method::GET).set_uri("/").set_version(Version{1,1});
 }
 
 template <typename Data, typename Name>
@@ -419,8 +267,7 @@ inline Request::operator std::string () const {
   std::ostringstream req;
   //-----------------------------
   req << request_line_
-      << header_fields_
-      << message_body_;
+      << Message::to_string();
  //------------------------------
   return req.str();
 }

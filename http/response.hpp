@@ -18,8 +18,8 @@
 #ifndef HTTP_RESPONSE_HPP
 #define HTTP_RESPONSE_HPP
 
+#include "message.hpp"
 #include "status_line.hpp"
-#include "header.hpp"
 
 #include "status_code_constants.hpp" //< Standard status codes
 
@@ -29,13 +29,13 @@ namespace http {
 // This class is used to represent
 // an http response message
 //--------------------------------
-class Response {
+class Response : public Message {
 private:
   //------------------------------
   // Internal class type aliases
   //------------------------------
-  using Message_Body = std::string;
-  using Code         = unsigned;
+  using Code  = int;
+  using Limit = std::size_t;
   //------------------------------
 public:
   //------------------------------
@@ -47,6 +47,21 @@ public:
   // @param version - The version of the message
   //------------------------------
   explicit Response(const Code code = OK, const Version& version = Version{}) noexcept;
+
+  //----------------------------------------
+  // Constructor to construct a response
+  // message from the incoming character
+  // stream of data which is a <std::string>
+  // object
+  //
+  // @tparam (std::string) response - The character stream
+  //                                  of data
+  //
+  // @param limit - Capacity of how many fields can
+  //                be added
+  //----------------------------------------
+  template <typename Egress>
+  explicit Response(Egress&& response, const Limit limit = 100);
 
   //------------------------------
   // Default destructor
@@ -65,72 +80,7 @@ public:
   Response& set_status_code(const Code code) noexcept;
 
   //----------------------------------------
-  // Add a new field to the current set of
-  // headers
-  //
-  // @tparam (std::string) field - The field name
-  // @tparam (std::string) value - The field value
-  //
-  // @return - The object that invoked this method
-  //----------------------------------------
-  template <typename Field, typename Value>
-  Response& add_header(Field&& field, Value&& value);
-
-  //----------------------------------------
-  // Change the value of the specified field
-  //
-  // If the field is absent from the message it
-  // will be added with the associated value
-  //
-  // @tparam (std::string) field - The field name
-  // @tparam (std::string) value - The field value
-  //
-  // @return - The object that invoked this method
-  //----------------------------------------
-  template <typename Field, typename Value>
-  Response& set_header(Field&& field, Value&& value);
-
-  //----------------------------------------
-  // Remove the specified header field from
-  // this message
-  //
-  // @tparam (std::string) field - The header field to
-  //                               remove from this message
-  //
-  // @return - The object that invoked this method
-  //----------------------------------------
-  template <typename Field>
-  Response& erase_header(Field&& field) noexcept;
-
-  //----------------------------------------
-  // Remove all header fields from this
-  // message
-  //
-  // @return - The object that invoked this method
-  //----------------------------------------
-  Response& clear_headers() noexcept;
-
-  //----------------------------------------
-  // Add the payload to the reponse message
-  //
-  // @tparam (std::string) message_body - The payload to be
-  //                                      sent with the response
-  //                                      message
-  //
-  // @return - The object that invoked this method
-  //----------------------------------------
-  template <typename Payload>
-  Response& add_body(Payload&& message_body);
-
-  //----------------------------------------
-  // Remove the entity from the message
-  //
-  // @return - The object that invoked this method
-  //----------------------------------------
-  Response& clear_body() noexcept;
-
-  //----------------------------------------
-  // Reset the message as if it was now
+  // Reset the response message as if it was now
   // default constructed
   //
   // @return - The object that invoked this method
@@ -156,8 +106,6 @@ private:
   // Class data members
   //------------------------------
   Status_Line  status_line_;
-  Header       header_fields_;
-  Message_Body message_body_;
 
   //-----------------------------------
   // Deleted move and copy operations
@@ -176,48 +124,23 @@ inline Response::Response(const Code code, const Version& version) noexcept:
   status_line_{version, code}
 {}
 
+template <typename Egress>
+inline Response::Response(Egress&& response, const Limit limit) :
+  Message{limit},
+  status_line_{response}
+{
+  add_headers(std::forward<Egress>(response));
+  add_body(response.substr(response.find("\r\n\r\n") + 4));
+}
+
 inline Response& Response::set_status_code(const Code code) noexcept {
   status_line_.set_code(code);
   return *this;
 }
 
-template<typename Field, typename Value>
-inline Response& Response::add_header(Field&& field, Value&& value) {
-  header_fields_.add_field(std::forward<Field>(field), std::forward<Value>(value));
-  return *this;
-}
-
-template<typename Field, typename Value>
-inline Response& Response::set_header(Field&& field, Value&& value) {
-  header_fields_.set_field(std::forward<Field>(field), std::forward<Value>(value));
-  return *this;
-}
-
-template<typename Field>
-inline Response& Response::erase_header(Field&& field) noexcept {
-  header_fields_.erase(std::forward<Field>(field));
-  return *this;
-}
-
-inline Response& Response::clear_headers() noexcept {
-  header_fields_.clear();
-  return *this;
-}
-
-template<typename Payload>
-inline Response& Response::add_body(Payload&& message_body) {
-  message_body_ = std::forward<Payload>(message_body);
-  return add_header(header_fields::Entity::Content_Length,
-                    std::to_string(message_body_.size()));
-}
-
-inline Response& Response::clear_body() noexcept {
-  message_body_.clear();
-  return erase_header(header_fields::Entity::Content_Length);
-}
-
 inline Response& Response::reset() noexcept {
-  return set_status_code(OK).clear_headers().clear_body();
+  clear_headers().clear_body();
+  return set_status_code(OK);
 }
 
 inline std::string Response::to_string() const {
@@ -228,8 +151,7 @@ inline Response::operator std::string () const {
   std::ostringstream res;
   //-----------------------------------
   res << status_line_
-      << header_fields_
-      << message_body_;
+      << Message::to_string();
   //-----------------------------------
   return res.str();
 }

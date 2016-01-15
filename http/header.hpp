@@ -130,6 +130,22 @@ public:
   template <typename Field, typename Value>
   bool add_field(Field&& field, Value&& value);
 
+  //----------------------------------------
+  // Add a set of fields to the current set from
+  // a <std::string> object in the following
+  // format:
+  //
+  // "name: value\r\n"
+  //
+  // @tparam (std::string) data - The set of fields
+  //                              to add to this
+  //                              message
+  //
+  // @return - The object that invoked this method
+  //----------------------------------------
+  template <typename Data>
+  void add_fields(Data&& data);
+
   //-----------------------------------------------
   // Change the value of the specified field
   //
@@ -235,13 +251,39 @@ inline Header::Header(const Limit limit) noexcept {
 }
 
 template <typename Header_Data>
-inline Header::Header(Header_Data&& header_data, const Limit lim) :
-  Header{lim}
+inline Header::Header(Header_Data&& header_data, const Limit limit) :
+  Header{limit}
 {
-  if (header_data.empty()) return;
+  add_fields(std::forward<Header_Data>(header_data));
+}
+
+inline void Header::set_limit(const Limit limit) noexcept {
+  if (limit <= 0) return;
+  limit_ = limit;
+}
+
+inline Header::Limit Header::get_limit() const noexcept {
+  return limit_;
+}
+
+template <typename Field, typename Value>
+inline bool Header::add_field(Field&& field, Value&& value) {
+  if (field.empty() || value.empty()) return false;
   //-----------------------------------
-  auto iterator = header_data.cbegin();
-  auto sentinel = header_data.cend();
+  if (size() < limit_) {
+    map_.emplace_back(std::forward<Field>(field), std::forward<Value>(value));
+    return true;
+  }
+  //-----------------------------------
+  return false;
+}
+
+template <typename Data>
+inline void Header::add_fields(Data&& data) {
+  if (data.empty()) return;
+  //-----------------------------------
+  auto iterator = data.cbegin();
+  auto sentinel = data.cend();
   //-----------------------------------
   std::string field;
   std::string value;
@@ -323,27 +365,6 @@ parse_value:
     ++limit;
     //-----------------------------------
   }
-}
-
-inline void Header::set_limit(const Limit limit) noexcept {
-  if (limit <= 0) return;
-  limit_ = limit;
-}
-
-inline Header::Limit Header::get_limit() const noexcept {
-  return limit_;
-}
-
-template <typename Field, typename Value>
-inline bool Header::add_field(Field&& field, Value&& value) {
-  if (field.empty() || value.empty()) return false;
-  //-----------------------------------
-  if (size() < limit_) {
-    map_.emplace_back(std::forward<Field>(field), std::forward<Value>(value));
-    return true;
-  }
-  //-----------------------------------
-  return false;
 }
 
 template <typename Field, typename Value>
