@@ -98,7 +98,7 @@ inline Router& Server::router() noexcept {
 inline void Server::listen(Port port) {
   inet_->tcp().bind(port);
   //-------------------------------
-  inet_->tcp().onAccept([](net::TCP::Socket& conn) {
+  inet_->tcp().onAccept([this](net::TCP::Socket& conn) {
     //-------------------------------
     Request  req {conn.read(1024)};
     Response res;
