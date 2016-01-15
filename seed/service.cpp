@@ -18,14 +18,9 @@
 #include <os>
 #include <http>
 
+#include "service_route_table.hpp"
+
 void Service::start() {
-  auto& server = http::createServer();
-  //-------------------------------
-  server.router().on_get("/"s, [](const auto& req, auto& res) {
-    res.add_header(header_fields::Response::Server, "IncludeOS/v0.7.0"s)
-       .add_header(header_fields::Entity::Content_Type, "text/html"s)
-       .add_body("<h1>WELCOME TO IncludeOS</h1>"s);
-  });
-  //-------------------------------
-  server.listen(8080);
+  http::createServer().set_routes(init_routes())
+                      .listen(8080);
 }
