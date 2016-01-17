@@ -147,6 +147,10 @@ inline Version::operator std::string () const {
   return ver_data.str();
 }
 
+inline std::ostream& operator << (std::ostream& output_device, const Version& version) {
+  return output_device << version.to_string();
+}
+
 //-----------------------------------
 // Operator to check for equality
 //-----------------------------------

@@ -85,7 +85,7 @@ public:
   //
   // @return - The object that invoked this method
   //----------------------------------------
-  Response& reset() noexcept;
+  virtual Response& reset() noexcept override;
   
   //-----------------------------------
   // Get a string representation of this
@@ -93,7 +93,7 @@ public:
   //
   // @return - A string representation
   //-----------------------------------
-  std::string to_string() const;
+  virtual std::string to_string() const override;
 
   //-----------------------------------
   // Operator to transform this class
@@ -139,7 +139,7 @@ inline Response& Response::set_status_code(const Code code) noexcept {
 }
 
 inline Response& Response::reset() noexcept {
-  clear_headers().clear_body();
+  Message::reset();
   return set_status_code(OK);
 }
 
@@ -156,7 +156,7 @@ inline Response::operator std::string () const {
   return res.str();
 }
 
-std::ostream& operator << (std::ostream& output_device, const Response& res) {
+inline std::ostream& operator << (std::ostream& output_device, const Response& res) {
   return output_device << res.to_string();
 }
 

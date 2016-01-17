@@ -184,7 +184,7 @@ inline Status_Line::operator std::string () const {
   return status_info.str();
 }
 
-std::ostream& operator << (std::ostream& output_device, const Status_Line& stat_line) {
+inline std::ostream& operator << (std::ostream& output_device, const Status_Line& stat_line) {
   return output_device << stat_line.to_string();
 }
 

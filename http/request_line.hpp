@@ -27,9 +27,8 @@
 namespace http {
 
 //-----------------------------------
-// This class represents the request-
-// line of an incoming http request
-// message
+// This class represents the request-line
+// of an incoming http request message
 //-----------------------------------
 class Request_Line {
 private:
@@ -210,7 +209,7 @@ inline Request_Line::operator std::string () const {
   return req_line.str();
 }
 
-std::ostream& operator << (std::ostream& output_device, const Request_Line& req_line) {
+inline std::ostream& operator << (std::ostream& output_device, const Request_Line& req_line) {
   return output_device << req_line.to_string();
 }
 

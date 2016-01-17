@@ -140,8 +140,6 @@ public:
   // @tparam (std::string) data - The set of fields
   //                              to add to this
   //                              message
-  //
-  // @return - The object that invoked this method
   //----------------------------------------
   template <typename Data>
   void add_fields(Data&& data);
@@ -164,11 +162,12 @@ public:
   //-----------------------------------------------
   // Get the value associated with a field
   //
-  // Should call <has_field> before using this
+  // Should call <has_field> before calling this
   //
   // @tparam (std::string) field - The field name
   //
-  // @return - The associated field value
+  // @return - The value associated with the
+  //           specified field name
   //-----------------------------------------------
   template <typename Field>
   const std::string& get_value(Field&& field) const noexcept;
@@ -434,7 +433,7 @@ inline Header::Const_Iterator Header::find(Field&& field) const noexcept {
   });
 }
 
-std::ostream& operator << (std::ostream& output_device, const Header& header) {
+inline std::ostream& operator << (std::ostream& output_device, const Header& header) {
   auto iterator = header.map_.cbegin();
   //-----------------------------------
   while (iterator not_eq header.map_.cend()) {

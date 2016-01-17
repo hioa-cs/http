@@ -24,15 +24,17 @@ inline http::Router init_routes() {
   //--------------------------------------------------------------------
   Router routes;
   //--------------------------------------------------------------------
-  routes.on_get("/"s, [](const auto& req, auto& res) {
+  routes.on_get("/"s, [](const auto&, auto& res) {
     res.add_header(header_fields::Response::Server, "IncludeOS/v0.7.0"s)
        .add_header(header_fields::Entity::Content_Type, "text/html; charset=utf-8"s)
+       .add_header(header_fields::Response::Connection, "close"s)
        .add_body("<h1>WELCOME TO IncludeOS</h1>"s);
   });
   //--------------------------------------------------------------------
   routes.on_get("/listing.html"s, [](const auto&, auto& res){
     res.add_header(header_fields::Response::Server, "IncludeOS/v0.7.0"s)
        .add_header(header_fields::Entity::Content_Type, "text/html; charset=utf-8"s)
+       .add_header(header_fields::Response::Connection, "close"s)
        .add_body("<h1>IncludeOS Main Developers</h1>"
                  "<ul>"
                  "<li>Alfred Bratterud</li>"
@@ -42,14 +44,16 @@ inline http::Router init_routes() {
                  "</ul>"s);
   });
   //--------------------------------------------------------------------
-  routes.on_post("/", [](const auto&, auto& res){
+  routes.on_post("/"s, [](const auto&, auto& res){
     res.add_header(header_fields::Response::Server, "IncludeOS/v0.7.0"s)
-       .add_header(header_fields::Entity::Content_Type, "text/plain"s)
+       .add_header(header_fields::Entity::Content_Type, "text/plain; charset=utf-8"s)
+       .add_header(header_fields::Response::Connection, "close"s)
        .add_body("NO POSTING TODAY!!!"s);
   });
   //--------------------------------------------------------------------
-  routes.on_head("/c++.pdf"s, [](const auto&, auto& res){
+  routes.on_head("/Unikernels.pdf"s, [](const auto&, auto& res){
     res.add_header(header_fields::Response::Server, "IncludeOS/v0.7.0"s)
+       .add_header(header_fields::Response::Connection, "close"s)
        .add_header("File-Size"s, "6.8MB"s);
   });
   //--------------------------------------------------------------------

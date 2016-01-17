@@ -19,9 +19,10 @@
 #define HTTP_ROUTER_HPP
 
 #include <functional>
+#include <unordered_map>
+
 #include <request.hpp>
 #include <response.hpp>
-#include <unordered_map>
 
 namespace std {
 
@@ -221,7 +222,7 @@ public:
   // @result - The result from sending the route
   //           information
   //-------------------------------
-  Result& operator [] (const Route& route) const;
+  Result& operator [] (const Route& route);
 
   //-------------------------------
   // Check to see if a route exist
@@ -237,7 +238,7 @@ private:
   //-------------------------------
   // Class data members
   //-------------------------------
-  static Route_Table route_table_;
+  Route_Table route_table_;
 
   //-------------------------------
   // Deleted copy operation
@@ -255,8 +256,6 @@ private:
   //-------------------------------
   void initialize_default_configuration();
 }; //< class Router
-
-Router::Route_Table Router::route_table_;
 
 inline Router::Router() {
   initialize_default_configuration();
@@ -322,7 +321,7 @@ inline Router& Router::install_new_configuration(Routee_Table&& new_routes) {
   return *this;
 }
 
-inline Router::Result& Router::operator [] (const Route& route) const {
+inline Router::Result& Router::operator [] (const Route& route) {
   static Route route404 {http::method::GET, "404"};
   //-------------------------------
   if (route_exist(route)) return route_table_[route];
@@ -341,8 +340,10 @@ inline void Router::initialize_default_configuration() {
     res.reset()
        .set_status_code(Not_Found)
        .add_header(header_fields::Response::Server, "IncludeOS/v0.7.0"s)
-       .add_header(header_fields::Entity::Content_Type, "text/html"s)
-       .add_body("<h1>PAGE NOT FOUND</h1>"s);
+       .add_header(header_fields::Entity::Content_Type, "text/html; charset=utf-8"s)
+       .add_header(header_fields::Response::Connection, "close"s);
+       .add_body("<h1>404</h1>"
+                 "<p>PAGE NOT FOUND</p>"s);
   });
 }
 

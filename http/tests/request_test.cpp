@@ -41,7 +41,7 @@ TEST_CASE("Constructor to parse a character stream", "[Request]") {
   REQUIRE(request.get_uri() == "https://github.com/hioa-cs/IncludeOS"s);
   REQUIRE(request.get_version() == Version(1, 1));
   REQUIRE(request.has_header("Connection"s) == true);
-  REQUIRE(request.get_header_value("Connection"s) == "close"s);
+  REQUIRE(request.header_value("Connection"s) == "close"s);
 }
 
 TEST_CASE("Building a request", "[Request]") {

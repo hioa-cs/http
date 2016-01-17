@@ -117,8 +117,7 @@ public:
   // Get the value associated with the
   // specified field name
   //
-  // Should call <has_header> before
-  // calling this
+  // Should call <has_header> before calling this
   //
   // @tparam (std::string) field - The field name to
   //                               get associated value
@@ -127,7 +126,7 @@ public:
   //           specified field name
   //----------------------------------------
   template <typename Field>
-  HValue get_header_value(Field&& field) const noexcept;
+  HValue header_value(Field&& field) const noexcept;
 
   //----------------------------------------
   // Check if the specified  field is within
@@ -211,7 +210,7 @@ public:
   //
   // @return - The object that invoked this method
   //----------------------------------------
-  Message& reset() noexcept;
+  virtual Message& reset() noexcept;
   
   //-----------------------------------
   // Get a string representation of this
@@ -219,7 +218,7 @@ public:
   //
   // @return - A string representation
   //-----------------------------------
-  std::string to_string() const;
+  virtual std::string to_string() const;
 
   //-----------------------------------
   // Operator to transform this class
@@ -281,7 +280,7 @@ inline Message& Message::set_header(Field&& field, Value&& value) {
 }
 
 template <typename Field>
-inline Message::HValue Message::get_header_value(Field&& field) const noexcept {
+inline Message::HValue Message::header_value(Field&& field) const noexcept {
   return header_fields_.get_value(std::forward<Field>(field));
 }
 
@@ -345,7 +344,7 @@ inline Message::operator std::string () const {
   return message.str();
 }
 
-std::ostream& operator << (std::ostream& output_device, const Message& message) {
+inline std::ostream& operator << (std::ostream& output_device, const Message& message) {
   return output_device << message.to_string();
 }
 

@@ -149,7 +149,7 @@ public:
   //
   // @return - The object that invoked this method
   //----------------------------------------
-  Request& reset() noexcept;
+  virtual Request& reset() noexcept override;
 
   //----------------------------------------
   // Get a string representation of this
@@ -157,7 +157,7 @@ public:
   //
   // @return - A string representation
   //----------------------------------------
-  std::string to_string() const;
+  virtual std::string to_string() const override;
 
   //----------------------------------------
   // Operator to transform this class
@@ -236,8 +236,10 @@ inline std::string Request::get_post_value(Name&& name) const noexcept {
 }
 
 inline Request& Request::reset() noexcept {
-  clear_headers().clear_body();
-  return set_method(method::GET).set_uri("/").set_version(Version{1,1});
+  Message::reset();
+  return set_method(method::GET)
+        .set_uri("/")
+        .set_version(Version{1,1});
 }
 
 template <typename Data, typename Name>
@@ -272,7 +274,7 @@ inline Request::operator std::string () const {
   return req.str();
 }
 
-std::ostream& operator << (std::ostream& output_device, const Request& req) {
+inline std::ostream& operator << (std::ostream& output_device, const Request& req) {
   return output_device << req.to_string();
 }
 

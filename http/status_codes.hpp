@@ -22,7 +22,7 @@
 
 namespace http {
 //------------------------------------------------
-using Code = unsigned;
+using Code = int;
 using Description = const char*;
 using Status_Code_Table = std::unordered_map<Code, Description>;
 //------------------------------------------------
