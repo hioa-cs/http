@@ -6,9 +6,9 @@
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
-// 
+//
 //     http://www.apache.org/licenses/LICENSE-2.0
-// 
+//
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -212,7 +212,7 @@ public:
   //-------------------------------
   template <typename Routee_Table>
   Router& install_new_configuration(Routee_Table&& new_routes);
-  
+
   //-------------------------------
   // Send route informaton to retrieve
   // result
@@ -341,7 +341,7 @@ inline void Router::initialize_default_configuration() {
        .set_status_code(Not_Found)
        .add_header(header_fields::Response::Server, "IncludeOS/v0.7.0"s)
        .add_header(header_fields::Entity::Content_Type, "text/html; charset=utf-8"s)
-       .add_header(header_fields::Response::Connection, "close"s);
+       .add_header(header_fields::Response::Connection, "close"s)
        .add_body("<h1>404</h1>"
                  "<p>PAGE NOT FOUND</p>"s);
   });
