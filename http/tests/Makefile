@@ -15,7 +15,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-CPP=clang++
+CPP=clang++-3.6
 CFLAGS=-std=c++14
 INC=-I. -I..
 

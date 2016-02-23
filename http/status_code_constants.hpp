@@ -3,7 +3,7 @@
 // Copyright 2015-2016 Oslo and Akershus University College of Applied Sciences
 // and Alfred Bratterud
 //
-// Licensed under the Apache License, Version 2.0 (the "License");
+// Licensed under the Apache License, Version 2.0 (the "License"),
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 // 
@@ -18,72 +18,74 @@
 #ifndef HTTP_STATUS_CODE_CONSTANTS_HPP
 #define HTTP_STATUS_CODE_CONSTANTS_HPP
 
+enum status_t {
 //< 1xx: Informational - Request received, continuing process
-#define Continue            100
-#define Switching_Protocols 101
-#define Processing          102
+Continue             = 100,
+Switching_Protocols  = 101,
+Processing           = 102,
 
 //< 2xx: Success - The action was successfully received, understood, and accepted
-#define OK                  200
-#define Created             201
-#define Accepted            202
-#define Non_Authoritative   203
-#define No_Content          204
-#define Reset_Content       205
-#define Partial_Content     206
-#define Multi_Status        207
-#define Already_Reported    208
-#define IM_Used             226
+OK                   = 200,
+Created              = 201,
+Accepted             = 202,
+Non_Authoritative    = 203,
+No_Content           = 204,
+Reset_Content        = 205,
+Partial_Content      = 206,
+Multi_Status         = 207,
+Already_Reported     = 208,
+IM_Used              = 226,
 
 //< 3xx: Redirection - Further action must be taken in order to complete the request
-#define  Multiple_Choices   300
-#define  Moved_Permanently  301
-#define  Found              302
-#define  See_Other          303
-#define  Not_Modified       304
-#define  Use_Proxy          305
-#define  Temporary_Redirect 307
-#define  Permanent_Redirect 308
+ Multiple_Choices    = 300,
+ Moved_Permanently   = 301,
+ Found               = 302,
+ See_Other           = 303,
+ Not_Modified        = 304,
+ Use_Proxy           = 305,
+ Temporary_Redirect  = 307,
+ Permanent_Redirect  = 308,
 
 //< 4xx: Client Error - The request contains bad syntax or cannot be fulfilled
-#define Bad_Request                     400
-#define Unauthorized                    401
-#define Payment_Required                402
-#define Forbidden                       403
-#define Not_Found                       404
-#define Method_Not_Allowed              405
-#define Not_Acceptable                  406
-#define Proxy_Authentication_Required   407
-#define Request_Timeout                 408
-#define Conflict                        409
-#define Gone                            410
-#define Length_Required                 411
-#define Precondition_Failed             412
-#define Payload_Too_Large               413
-#define URI_Too_Long                    414
-#define Unsupported_Media_Type          415
-#define Range_Not_Satisfiable           416
-#define Expectation_Failed              417
-#define Misdirected_Request             421
-#define Unprocessable_Entity            422
-#define Locked                          423
-#define Failed_Dependency               424
-#define Upgrade_Required                426
-#define Precondition_Required           428
-#define Too_Many_Requests               429
-#define Request_Header_Fields_Too_Large 431
+Bad_Request                      = 400,
+Unauthorized                     = 401,
+Payment_Required                 = 402,
+Forbidden                        = 403,
+Not_Found                        = 404,
+Method_Not_Allowed               = 405,
+Not_Acceptable                   = 406,
+Proxy_Authentication_Required    = 407,
+Request_Timeout                  = 408,
+Conflict                         = 409,
+Gone                             = 410,
+Length_Required                  = 411,
+Precondition_Failed              = 412,
+Payload_Too_Large                = 413,
+URI_Too_Long                     = 414,
+Unsupported_Media_Type           = 415,
+Range_Not_Satisfiable            = 416,
+Expectation_Failed               = 417,
+Misdirected_Request              = 421,
+Unprocessable_Entity             = 422,
+Locked                           = 423,
+Failed_Dependency                = 424,
+Upgrade_Required                 = 426,
+Precondition_Required            = 428,
+Too_Many_Requests                = 429,
+Request_Header_Fields_Too_Large  = 431,
 
 //< 5xx: Server Error - The server failed to fulfill an apparently valid request
-#define Internal_Server_Error           500
-#define Not_Implemented                 501
-#define Bad_Gateway                     502
-#define Service_Unavailable             503
-#define Gateway_Timeout                 504
-#define HTTP_Version_Not_Supported      505
-#define Variant_Also_Negotiates         506
-#define Insufficient_Storage            507
-#define Loop_Detected                   508
-#define Not_Extended                    510
-#define Network_Authentication_Required 511
+Internal_Server_Error            = 500,
+Not_Implemented                  = 501,
+Bad_Gateway                      = 502,
+Service_Unavailable              = 503,
+Gateway_Timeout                  = 504,
+HTTP_Version_Not_Supported       = 505,
+Variant_Also_Negotiates          = 506,
+Insufficient_Storage             = 507,
+Loop_Detected                    = 508,
+Not_Extended                     = 510,
+Network_Authentication_Required  = 511,
+};
 
 #endif //< HTTP_STATUS_CODE_CONSTANTS_HPP
