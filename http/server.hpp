@@ -114,19 +114,19 @@ inline Server& Server::set_routes(Route_Table&& routes) {
 }
 
 inline void Server::listen(Port port) {
-  inet_->tcp().bind(port).onAccept([this](net::TCP::Socket& conn) {
+  inet_->tcp().bind(port).onReceive([this](auto conn, bool) {
     //-------------------------------
-    Request  req {conn.read(1024)};
+    Request  req {conn->read(1024)};
     Response res;
     //-------------------------------
     router_[{req.get_method(), req.get_uri()}](req, res);
     //-------------------------------
-    conn.write(res);
+    conn->write(res);
   });
 }
 
 inline void Server::initialize() {
-  decltype(auto) eth0 = Dev::eth<0,VirtioNet>();
+  decltype(auto) eth0 = hw::Dev::eth<0,VirtioNet>();
   //-------------------------------
   inet_ = std::make_unique<net::Inet4<VirtioNet>>(eth0);
   //-------------------------------

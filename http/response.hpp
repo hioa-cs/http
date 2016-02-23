@@ -34,7 +34,7 @@ private:
   //------------------------------
   // Internal class type aliases
   //------------------------------
-  using Code  = int;
+  using Code  = status_t;
   using Limit = std::size_t;
   //------------------------------
 public:
