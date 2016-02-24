@@ -18,13 +18,13 @@
 #ifndef SERVICE_ROUTE_TABLE_HPP
 #define SERVICE_ROUTE_TABLE_HPP
 
-inline http::Router init_routes() {
+static http::Router init_routes() {
   using namespace std;
   using namespace http;
   //--------------------------------------------------------------------
   Router routes;
   //--------------------------------------------------------------------
-  routes.on_get("/"s, [](const auto&, auto& res) {
+  routes.on_get("/"s, [](const auto&, auto& res){
     res.add_header(header_fields::Response::Server, "IncludeOS/v0.7.0"s)
        .add_header(header_fields::Entity::Content_Type, "text/html; charset=utf-8"s)
        .add_header(header_fields::Response::Connection, "close"s)
@@ -38,8 +38,8 @@ inline http::Router init_routes() {
        .add_body("<h1>IncludeOS Main Developers</h1>"
                  "<ul>"
                  "<li>Alfred Bratterud</li>"
-                 "<li>Andreas Åkesson</li>"
                  "<li>Alf-Andre Walla</li>"
+                 "<li>Andreas Åkesson</li>"
                  "<li>Rico Antonio Felix</li>"
                  "</ul>"s);
   });

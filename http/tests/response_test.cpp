@@ -23,6 +23,7 @@
 using namespace std;
 using namespace http::header_fields;
 
+///////////////////////////////////////////////////////////////////////////////
 TEST_CASE("Default constructor only creates status line", "[Response]") {
   http::Response response;
   //-------------------------
@@ -31,19 +32,21 @@ TEST_CASE("Default constructor only creates status line", "[Response]") {
   REQUIRE(response.to_string() == test_string);
 }
 
+///////////////////////////////////////////////////////////////////////////////
 SCENARIO("Given an HTTP_Response object") {
    http::Response response;
-   REQUIRE(response.to_string() == "HTTP/1.1 200 OK\r\n\r\n"s);
+   REQUIRE(response.to_string() == "HTTP/1.1 200 OK" CRLF CRLF);
    //-------------------------
    WHEN("We set it's status code") {
-    response.set_status_code(Not_Found);
+    response.set_status_code(http::status_t::Not_Found);
     //-------------------------
     THEN("It should be reflected") {
-      REQUIRE(response.to_string() == "HTTP/1.1 404 Not Found\r\n\r\n"s);
+      REQUIRE(response.to_string() == "HTTP/1.1 404 Not Found" CRLF CRLF);
     }
    }
 }
 
+///////////////////////////////////////////////////////////////////////////////
 TEST_CASE("Add header field", "[Response]") {
   http::Response response;
   //-------------------------
@@ -55,6 +58,7 @@ TEST_CASE("Add header field", "[Response]") {
   REQUIRE(response.to_string() == test_string);
 }
 
+///////////////////////////////////////////////////////////////////////////////
 TEST_CASE("Change header field value", "[Response]") {
   http::Response response;
   //-------------------------
@@ -67,8 +71,9 @@ TEST_CASE("Change header field value", "[Response]") {
   REQUIRE(response.to_string() == test_string);
 }
 
+///////////////////////////////////////////////////////////////////////////////
 TEST_CASE("Erase header field", "[Response]") {
-  http::Response response{Bad_Request};
+  http::Response response{http::status_t::Bad_Request};
   //-------------------------
   response.add_header(Response::Server, "IncludeOS/0.7.0"s)
           .erase_header(Response::Server);
@@ -78,8 +83,9 @@ TEST_CASE("Erase header field", "[Response]") {
   REQUIRE(response.to_string() == test_string);
 }
 
+///////////////////////////////////////////////////////////////////////////////
 TEST_CASE("Clear headers", "[Response]") {
-  http::Response response{Bad_Request};
+  http::Response response{http::status_t::Bad_Request};
   //-------------------------
   response.add_header(Response::Server, "IncludeOS/0.7.0"s)
           .add_header(Entity::Content_Type, "text/javascript"s)
@@ -90,6 +96,7 @@ TEST_CASE("Clear headers", "[Response]") {
   REQUIRE(response.to_string() == test_string);
 }
 
+///////////////////////////////////////////////////////////////////////////////
 TEST_CASE("Add message body", "[Response]") {
   http::Response response;
   //-------------------------

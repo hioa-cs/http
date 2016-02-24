@@ -23,6 +23,7 @@
 using namespace std;
 using namespace http;
 
+///////////////////////////////////////////////////////////////////////////////
 TEST_CASE("Default constructor only creates request line", "[Request]") {
   Request request;
   //-------------------------
@@ -31,6 +32,7 @@ TEST_CASE("Default constructor only creates request line", "[Request]") {
   REQUIRE(request.to_string() == test_string);
 }
 
+///////////////////////////////////////////////////////////////////////////////
 TEST_CASE("Constructor to parse a character stream", "[Request]") {
   string ingress = "GET https://github.com/hioa-cs/IncludeOS HTTP/1.1" CRLF
                    "Connection: close" CRLF CRLF;
@@ -44,6 +46,7 @@ TEST_CASE("Constructor to parse a character stream", "[Request]") {
   REQUIRE(request.header_value("Connection"s) == "close"s);
 }
 
+///////////////////////////////////////////////////////////////////////////////
 TEST_CASE("Building a request", "[Request]") {
   Request request;
   //-------------------------
@@ -59,6 +62,7 @@ TEST_CASE("Building a request", "[Request]") {
   REQUIRE(request.to_string() == test_string);
 }
 
+///////////////////////////////////////////////////////////////////////////////
 TEST_CASE("Handling query data", "[HTTP_Request]") {
   string ingress = "GET includeos.net/q?file=install.sh&machine=x86_64 HTTP/1.1" CRLF
                    "Host: includeos.server:8080" CRLF
@@ -70,6 +74,7 @@ TEST_CASE("Handling query data", "[HTTP_Request]") {
   REQUIRE(request.get_query_value("machine"s) == "x86_64"s);
 }
 
+///////////////////////////////////////////////////////////////////////////////
 TEST_CASE("Handling post data", "[HTTP_Request]") {
   string ingress = "POST / HTTP/1.1" CRLF
                    "Host: includeos.server:8080" CRLF
@@ -83,6 +88,7 @@ TEST_CASE("Handling post data", "[HTTP_Request]") {
   REQUIRE(request.get_post_value("project"s) == "includeos"s);
 }
 
+///////////////////////////////////////////////////////////////////////////////
 TEST_CASE("Header value folding", "[HTTP_Request]") {
   string ingress = "GET / HTTP/1.1" CRLF
                    "Host: includeos.server:8080" CRLF

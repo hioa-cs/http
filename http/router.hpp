@@ -27,7 +27,7 @@
 namespace std {
 
 template <>
-class hash<std::pair<std::string, std::string>> {
+struct hash<std::pair<std::string, std::string>> {
 public:
   size_t operator()(const std::pair<std::string, std::string>& key) const {
     return std::hash<std::string>{}(key.first + key.second);

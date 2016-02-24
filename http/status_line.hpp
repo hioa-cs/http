@@ -22,6 +22,7 @@
 
 #include "version.hpp"
 #include "status_codes.hpp"
+#include "status_code_constants.hpp"
 
 namespace http {
 
@@ -30,12 +31,6 @@ namespace http {
 // response message status-line
 //------------------------------
 class Status_Line {
-private:
-  //----------------------------
-  // Internal class type aliases
-  //----------------------------
-  using Code = int;
-  //----------------------------
 public:
   //----------------------------
   // Constructor to create the status line
@@ -149,7 +144,7 @@ Status_Line::Status_Line(Response&& response) {
   //-----------------------------------
   auto code = sl.substr(sl.find_first_of(' ') + 1, 3 /*<-(3) number of digits in code */);
   //-----------------------------------
-  code_ = static_cast<int>(std::stoul(code));
+  code_ = static_cast<status_t>(std::stoul(code));
   //-----------------------------------
   response = response.substr(response.find_first_of("\r\n") + 2);
 }
@@ -162,7 +157,7 @@ inline void Status_Line::set_version(const Version& version) noexcept {
   version_ = version;
 }
 
-inline constexpr Status_Line::Code Status_Line::get_code() const noexcept {
+inline constexpr Code Status_Line::get_code() const noexcept {
   return code_;
 }
 

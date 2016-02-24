@@ -18,6 +18,8 @@
 #ifndef HTTP_STATUS_CODE_CONSTANTS_HPP
 #define HTTP_STATUS_CODE_CONSTANTS_HPP
 
+namespace http {
+
 enum status_t {
 //< 1xx: Informational - Request received, continuing process
 Continue             = 100,
@@ -86,6 +88,8 @@ Insufficient_Storage             = 507,
 Loop_Detected                    = 508,
 Not_Extended                     = 510,
 Network_Authentication_Required  = 511,
-};
+}; //< enum status_t
+
+} //< namespace http
 
 #endif //< HTTP_STATUS_CODE_CONSTANTS_HPP

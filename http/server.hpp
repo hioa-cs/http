@@ -19,6 +19,7 @@
 #define HTTP_SERVER_HPP
 
 #include <router.hpp>
+
 #include <net/inet4>
 #include <net/dhcp/dh4client.hpp>
 

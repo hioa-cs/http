@@ -21,8 +21,6 @@
 #include "message.hpp"
 #include "status_line.hpp"
 
-#include "status_code_constants.hpp" //< Standard status codes
-
 namespace http {
 
 //--------------------------------
