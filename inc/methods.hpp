@@ -41,7 +41,7 @@ Method PATCH   {"PATCH"};
 
 //-------------------------------
 // Get a code mapping from an HTTP
-// method as a <std::string> object
+// method
 //
 // @param method - The HTTP method
 //

@@ -111,7 +111,9 @@ private:
   unsigned major_;
   unsigned minor_;
   //-----------------------------------
-}; //< class HTTP_Version
+}; //< class Version
+
+/**--v----------- Implementation Details -----------v--**/
 
 inline constexpr Version::Version(const unsigned major, const unsigned minor) noexcept:
   major_{major},
@@ -198,6 +200,8 @@ inline bool operator <= (const Version& lhs, const Version& rhs) noexcept {
 inline bool operator >= (const Version& lhs, const Version& rhs) noexcept {
   return (lhs > rhs) || (lhs == rhs);
 }
+
+/**--^----------- Implementation Details -----------^--**/
 
 } //< namespace http
 

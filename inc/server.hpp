@@ -18,10 +18,10 @@
 #ifndef HTTP_SERVER_HPP
 #define HTTP_SERVER_HPP
 
-#include <router.hpp>
-
 #include <net/inet4>
 #include <net/dhcp/dh4client.hpp>
+
+#include "router.hpp"
 
 namespace http {
 
@@ -100,6 +100,8 @@ private:
   void initialize();
 }; //< class Server
 
+/**--v----------- Implementation Details -----------v--**/
+
 inline Server::Server() {
   initialize();
 }
@@ -136,6 +138,8 @@ inline void Server::initialize() {
                         {{ 10,0,0,1 }},      // Gateway
                         {{ 8,8,8,8 }});      // DNS
 }
+
+/**--^----------- Implementation Details -----------^--**/
 
 } // namespace http
 

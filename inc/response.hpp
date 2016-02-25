@@ -18,6 +18,7 @@
 #ifndef HTTP_RESPONSE_HPP
 #define HTTP_RESPONSE_HPP
 
+#include "common.hpp"
 #include "message.hpp"
 #include "status_line.hpp"
 
@@ -33,7 +34,6 @@ private:
   // Internal class type aliases
   //------------------------------
   using Code  = status_t;
-  using Limit = std::size_t;
   //------------------------------
 public:
   //------------------------------
@@ -118,6 +118,8 @@ private:
   Response& operator = (Response&&) = delete;
 }; //< class Response
 
+/**--v----------- Implementation Details -----------v--**/
+
 inline Response::Response(const Code code, const Version& version) noexcept:
   status_line_{version, code}
 {}
@@ -157,6 +159,8 @@ inline Response::operator std::string () const {
 inline std::ostream& operator << (std::ostream& output_device, const Response& res) {
   return output_device << res.to_string();
 }
+
+/**--^----------- Implementation Details -----------^--**/
 
 } //< namespace http
 

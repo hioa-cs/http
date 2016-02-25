@@ -21,8 +21,9 @@
 #include <functional>
 #include <unordered_map>
 
-#include <request.hpp>
-#include <response.hpp>
+#include "common.hpp"
+#include "request.hpp"
+#include "response.hpp"
 
 namespace std {
 
@@ -34,7 +35,7 @@ public:
   }
 };
 
-} // namespace std
+} //< namespace std
 
 namespace http {
 
@@ -47,8 +48,6 @@ private:
   //-------------------------------
   // Internal class type aliases
   //-------------------------------
-  using Method      = std::string;
-  using URI         = std::string;
   using Route       = std::pair<Method, URI>;
   using Result      = std::function<void(const Request&, Response&)>;
   using Route_Table = std::unordered_map<Route, Result>;
@@ -257,6 +256,8 @@ private:
   void initialize_default_configuration();
 }; //< class Router
 
+/**--v----------- Implementation Details -----------v--**/
+
 inline Router::Router() {
   initialize_default_configuration();
 }
@@ -346,6 +347,8 @@ inline void Router::initialize_default_configuration() {
                  "<p>PAGE NOT FOUND</p>"s);
   });
 }
+
+/**--^----------- Implementation Details -----------^--**/
 
 } //< namespace http
 

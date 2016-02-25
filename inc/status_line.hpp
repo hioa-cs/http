@@ -48,7 +48,7 @@ public:
   // data which is a <std::string> object
   //
   // @tparam (std::string) response - The character stream of
-  //                                 data
+  //                                  data
   //-----------------------------------
   template <typename Response>
   explicit Status_Line(Response&& response);
@@ -57,6 +57,26 @@ public:
   // Default destructor
   //----------------------------
   ~Status_Line() noexcept = default;
+
+  //----------------------------
+  // Default copy constructor
+  //----------------------------
+  Status_Line(const Status_Line&) noexcept = default;
+
+  //----------------------------
+  // Default move constructor
+  //----------------------------
+  Status_Line(Status_Line&&) noexcept = default;
+
+  //----------------------------
+  // Default assignment operator
+  //----------------------------
+  Status_Line& operator = (const Status_Line&) noexcept = default;
+
+  //-----------------------------------
+  // Default move assignment operator
+  //-----------------------------------
+  Status_Line& operator = (Status_Line&&) noexcept = default;
 
   //----------------------------
   // Get the version of the message
@@ -106,19 +126,9 @@ private:
   //---------------------------
   Version version_;
   Code    code_;
+}; //< class Status_Line
 
-  //---------------------------
-  // Deleted move and copy operations
-  //---------------------------
-  Status_Line(const Status_Line&) = delete;
-  Status_Line(Status_Line&&) = delete;
-
-  //----------------------------
-  // Deleted move and copy assignment operations
-  //----------------------------
-  Status_Line& operator = (const Status_Line&) = delete;
-  Status_Line& operator = (Status_Line&&) = delete;
-}; //< class HTTP_Status_Line
+/**--v----------- Implementation Details -----------v--**/
 
 inline constexpr Status_Line::Status_Line(const Version& version, const Code code) noexcept:
   version_{version},
@@ -144,7 +154,7 @@ Status_Line::Status_Line(Response&& response) {
   //-----------------------------------
   auto code = sl.substr(sl.find_first_of(' ') + 1, 3 /*<-(3) number of digits in code */);
   //-----------------------------------
-  code_ = static_cast<status_t>(std::stoul(code));
+  code_ = std::stoi(code);
   //-----------------------------------
   response = response.substr(response.find_first_of("\r\n") + 2);
 }
@@ -172,7 +182,7 @@ inline std::string Status_Line::to_string() const {
 inline Status_Line::operator std::string () const {
   std::ostringstream status_info;
   //---------------------------
-  status_info << version_.to_string()    << " "
+  status_info << version_                << " "
               << code_                   << " "
               << code_description(code_) << "\r\n";
   //---------------------------
@@ -182,6 +192,8 @@ inline Status_Line::operator std::string () const {
 inline std::ostream& operator << (std::ostream& output_device, const Status_Line& stat_line) {
   return output_device << stat_line.to_string();
 }
+
+/**--^----------- Implementation Details -----------^--**/
 
 } //< namespace http
 

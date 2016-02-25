@@ -26,6 +26,7 @@
 #include <algorithm>
 #include <type_traits>
 
+#include "common.hpp"
 #include "header_fields.hpp" //< Standard header field names
 
 namespace http {
@@ -45,7 +46,6 @@ private:
   //-----------------------------------------------
   using Map_Type       = std::pair<std::string, std::string>;
   using Field_Map      = std::list<Map_Type>;
-  using Limit          = Field_Map::size_type;
   using Const_Iterator = Field_Map::const_iterator;
   //-----------------------------------------------
 public:
@@ -244,6 +244,8 @@ private:
   friend std::ostream& operator << (std::ostream&, const Header&);
 }; //< class Header
 
+/**--v----------- Implementation Details -----------v--**/
+
 inline Header::Header(const Limit limit) noexcept {
   if (limit <= 0) return;
   limit_ = limit;
@@ -261,7 +263,7 @@ inline void Header::set_limit(const Limit limit) noexcept {
   limit_ = limit;
 }
 
-inline Header::Limit Header::get_limit() const noexcept {
+inline Limit Header::get_limit() const noexcept {
   return limit_;
 }
 
@@ -397,7 +399,7 @@ inline bool Header::is_empty() const noexcept {
   return map_.empty();
 }
 
-inline Header::Limit Header::size() const noexcept {
+inline Limit Header::size() const noexcept {
   return map_.size();
 }
 
@@ -443,6 +445,8 @@ inline std::ostream& operator << (std::ostream& output_device, const Header& hea
   //-----------------------------------
   return output_device << "\r\n";
 }
+
+/**--^----------- Implementation Details -----------^--**/
 
 } //< namespace http
 

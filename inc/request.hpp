@@ -18,6 +18,7 @@
 #ifndef HTTP_REQUEST_HPP
 #define HTTP_REQUEST_HPP
 
+#include "common.hpp"
 #include "message.hpp"
 #include "request_line.hpp"
 
@@ -28,14 +29,6 @@ namespace http {
 // an http request message
 //----------------------------------------
 class Request : public Message {
-private:
-  //----------------------------------------
-  // Internal class type aliases
-  //----------------------------------------
-  using Method = std::string;
-  using URI    = std::string;
-  using Limit  = std::size_t;
-  //----------------------------------------
 public:
   //----------------------------------------
   // Default constructor
@@ -186,7 +179,9 @@ private:
   //----------------------------------------
   template <typename Data, typename Name>
   std::string get_value(Data&& data, Name&& name) const noexcept;
-}; //< class HTTP_Request
+}; //< class Request
+
+/**--v----------- Implementation Details -----------v--**/
 
 template <typename Ingress>
 inline Request::Request(Ingress&& request, const Limit limit) :
@@ -197,7 +192,7 @@ inline Request::Request(Ingress&& request, const Limit limit) :
   add_body(request.substr(request.find("\r\n\r\n") + 4));
 }
 
-inline const Request::Method& Request::get_method() const noexcept {
+inline const Method& Request::get_method() const noexcept {
   return request_line_.get_method();
 }
 
@@ -206,7 +201,7 @@ inline Request& Request::set_method(const Method& method) {
   return *this;
 }
 
-inline const Request::URI& Request::get_uri() const noexcept {
+inline const URI& Request::get_uri() const noexcept {
   return request_line_.get_uri();
 }
 
@@ -277,6 +272,8 @@ inline Request::operator std::string () const {
 inline std::ostream& operator << (std::ostream& output_device, const Request& req) {
   return output_device << req.to_string();
 }
+
+/**--^----------- Implementation Details -----------^--**/
 
 } //< namespace http
 

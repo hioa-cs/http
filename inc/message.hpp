@@ -20,6 +20,7 @@
 
 #include <sstream>
 
+#include "common.hpp"
 #include "header.hpp"
 
 namespace http {
@@ -28,8 +29,7 @@ class Message {
 private:
   //----------------------------------------
   // Internal class type aliases
-  using Limit        = std::size_t;
-  using HSize        = std::size_t;
+  using HSize        = Limit;
   using HValue       = const std::string&;
   using Message_Body = std::string;
   //----------------------------------------
@@ -247,6 +247,8 @@ private:
   Message& operator = (Message&&) = delete;
 }; //< class Message
 
+/**--v----------- Implementation Details -----------v--**/
+
 inline Message::Message(const Limit limit) noexcept:
   header_fields_{limit},
   message_body_{}
@@ -257,7 +259,7 @@ inline Message& Message::set_header_limit(const Limit limit) noexcept {
   return *this;
 }
 
-inline Message::Limit Message::get_header_limit() const noexcept {
+inline Limit Message::get_header_limit() const noexcept {
   return header_fields_.get_limit();
 }
 
@@ -347,6 +349,8 @@ inline Message::operator std::string () const {
 inline std::ostream& operator << (std::ostream& output_device, const Message& message) {
   return output_device << message.to_string();
 }
+
+/**--^----------- Implementation Details -----------^--**/
 
 } //< namespace http
 

@@ -15,13 +15,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <server.hpp>
+#ifndef HTTP_COMMON_HPP
+#define HTTP_COMMON_HPP
 
 namespace http {
-  
-static Server& createServer() {
-  static Server server;
-  return server;
-}
+
+using URI     = std::string;
+using Method  = std::string;
+
+using Limit   = std::size_t;
 
 } //< namespace http
+
+#endif //< HTTP_COMMON_HPP

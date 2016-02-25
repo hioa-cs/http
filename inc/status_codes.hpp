@@ -22,8 +22,8 @@
 
 namespace http {
 //------------------------------------------------
-using Code = int;
-using Description = const char*;
+using Code              = int;
+using Description       = const char*;
 using Status_Code_Table = std::unordered_map<Code, Description>;
 //------------------------------------------------
 const Status_Code_Table status_codes {

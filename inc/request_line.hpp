@@ -21,6 +21,7 @@
 #include <cctype>
 #include <ostream>
 
+#include "common.hpp"
 #include "methods.hpp"
 #include "version.hpp"
 
@@ -31,13 +32,6 @@ namespace http {
 // of an incoming http request message
 //-----------------------------------
 class Request_Line {
-private:
-  //-----------------------------------
-  // Internal class type aliases
-  //-----------------------------------
-  using Method  = std::string;
-  using URI     = std::string;
-  //-----------------------------------
 public:
   //-----------------------------------
   // Constructor to create a default
@@ -138,7 +132,9 @@ private:
   //-----------------------------------
   Request_Line& operator = (const Request_Line&) = delete;
   Request_Line& operator = (Request_Line&&) = delete;
-}; //< class HTTP_Request_Line
+}; //< class Request_Line
+
+/**--v----------- Implementation Details -----------v--**/
 
 inline Request_Line::Request_Line() :
   method_{method::GET},
@@ -171,7 +167,7 @@ inline Request_Line::Request_Line(Request&& request) {
   request = request.substr(request.find("\r\n") + 2);
 }
 
-inline const Request_Line::Method& Request_Line::get_method() const noexcept {
+inline const Method& Request_Line::get_method() const noexcept {
   return method_;
 }
 
@@ -179,7 +175,7 @@ inline void Request_Line::set_method(const Method& method) {
   method_ = method;
 }
 
-inline const Request_Line::URI& Request_Line::get_uri() const noexcept {
+inline const URI& Request_Line::get_uri() const noexcept {
   return uri_;
 }
 
@@ -212,6 +208,8 @@ inline Request_Line::operator std::string () const {
 inline std::ostream& operator << (std::ostream& output_device, const Request_Line& req_line) {
   return output_device << req_line.to_string();
 }
+
+/**--^----------- Implementation Details -----------^--**/
 
 } //< namespace http
 
