@@ -137,6 +137,10 @@ inline constexpr Status_Line::Status_Line(const Version& version, const Code cod
 
 template <typename Response>
 Status_Line::Status_Line(Response&& response) {
+  if (response.empty() or response.size() < 19 /*<-(19) minimum response length */) {
+    return;
+  }
+  //-----------------------------------
   std::string start {response.substr(response.find_first_not_of("\f\t\v "))};
   //-----------------------------------
   std::string sl {start.substr(0, start.find("\r\n"))};

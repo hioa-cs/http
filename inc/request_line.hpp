@@ -39,7 +39,7 @@ public:
   //
   // <GET / HTTP/1.1>
   //-----------------------------------
-  explicit Request_Line();
+  explicit Request_Line() = default;
 
   //-----------------------------------
   // Constructor to construct a request-line
@@ -117,9 +117,9 @@ private:
   //-----------------------------------
   // Class data members
   //-----------------------------------
-  Method  method_;
-  URI     uri_;
-  Version version_;
+  Method  method_  {method::GET};
+  URI     uri_     {"/"};
+  Version version_ {1U, 1U};
 
   //-----------------------------------
   // Deleted move and copy operations
@@ -136,14 +136,12 @@ private:
 
 /**--v----------- Implementation Details -----------v--**/
 
-inline Request_Line::Request_Line() :
-  method_{method::GET},
-  uri_{"/"},
-  version_{Version{}}
-{}
-
 template <typename Request>
 inline Request_Line::Request_Line(Request&& request) {
+  if (request.empty() or request.size() < 18 /*<-(18) minimum request length */) {
+    return;
+  }
+  //-----------------------------------
   std::string start {request.substr(request.find_first_not_of("\f\t\v "))};
   //-----------------------------------
   std::string rl {start.substr(0, start.find("\r\n"))};

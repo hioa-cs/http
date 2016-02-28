@@ -189,7 +189,10 @@ inline Request::Request(Ingress&& request, const Limit limit) :
   request_line_{std::forward<Ingress>(request)}
 {
   add_headers(std::forward<Ingress>(request));
-  add_body(request.substr(request.find("\r\n\r\n") + 4));
+  auto start_of_body = request.find("\r\n\r\n");
+  if (start_of_body not_eq std::string::npos) {
+    add_body(request.substr(start_of_body + 4));
+  }
 }
 
 inline const Method& Request::get_method() const noexcept {

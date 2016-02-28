@@ -103,7 +103,7 @@ private:
   //------------------------------
   // Class data members
   //------------------------------
-  Status_Line  status_line_;
+  Status_Line status_line_;
 
   //-----------------------------------
   // Deleted move and copy operations
@@ -130,7 +130,10 @@ inline Response::Response(Egress&& response, const Limit limit) :
   status_line_{response}
 {
   add_headers(std::forward<Egress>(response));
-  add_body(response.substr(response.find("\r\n\r\n") + 4));
+  auto start_of_body = response.find("\r\n\r\n");
+  if (start_of_body not_eq std::string::npos) {
+    add_body(response.substr(start_of_body + 4));
+  }
 }
 
 inline Response& Response::set_status_code(const Code code) noexcept {
