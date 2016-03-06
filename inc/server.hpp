@@ -122,7 +122,7 @@ inline void Server::listen(Port port) {
     Request  req {conn->read(1024)};
     Response res;
     //-------------------------------
-    router_[{req.get_method(), req.get_uri()}](req, res);
+    router_[{req.method(), req.uri()}](req, res);
     //-------------------------------
     conn->write(res);
   });
