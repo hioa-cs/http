@@ -39,11 +39,11 @@ TEST_CASE("Constructor to parse a character stream", "[Request]") {
   //-------------------------                   
   Request request {std::move(ingress)};
   //-------------------------
-  REQUIRE(request.get_method()                == "GET"s);
-  REQUIRE(request.get_uri()                   == "https://github.com/hioa-cs/IncludeOS"s);
-  REQUIRE(request.get_version()               == Version(1, 1));
+  REQUIRE(request.method()                    == "GET");
+  REQUIRE(request.uri()                       == "https://github.com/hioa-cs/IncludeOS");
+  REQUIRE(request.version()                   == Version(1, 1));
   REQUIRE(request.has_header("Connection"s)   == true);
-  REQUIRE(request.header_value("Connection"s) == "close"s);
+  REQUIRE(request.header_value("Connection"s) == "close");
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -70,8 +70,8 @@ TEST_CASE("Handling query data", "[Request]") {
   //-------------------------
   Request request {std::move(ingress)};
   //-------------------------
-  REQUIRE(request.get_query_value("file"s)    == "install.sh");
-  REQUIRE(request.get_query_value("machine"s) == "x86_64");
+  REQUIRE(request.query_value("file"s)    == "install.sh");
+  REQUIRE(request.query_value("machine"s) == "x86_64");
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -83,9 +83,9 @@ TEST_CASE("Handling post data", "[Request]") {
   //-------------------------
   Request request {std::move(ingress)};
   //-------------------------
-  REQUIRE(request.get_post_value("name"s)     == "rico");
-  REQUIRE(request.get_post_value("language"s) == "cpp");
-  REQUIRE(request.get_post_value("project"s)  == "includeos");
+  REQUIRE(request.post_value("name"s)     == "rico");
+  REQUIRE(request.post_value("language"s) == "cpp");
+  REQUIRE(request.post_value("project"s)  == "includeos");
 }
 
 ///////////////////////////////////////////////////////////////////////////////

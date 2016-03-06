@@ -64,7 +64,7 @@ public:
   //
   // @return - The method of the request
   //----------------------------------------
-  const Method& get_method() const noexcept;
+  const Method& method() const noexcept;
 
   //----------------------------------------
   // Set the method of the request message
@@ -81,7 +81,7 @@ public:
   //
   // @return - The URI of the request
   //----------------------------------------
-  const URI& get_uri() const noexcept;
+  const URI& uri() const noexcept;
 
   //----------------------------------------
   // Set the URI of the request message
@@ -98,7 +98,7 @@ public:
   //
   // @return - The version of the request
   //----------------------------------------
-  const Version& get_version() const noexcept;
+  const Version& version() const noexcept;
 
   //----------------------------------------
   // Set the version of the request message
@@ -121,7 +121,7 @@ public:
   //           an empty string otherwise
   //----------------------------------------
   template <typename Name>
-  std::string get_query_value(Name&& name) const noexcept;
+  std::string query_value(Name&& name) const noexcept;
 
   //----------------------------------------
   // Get the value associated with the name
@@ -134,7 +134,7 @@ public:
   //           an empty string otherwise
   //----------------------------------------
   template <typename Name>
-  std::string get_post_value(Name&& name) const noexcept;
+  std::string post_value(Name&& name) const noexcept;
 
   //----------------------------------------
   // Reset the request message as if it was now
@@ -195,7 +195,7 @@ inline Request::Request(Ingress&& request, const Limit limit) :
   }
 }
 
-inline const Method& Request::get_method() const noexcept {
+inline const Method& Request::method() const noexcept {
   return request_line_.get_method();
 }
 
@@ -204,7 +204,7 @@ inline Request& Request::set_method(const Method& method) {
   return *this;
 }
 
-inline const URI& Request::get_uri() const noexcept {
+inline const URI& Request::uri() const noexcept {
   return request_line_.get_uri();
 }
 
@@ -213,7 +213,7 @@ inline Request& Request::set_uri(const URI& uri) {
   return *this;
 }
 
-inline const Version& Request::get_version() const noexcept {
+inline const Version& Request::version() const noexcept {
   return request_line_.get_version();
 }
 
@@ -223,13 +223,13 @@ inline Request& Request::set_version(const Version& version) noexcept {
 }
 
 template <typename Name>
-inline std::string Request::get_query_value(Name&& name) const noexcept {
-  return get_value(get_uri(), std::forward<Name>(name));
+inline std::string Request::query_value(Name&& name) const noexcept {
+  return get_value(uri(), std::forward<Name>(name));
 }
 
 template <typename Name>
-inline std::string Request::get_post_value(Name&& name) const noexcept {
-  if (get_method() not_eq method::POST) return std::string{};
+inline std::string Request::post_value(Name&& name) const noexcept {
+  if (method() not_eq method::POST) return std::string{};
   return get_value(get_body(), std::forward<Name>(name));
 }
 
