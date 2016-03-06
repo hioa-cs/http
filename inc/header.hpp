@@ -269,7 +269,7 @@ inline Limit Header::get_limit() const noexcept {
 
 template <typename Field, typename Value>
 inline bool Header::add_field(Field&& field, Value&& value) {
-  if (field.empty() || value.empty()) return false;
+  if (field.empty()) return false;
   //-----------------------------------
   if (size() < limit_) {
     map_.emplace_back(std::forward<Field>(field), std::forward<Value>(value));
