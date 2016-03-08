@@ -19,7 +19,6 @@
 #define HTTP_REQUEST_LINE_HPP
 
 #include <cctype>
-#include <ostream>
 
 #include "common.hpp"
 #include "methods.hpp"
@@ -196,9 +195,9 @@ inline std::string Request_Line::to_string() const {
 inline Request_Line::operator std::string () const {
   std::ostringstream req_line;
   //-----------------------------
-  req_line << method_              << " "
-           << uri_                 << " "
-           << version_.to_string() << "\r\n";
+  req_line << method_  << " "
+           << uri_     << " "
+           << version_ << "\r\n";
  //------------------------------
   return req_line.str();
 }

@@ -158,7 +158,7 @@ inline std::ostream& operator << (std::ostream& output_device, const Version& ve
 //-----------------------------------
 inline bool operator == (const Version& lhs, const Version& rhs) noexcept {
   return lhs.get_major() == rhs.get_major()
-         &&
+         and
          lhs.get_minor() == rhs.get_minor();
 }
 
@@ -166,7 +166,7 @@ inline bool operator == (const Version& lhs, const Version& rhs) noexcept {
 // Operator to check for inequality
 //-----------------------------------
 inline bool operator != (const Version& lhs, const Version& rhs) noexcept {
-  return !(lhs == rhs);
+  return not (lhs == rhs);
 }
 
 //-----------------------------------
@@ -174,7 +174,7 @@ inline bool operator != (const Version& lhs, const Version& rhs) noexcept {
 //-----------------------------------
 inline bool operator < (const Version& lhs, const Version& rhs) noexcept {
   return lhs.get_major() < rhs.get_major()
-         ||
+         or
          lhs.get_minor() < rhs.get_minor();
 }
 
@@ -183,7 +183,7 @@ inline bool operator < (const Version& lhs, const Version& rhs) noexcept {
 //-----------------------------------
 inline bool operator > (const Version& lhs, const Version& rhs) noexcept {
   return lhs.get_major() > rhs.get_major()
-         ||
+         or
          lhs.get_minor() > rhs.get_minor();
 }
 
@@ -191,14 +191,14 @@ inline bool operator > (const Version& lhs, const Version& rhs) noexcept {
 // Operator to check for less than or equal to relationship
 //-----------------------------------
 inline bool operator <= (const Version& lhs, const Version& rhs) noexcept {
-  return (lhs < rhs) || (lhs == rhs);
+  return (lhs < rhs) or (lhs == rhs);
 }
 
 //-----------------------------------
 // Operator to check for greater than or equal to relationship
 //-----------------------------------
 inline bool operator >= (const Version& lhs, const Version& rhs) noexcept {
-  return (lhs > rhs) || (lhs == rhs);
+  return (lhs > rhs) or (lhs == rhs);
 }
 
 /**--^----------- Implementation Details -----------^--**/

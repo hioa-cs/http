@@ -18,8 +18,6 @@
 #ifndef HTTP_STATUS_LINE_HPP
 #define HTTP_STATUS_LINE_HPP
 
-#include <ostream>
-
 #include "version.hpp"
 #include "status_codes.hpp"
 #include "status_code_constants.hpp"

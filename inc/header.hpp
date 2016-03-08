@@ -20,7 +20,6 @@
 
 #include <list>
 #include <cctype>
-#include <string>
 #include <utility>
 #include <ostream>
 #include <algorithm>

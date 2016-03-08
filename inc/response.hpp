@@ -18,7 +18,6 @@
 #ifndef HTTP_RESPONSE_HPP
 #define HTTP_RESPONSE_HPP
 
-#include "common.hpp"
 #include "message.hpp"
 #include "status_line.hpp"
 

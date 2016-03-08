@@ -18,7 +18,6 @@
 #ifndef HTTP_REQUEST_HPP
 #define HTTP_REQUEST_HPP
 
-#include "common.hpp"
 #include "message.hpp"
 #include "request_line.hpp"
 
