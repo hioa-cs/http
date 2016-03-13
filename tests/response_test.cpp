@@ -33,6 +33,13 @@ TEST_CASE("Default constructor only creates status line", "[Response]") {
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+TEST_CASE("Get status code", "[Response]") {
+  http::Response response;
+  //-------------------------
+  REQUIRE(response.status_code() == http::status_t::OK);
+}
+
+///////////////////////////////////////////////////////////////////////////////
 SCENARIO("Given a Response object") {
    http::Response response;
    //-------------------------

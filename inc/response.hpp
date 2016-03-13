@@ -66,6 +66,15 @@ public:
   ~Response() noexcept = default;
 
   //------------------------------
+  // Get the status code of this
+  // message
+  //
+  // @return - The status code of this
+  //           message
+  //------------------------------
+  Code status_code() const noexcept;
+
+  //------------------------------
   // Change the status code of this
   // message
   //
@@ -133,6 +142,10 @@ inline Response::Response(Egress&& response, const Limit limit) :
   if (start_of_body not_eq std::string::npos) {
     add_body(response.substr(start_of_body + 4));
   }
+}
+
+inline Response::Code Response::status_code() const noexcept {
+  return static_cast<status_t>(status_line_.get_code());
 }
 
 inline Response& Response::set_status_code(const Code code) noexcept {
