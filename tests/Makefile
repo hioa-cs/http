@@ -15,8 +15,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-CPP=clang++
-CFLAGS=-std=c++14 -O3 -Wall -Wextra
+CPP=clang++-3.6
+CFLAGS=-std=c++14 -Ofast -Wall -Wextra
 INC=-I. -I../inc
 
 all: request response
