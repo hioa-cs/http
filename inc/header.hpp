@@ -415,13 +415,11 @@ inline void Header::clear() noexcept {
   map_.clear();
 }
 
-static std::string string_to_lower_case(const std::string& string) {
-  std::string output_value {string};
+inline static std::string string_to_lower_case(std::string string) {
+  std::transform(string.begin(), string.end(),
+                 string.begin(), ::tolower);
   //-----------------------------------
-  std::transform(output_value.begin(), output_value.end(),
-                 output_value.begin(), tolower);
-  //-----------------------------------
-  return output_value;
+  return string;
 }
 
 template <typename Field>

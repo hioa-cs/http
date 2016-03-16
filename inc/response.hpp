@@ -60,10 +60,20 @@ public:
   template <typename Egress>
   explicit Response(Egress&& response, const Limit limit = 100);
 
+  //----------------------------------------
+  // Default move constructor
+  //----------------------------------------
+  Response(Response&&) noexcept = default;
+
   //------------------------------
   // Default destructor
   //------------------------------
   ~Response() noexcept = default;
+
+  //----------------------------------------
+  // Default move assignment operator
+  //----------------------------------------
+  Response& operator = (Response&&) = default;
 
   //------------------------------
   // Get the status code of this
@@ -114,16 +124,11 @@ private:
   Status_Line status_line_;
 
   //-----------------------------------
-  // Deleted move and copy operations
+  // Deleted copy operations
   //-----------------------------------
   Response(const Response&) = delete;
-  Response(Response&&) = delete;
-
-  //-----------------------------------
-  // Deleted move and copy assignment operations
-  //-----------------------------------
   Response& operator = (const Response&) = delete;
-  Response& operator = (Response&&) = delete;
+  
 }; //< class Response
 
 /**--v----------- Implementation Details -----------v--**/

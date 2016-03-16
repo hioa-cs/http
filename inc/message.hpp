@@ -48,9 +48,19 @@ public:
   explicit Message(const Limit limit) noexcept;
 
   //----------------------------------------
+  // Default move constructor
+  //----------------------------------------
+  explicit Message(Message&&) noexcept = default;
+
+  //----------------------------------------
   // Default destructor
   //----------------------------------------
   virtual ~Message() noexcept = default;
+
+  //----------------------------------------
+  // Default move assignment operator
+  //----------------------------------------
+  Message& operator = (Message&&) = default;
 
   //----------------------------------------
   // Set a field limit for this message
@@ -234,16 +244,10 @@ private:
   Message_Body message_body_;
 
   //-----------------------------------
-  // Deleted move and copy operations
+  // Deleted copy operations
   //-----------------------------------
   Message(const Message&) = delete;
-  Message(Message&&) = delete;
-
-  //-----------------------------------
-  // Deleted move and copy assignment operations
-  //-----------------------------------
   Message& operator = (const Message&) = delete;
-  Message& operator = (Message&&) = delete;
 }; //< class Message
 
 /**--v----------- Implementation Details -----------v--**/
