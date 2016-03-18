@@ -61,6 +61,11 @@ public:
   explicit Response(Egress&& response, const Limit limit = 100);
 
   //----------------------------------------
+  // Default copy constructor
+  //----------------------------------------
+  Response(const Response&) = default;
+
+  //----------------------------------------
   // Default move constructor
   //----------------------------------------
   Response(Response&&) noexcept = default;
@@ -69,6 +74,11 @@ public:
   // Default destructor
   //------------------------------
   ~Response() noexcept = default;
+
+  //----------------------------------------
+  // Default copy assignment operator
+  //----------------------------------------
+  Response& operator = (const Response&) = default;
 
   //----------------------------------------
   // Default move assignment operator
@@ -122,13 +132,6 @@ private:
   // Class data members
   //------------------------------
   Status_Line status_line_;
-
-  //-----------------------------------
-  // Deleted copy operations
-  //-----------------------------------
-  Response(const Response&) = delete;
-  Response& operator = (const Response&) = delete;
-  
 }; //< class Response
 
 /**--v----------- Implementation Details -----------v--**/

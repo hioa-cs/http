@@ -48,6 +48,11 @@ public:
   explicit Message(const Limit limit) noexcept;
 
   //----------------------------------------
+  // Default copy constructor
+  //----------------------------------------
+  Message(const Message&) = default;
+
+  //----------------------------------------
   // Default move constructor
   //----------------------------------------
   explicit Message(Message&&) noexcept = default;
@@ -56,6 +61,11 @@ public:
   // Default destructor
   //----------------------------------------
   virtual ~Message() noexcept = default;
+
+  //----------------------------------------
+  // Default copy assignment operator
+  //----------------------------------------
+  Message& operator = (const Message&) = default;
 
   //----------------------------------------
   // Default move assignment operator
@@ -242,12 +252,6 @@ private:
   //------------------------------
   Header       header_fields_;
   Message_Body message_body_;
-
-  //-----------------------------------
-  // Deleted copy operations
-  //-----------------------------------
-  Message(const Message&) = delete;
-  Message& operator = (const Message&) = delete;
 }; //< class Message
 
 /**--v----------- Implementation Details -----------v--**/

@@ -54,9 +54,29 @@ public:
   explicit Request(Ingress&& request, const Limit limit = 100);
 
   //----------------------------------------
+  // Default copy constructor
+  //----------------------------------------
+  Request(const Request&) = default;
+
+  //----------------------------------------
+  // Default move constructor
+  //----------------------------------------
+  Request(Request&&) = default;
+
+  //----------------------------------------
   // Default destructor
   //----------------------------------------
   ~Request() noexcept = default;
+
+  //----------------------------------------
+  // Default copy assignment operator
+  //----------------------------------------
+  Request& operator = (const Request&) = default;
+
+  //----------------------------------------
+  // Default move assignment operator
+  //----------------------------------------
+  Request& operator = (Request&&) = default;
 
   //----------------------------------------
   // Get the method of the request message

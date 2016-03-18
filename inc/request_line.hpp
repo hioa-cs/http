@@ -52,9 +52,29 @@ public:
   explicit Request_Line(Request&& request);
 
   //-----------------------------------
+  // Default copy constructor
+  //-----------------------------------
+  Request_Line(const Request_Line&) = default;
+
+  //-----------------------------------
+  // Default move constructor
+  //-----------------------------------
+  Request_Line(Request_Line&&) = default;
+
+  //-----------------------------------
   // Default destructor
   //-----------------------------------
   ~Request_Line() noexcept = default;
+
+  //-----------------------------------
+  // Default copy assignment operator
+  //-----------------------------------
+  Request_Line& operator = (const Request_Line&) = default;
+
+  //-----------------------------------
+  // Default move assignment operator
+  //-----------------------------------
+  Request_Line& operator = (Request_Line&&) = default;
 
   //-----------------------------------
   // Get the method of the message
@@ -119,18 +139,6 @@ private:
   Method  method_  {method::GET};
   URI     uri_     {"/"};
   Version version_ {1U, 1U};
-
-  //-----------------------------------
-  // Deleted move and copy operations
-  //-----------------------------------
-  Request_Line(const Request_Line&) = delete;
-  Request_Line(Request_Line&&) = delete;
-
-  //-----------------------------------
-  // Deleted move and copy assignment operations
-  //-----------------------------------
-  Request_Line& operator = (const Request_Line&) = delete;
-  Request_Line& operator = (Request_Line&&) = delete;
 }; //< class Request_Line
 
 /**--v----------- Implementation Details -----------v--**/
