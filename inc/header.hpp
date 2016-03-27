@@ -433,11 +433,8 @@ inline Header::Const_Iterator Header::find(Field&& field) const noexcept {
 }
 
 inline std::ostream& operator << (std::ostream& output_device, const Header& header) {
-  auto iterator = header.map_.cbegin();
-  //-----------------------------------
-  while (iterator not_eq header.map_.cend()) {
-    output_device << iterator->first << ": " << iterator->second << "\r\n";
-    ++iterator;
+  for (const auto& field : header.map_) {
+    output_device << field.first << ": " << field.second << "\r\n";
   }
   //-----------------------------------
   return output_device << "\r\n";
