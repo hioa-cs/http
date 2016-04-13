@@ -97,7 +97,8 @@ const Status_Code_Table status_codes {
 }; //< status_codes
 
 inline Description code_description(const Code code) noexcept {
-  return status_codes.find(code)->second;
+  auto iter = status_codes.find(code);
+  return (iter not_eq status_codes.end()) ? iter->second : "Internal Server Error";
 }
 
 } //< namespace http
