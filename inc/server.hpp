@@ -18,10 +18,14 @@
 #ifndef HTTP_SERVER_HPP
 #define HTTP_SERVER_HPP
 
+#include <cstdint>
+
 #include <net/inet4>
 #include <net/dhcp/dh4client.hpp>
 
 #include "router.hpp"
+
+#define MTU 1500
 
 namespace http {
 
@@ -34,7 +38,7 @@ private:
   //-------------------------------
   // Internal class type aliases
   //-------------------------------
-  using Port     = const unsigned;
+  using Port     = const uint16_t;
   using IP_Stack = std::unique_ptr<net::Inet4<VirtioNet>>;
   //-------------------------------
 public:
@@ -112,50 +116,54 @@ inline Router& Server::router() noexcept {
   return router_;
 }
 
-  template <typename Route_Table>
-  inline Server& Server::set_routes(Route_Table&& routes) {
-    router_.install_new_configuration(std::forward<Route_Table>(routes));
+template <typename Route_Table>
+inline Server& Server::set_routes(Route_Table&& routes) {
+  router_.install_new_configuration(std::forward<Route_Table>(routes));
   return *this;
 }
 
 inline void Server::listen(Port port) {
-  printf("Listening to port %i \n", port);
+  printf("Listening to port %i\n", port);
 
   Server& server = *this;
 
-  inet_->tcp().bind(port)
-    .onConnect([&](auto conn) {
-        conn->read(1500, [conn, &server](net::TCP::buffer_t buf, size_t n) {
-            auto data = std::string((char*)buf.get(), n);
+  inet_->tcp()
+       .bind(port)
+       .onConnect([&server](auto conn) {
+          conn->read(MTU, [conn, &server](net::TCP::buffer_t buf, size_t n) {
+            auto data = std::string{static_cast<char*>(buf.get()), n};
             debug("Received data: %s\n", data.c_str());
 
-	    // Create request / response objects for callback
-	    Request  req {data};
-	    Response res;
+	          // Create request / response objects for callback
+	          Request  req {std::move(data)};
+	          Response res;
 
-	    // Get and call the callback
-	    server.router_[{req.method(), req.uri()}](req, res);
-      //-------------------------------
+	          // Get and call the callback
+	          server.router_[{req.method(), req.uri()}](req, res);
+            //-------------------------------
 
-	    std::string str = std::string(res);
-	    conn->write(str.data(), str.size(), [conn](size_t){
-		debug("Wrote %i bytes back \n", n);
-		conn->close();
-	      });
-	  });
-      });
-    }
+	          auto str = res.to_string();
+	          conn->write(str.data(), str.size(), [conn, &str](size_t) {
+		          debug("Wrote %i bytes back\n", str.size());
+		          conn->close();
+	          }); //< conn->write
+	        }); //< conn->read
+       }); //< onConnect
+}
 
-  void Server::initialize() {
-    auto& eth0 = hw::Dev::eth<0,VirtioNet>();
-    //-------------------------------
-    inet_ = std::make_unique<net::Inet4<VirtioNet>>(eth0);
-    //-------------------------------
-    inet_->network_config({ 10,0,0,42 },     // IP
-			  { 255,255,255,0 }, // Netmask
-			  { 10,0,0,1 },      // Gateway
-			  { 8,8,8,8 });      // DNS
-  }
+void Server::initialize() {
+  auto& eth0 = hw::Dev::eth<0,VirtioNet>();
+  //-------------------------------
+  inet_ = std::make_unique<net::Inet4<VirtioNet>>(eth0);
+  //-------------------------------
+  inet_->network_config(
+      { 10,0,0,42 },     // IP
+		  { 255,255,255,0 }, // Netmask
+		  { 10,0,0,1 },      // Gateway
+		  { 8,8,8,8 }        // DNS
+  );
+  //-------------------------------
+}
 
 /**--^----------- Implementation Details -----------^--**/
 
