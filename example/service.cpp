@@ -21,6 +21,7 @@
 #include "service_route_table.hpp"
 
 void Service::start() {
+  printf("Starting HTTP-server \n");
   http::createServer().set_routes(init_routes())
-                      .listen(8080);
+    .listen(8081);
 }

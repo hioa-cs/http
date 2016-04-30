@@ -6,9 +6,9 @@
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
-// 
+//
 //     http://www.apache.org/licenses/LICENSE-2.0
-// 
+//
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -102,6 +102,8 @@ private:
 
 /**--v----------- Implementation Details -----------v--**/
 
+// #define DEBUG
+
 inline Server::Server() {
   initialize();
 }
@@ -110,34 +112,50 @@ inline Router& Server::router() noexcept {
   return router_;
 }
 
-template <typename Route_Table>
-inline Server& Server::set_routes(Route_Table&& routes) {
-  router_.install_new_configuration(std::forward<Route_Table>(routes));
+  template <typename Route_Table>
+  inline Server& Server::set_routes(Route_Table&& routes) {
+    router_.install_new_configuration(std::forward<Route_Table>(routes));
   return *this;
 }
 
 inline void Server::listen(Port port) {
-  inet_->tcp().bind(port).onReceive([this](auto conn, bool) {
-    //-------------------------------
-    Request  req {conn->read(1024)};
-    Response res;
-    //-------------------------------
-    router_[{req.method(), req.uri()}](req, res);
-    //-------------------------------
-    conn->write(res);
-  });
-}
+  printf("Listening to port %i \n", port);
 
-inline void Server::initialize() {
-  decltype(auto) eth0 = hw::Dev::eth<0,VirtioNet>();
-  //-------------------------------
-  inet_ = std::make_unique<net::Inet4<VirtioNet>>(eth0);
-  //-------------------------------
-  inet_->network_config({{ 10,0,0,42 }},     // IP
-                        {{ 255,255,255,0 }}, // Netmask
-                        {{ 10,0,0,1 }},      // Gateway
-                        {{ 8,8,8,8 }});      // DNS
-}
+  Server& server = *this;
+
+  inet_->tcp().bind(port)
+    .onConnect([&](auto conn) {
+        conn->read(1500, [conn, &server](net::TCP::buffer_t buf, size_t n) {
+            auto data = std::string((char*)buf.get(), n);
+            debug("Received data: %s\n", data.c_str());
+
+	    // Create request / response objects for callback
+	    Request  req {data};
+	    Response res;
+
+	    // Get and call the callback
+	    server.router_[{req.method(), req.uri()}](req, res);
+      //-------------------------------
+
+	    std::string str = std::string(res);
+	    conn->write(str.data(), str.size(), [conn](size_t){
+		debug("Wrote %i bytes back \n", n);
+		conn->close();
+	      });
+	  });
+      });
+    }
+
+  void Server::initialize() {
+    auto& eth0 = hw::Dev::eth<0,VirtioNet>();
+    //-------------------------------
+    inet_ = std::make_unique<net::Inet4<VirtioNet>>(eth0);
+    //-------------------------------
+    inet_->network_config({ 10,0,0,42 },     // IP
+			  { 255,255,255,0 }, // Netmask
+			  { 10,0,0,1 },      // Gateway
+			  { 8,8,8,8 });      // DNS
+  }
 
 /**--^----------- Implementation Details -----------^--**/
 
