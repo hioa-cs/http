@@ -18,6 +18,8 @@
 #ifndef HTTP_COMMON_HPP
 #define HTTP_COMMON_HPP
 
+#include <string>
+
 namespace http {
 
 using URI     = std::string;

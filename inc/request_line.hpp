@@ -145,7 +145,7 @@ private:
 
 template <typename Request>
 inline Request_Line::Request_Line(Request&& request) {
-  if (request.empty() or request.size() < 18 /*<-(18) minimum request length */) {
+  if (request.empty() or request.size() < 16 /*<-(16) minimum request length */) {
     return;
   }
   //-----------------------------------
@@ -159,9 +159,9 @@ inline Request_Line::Request_Line(Request&& request) {
   //-----------------------------------
   uri_ = rl.substr(0, rl.find_last_of(" "));
   //-----------------------------------
-  rl = rl.substr(rl.find_last_of("/") + 1);
+  rl = rl.substr(rl.find_last_of(" ") + 1);
   //-----------------------------------
-  std::string major {rl.substr(0, rl.find("."))};
+  std::string major {rl.substr(rl.find("/") + 1, rl.find("."))};
   std::string minor {rl.substr(rl.find(".") + 1)};
   //-----------------------------------
   unsigned maj = static_cast<unsigned>(std::stoul(major));
