@@ -18,6 +18,7 @@
 #ifndef HTTP_SERVER_HPP
 #define HTTP_SERVER_HPP
 
+#include <cstdio>
 #include <cstdint>
 
 #include <net/inet4>
@@ -40,6 +41,7 @@ private:
   //-------------------------------
   using Port     = const uint16_t;
   using IP_Stack = std::unique_ptr<net::Inet4<VirtioNet>>;
+  using Callback = std::function<void()>;
   //-------------------------------
 public:
   //-------------------------------
@@ -77,7 +79,7 @@ public:
   // incoming connections on the
   // specified port
   //-------------------------------
-  void listen(Port port);
+  void listen(Port port, Callback callback);
 
 private:
   //-------------------------------
@@ -122,9 +124,7 @@ inline Server& Server::set_routes(Route_Table&& routes) {
   return *this;
 }
 
-inline void Server::listen(Port port) {
-  printf("Listening to port %i\n", port);
-
+inline void Server::listen(Port port, Callback callback = []{ printf("%s\n", "Server started"); }) {
   Server& server = *this;
 
   inet_->tcp()
@@ -149,6 +149,8 @@ inline void Server::listen(Port port) {
 	          }); //< conn->write
 	        }); //< conn->read
        }); //< onConnect
+
+  callback();
 }
 
 void Server::initialize() {
