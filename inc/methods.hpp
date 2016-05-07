@@ -6,9 +6,9 @@
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
-// 
+//
 //     http://www.apache.org/licenses/LICENSE-2.0
-// 
+//
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -20,55 +20,53 @@
 
 #include <string>
 
-#include "method_constants.hpp" //< Code mappings to standard HTTP methods
-
 namespace http {
-namespace method {
-//-------------------------------
-using Method = const std::string;
-//-------------------------------
-Method OPTIONS {"OPTIONS"};
-Method GET     {"GET"};
-Method HEAD    {"HEAD"};
-Method POST    {"POST"};
-Method PUT     {"PUT"};
-Method DELETE  {"DELETE"};
-Method TRACE   {"TRACE"};
-Method CONNECT {"CONNECT"};
-Method PATCH   {"PATCH"};
-//-------------------------------
-} //< namespace method
 
-//-------------------------------
-// Get a code mapping from an HTTP
-// method
-//
-// @param method - The HTTP method
-//
-// @return - The code mapped to the method
-//-------------------------------
-inline unsigned http_method_code(const std::string& method) noexcept {
-  if (method == method::OPTIONS) return HTTP_OPTIONS;
-  //----------------------------------
-  if (method == method::GET)     return HTTP_GET;
-  //----------------------------------
-  if (method == method::HEAD)    return HTTP_HEAD;
-  //----------------------------------
-  if (method == method::POST)    return HTTP_POST;
-  //----------------------------------
-  if (method == method::PUT)     return HTTP_PUT;
-  //----------------------------------
-  if (method == method::DELETE)  return HTTP_DELETE;
-  //----------------------------------
-  if (method == method::TRACE)   return HTTP_TRACE;
-  //----------------------------------
-  if (method == method::CONNECT) return HTTP_CONNECT;
-  //----------------------------------
-  if (method == method::PATCH)   return HTTP_PATCH;
-  //----------------------------------
-  return HTTP_INVALID;
-}
+  enum Method {
+    GET, POST, PUT, DELETE, OPTIONS, HEAD, TRACE, CONNECT, PATCH,
+    INVALID = 0xffff
+  };
 
-} //< namespace http
+  namespace method {
 
-#endif //< HTTP_METHODS_HPP
+    /** Get method string from method code **/
+    inline std::string str(Method m){
+
+      static std::array<std::string, 9> strings {
+        {"GET", "POST", "PUT", "DELETE",
+            "OPTIONS", "HEAD", "TRACE", "CONNECT", "PATCH" }};
+
+      if (m < strings.size() - 1)
+        return strings[m] ;
+
+      return "INVALID";
+    }
+
+    /**
+     * Get a code mapping from an HTTP
+     * method
+     *
+     * @param method - The HTTP method
+     *
+     * @return - The code mapped to the method
+     **/
+    inline Method code(const std::string& method) noexcept {
+
+      if (method == str(GET))     return GET;
+      if (method == str(POST))    return POST;
+      if (method == str(PUT))     return PUT;
+      if (method == str(DELETE))  return DELETE;
+      if (method == str(OPTIONS)) return OPTIONS;
+      if (method == str(HEAD))    return HEAD;
+      if (method == str(TRACE))   return TRACE;
+      if (method == str(CONNECT)) return CONNECT;
+      if (method == str(PATCH))   return PATCH;
+
+      return INVALID;
+    }
+
+  } // namespace method
+
+} // namespace http
+
+#endif // HTTP_METHODS_HPP
