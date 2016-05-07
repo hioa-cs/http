@@ -1,0 +1,3 @@
+[submodule "uri"]
+	path = uri
+	url = git@github.com:hioa-cs/uri.git
