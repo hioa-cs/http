@@ -19,7 +19,7 @@
 #define HTTP_REQUEST_LINE_HPP
 
 #include <cctype>
-
+#include <regex>
 #include "common.hpp"
 #include "methods.hpp"
 #include "version.hpp"
@@ -188,7 +188,8 @@ inline void Request_Line::set_version(const Version& version) noexcept {
 }
 
 inline std::string Request_Line::to_string() const {
-  return *this;
+  return method::str(method_)+" "+uri_.to_string()+" "
+    +version_.to_string();
 }
 
 inline Request_Line::operator std::string () const {
