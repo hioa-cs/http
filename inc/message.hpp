@@ -6,9 +6,9 @@
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
-// 
+//
 //     http://www.apache.org/licenses/LICENSE-2.0
-// 
+//
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -133,6 +133,13 @@ public:
   Message& set_header(Field&& field, Value&& value);
 
   //----------------------------------------
+  // Get the header in this message
+  //
+  // @return - The header in this message
+  //----------------------------------------
+  const Header& get_header() const noexcept;
+
+  //----------------------------------------
   // Get the value associated with the
   // specified field name
   //
@@ -230,7 +237,7 @@ public:
   // @return - The object that invoked this method
   //----------------------------------------
   virtual Message& reset() noexcept;
-  
+
   //-----------------------------------
   // Get a string representation of this
   // class
@@ -288,6 +295,10 @@ inline Message& Message::set_header(Field&& field, Value&& value) {
   return *this;
 }
 
+inline const Header& Message::get_header() const noexcept {
+  return header_fields_;
+}
+
 template <typename Field>
 inline Message::HValue Message::header_value(Field&& field) const noexcept {
   return header_fields_.get_value(std::forward<Field>(field));
@@ -327,7 +338,7 @@ inline Message& Message::add_body(Entity&& message_body) {
                     std::to_string(message_body_.size()));
 }
 
-const Message::Message_Body& Message::get_body() const noexcept {
+inline const Message::Message_Body& Message::get_body() const noexcept {
   return message_body_;
 }
 
