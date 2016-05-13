@@ -49,9 +49,12 @@ const Mime_Type_Table mime_types {
   {"bin" , "application/octet-stream"}
 }; //< mime_types
 
-inline Mime_Type extension_to_type(const Extension& extension) noexcept {
+inline const Mime_Type& extension_to_type(const Extension& extension) noexcept {
   auto iter = mime_types.find(extension);
-  return (iter not_eq mime_types.end()) ? iter->second : "text/plain";
+  //------------------------------------------------
+  return (iter not_eq mime_types.end())
+          ? iter->second
+          : const_cast<Mime_Type_Table&>(mime_types)["txt"];
 }
 
 } //< namespace http
