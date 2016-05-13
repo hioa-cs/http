@@ -19,6 +19,7 @@
 #define HTTP_METHODS_HPP
 
 #include <string>
+#include <ostream>
 
 namespace http {
 
@@ -30,16 +31,21 @@ namespace http {
   namespace method {
 
     /** Get method string from method code **/
-    inline std::string str(Method m){
+    inline const std::string& str(const Method m) {
 
-      static std::array<std::string, 9> strings {
-        {"GET", "POST", "PUT", "DELETE",
-            "OPTIONS", "HEAD", "TRACE", "CONNECT", "PATCH" }};
+      static std::array<std::string, 10> strings
+      {
+        {
+         "GET", "POST", "PUT", "DELETE", "OPTIONS",
+         "HEAD", "TRACE", "CONNECT", "PATCH", "INVALID"
+        }
+      };
 
-      if (m < strings.size() - 1)
-        return strings[m] ;
+      if ((m >= 0) and (m < (strings.size() - 1))) {
+        return strings[m];
+      }
 
-      return "INVALID";
+      return strings[strings.size() - 1];
     }
 
     /**
@@ -66,6 +72,10 @@ namespace http {
     }
 
   } // namespace method
+
+  std::ostream& operator << (std::ostream& output_device, const Method m) {
+    return output_device << http::method::str(m);
+  }
 
 } // namespace http
 
