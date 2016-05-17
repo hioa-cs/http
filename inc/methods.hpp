@@ -18,6 +18,7 @@
 #ifndef HTTP_METHODS_HPP
 #define HTTP_METHODS_HPP
 
+#include <array>
 #include <string>
 #include <ostream>
 
