@@ -18,13 +18,23 @@
 #ifndef HTTP_COMMON_HPP
 #define HTTP_COMMON_HPP
 
-#include <string>
 #include <uri>
+#include <string>
+#include <memory>
+#include <cstdint>
 
 namespace http {
 
   using URI     = uri::URI;
   using Limit   = std::size_t;
+
+  using buffer_t = std::shared_ptr<uint8_t>;
+
+  class Request;
+  using Request_ptr = std::shared_ptr<Request>;
+
+  class Response;
+  using Response_ptr = std::shared_ptr<Response>;
 
 } //< namespace http
 

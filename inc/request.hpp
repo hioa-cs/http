@@ -291,6 +291,10 @@ inline Request::operator std::string () const {
   return req.str();
 }
 
+inline Request_ptr make_request(buffer_t buf, const size_t len) {
+  return std::make_shared<Request>(std::string{reinterpret_cast<char*>(buf.get()), len});
+}
+
 inline std::ostream& operator << (std::ostream& output_device, const Request& req) {
   return output_device << req.to_string();
 }
