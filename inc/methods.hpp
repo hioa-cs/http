@@ -74,7 +74,7 @@ namespace http {
 
   } // namespace method
 
-  std::ostream& operator << (std::ostream& output_device, const Method m) {
+  inline std::ostream& operator << (std::ostream& output_device, const Method m) {
     return output_device << http::method::str(m);
   }
 
