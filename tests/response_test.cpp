@@ -65,6 +65,21 @@ TEST_CASE("Add header field", "[Response]") {
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+TEST_CASE("{Date} header field", "[Response]") {
+  http::Response response;
+  auto time_stamp = http::time::now();
+  //-------------------------
+  response.add_header(Response::Server, "IncludeOS/0.7.0"s)
+          .add_header("Date"s, time_stamp);
+  //-------------------------
+  string test_string = "HTTP/1.1 200 OK"s + "\r\n"s +
+                       "Server: IncludeOS/0.7.0"s + "\r\n"s +
+                       "Date: "s + time_stamp + "\r\n"s + "\r\n"s;
+  //-------------------------
+  REQUIRE(test_string == response.to_string());
+}
+
+///////////////////////////////////////////////////////////////////////////////
 TEST_CASE("Change header field value", "[Response]") {
   http::Response response;
   //-------------------------

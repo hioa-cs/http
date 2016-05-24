@@ -26,6 +26,7 @@ static http::Router init_routes() {
   //--------------------------------------------------------------------
   routes.on_get("/"s, [](const auto&, auto& res){
     res.add_header(header_fields::Response::Server, "IncludeOS/v0.7.0"s)
+       .add_header("Date"s, http::time::now())
        .add_header(header_fields::Entity::Content_Type, "text/html; charset=utf-8"s)
        .add_header(header_fields::Response::Connection, "close"s)
        .add_body("<h1>WELCOME TO IncludeOS</h1>"s);
@@ -33,6 +34,7 @@ static http::Router init_routes() {
   //--------------------------------------------------------------------
   routes.on_get("/listing.html"s, [](const auto&, auto& res){
     res.add_header(header_fields::Response::Server, "IncludeOS/v0.7.0"s)
+       .add_header("Date"s, http::time::now())
        .add_header(header_fields::Entity::Content_Type, "text/html; charset=utf-8"s)
        .add_header(header_fields::Response::Connection, "close"s)
        .add_body("<h1>IncludeOS Main Developers</h1>"
@@ -46,6 +48,7 @@ static http::Router init_routes() {
   //--------------------------------------------------------------------
   routes.on_post("/"s, [](const auto&, auto& res){
     res.add_header(header_fields::Response::Server, "IncludeOS/v0.7.0"s)
+       .add_header("Date"s, http::time::now())
        .add_header(header_fields::Entity::Content_Type, "text/plain; charset=utf-8"s)
        .add_header(header_fields::Response::Connection, "close"s)
        .add_body("NO POSTING TODAY!!!"s);
@@ -53,6 +56,7 @@ static http::Router init_routes() {
   //--------------------------------------------------------------------
   routes.on_head("/Unikernels.pdf"s, [](const auto&, auto& res){
     res.add_header(header_fields::Response::Server, "IncludeOS/v0.7.0"s)
+       .add_header("Date"s, http::time::now())
        .add_header(header_fields::Response::Connection, "close"s)
        .add_header("File-Size"s, "6.8MB"s);
   });
