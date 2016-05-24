@@ -24,15 +24,17 @@ namespace http {
 namespace time {
 
 //------------------------------------------------
-// Get the current time in {Internet Standard Format}
+// Get the time in {Internet Standard Format} from
+// a {time_t} object 
+//
+// @param time - The time_t object to get the time from
 //
 // @return The current time as a std::string
 //
 // @note Returns an empty string if an error occurred
 //------------------------------------------------
-inline std::string now() {
-  auto time_object = std::time(nullptr);
-  auto tm          = std::gmtime(&time_object);
+inline std::string from_time_t(const time_t& time_) {
+  auto tm = std::gmtime(&time_);
 
   if (tm) {
     std::ostringstream output;
@@ -41,6 +43,18 @@ inline std::string now() {
   }
 
   return std::string{};
+}
+
+//------------------------------------------------
+// Get the current time in {Internet Standard Format}
+//
+// @return The current time as a std::string
+//
+// @note Returns an empty string if an error occurred
+//------------------------------------------------
+inline std::string now() {
+  auto time_object = std::time(nullptr);
+  return from_time_t(time_object);
 }
 
 } //< namespace time
