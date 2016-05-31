@@ -19,8 +19,10 @@
 #define HTTP_COMMON_HPP
 
 #include <uri>
+#include <vector>
 #include <string>
 #include <memory>
+#include <utility>
 #include <cstdint>
 
 namespace http {
@@ -29,6 +31,8 @@ namespace http {
   using Limit   = std::size_t;
 
   using buffer_t = std::shared_ptr<uint8_t>;
+
+  using HeaderSet = std::vector<std::pair<std::string, std::string>>;
 
   class Request;
   using Request_ptr = std::shared_ptr<Request>;

@@ -179,6 +179,13 @@ inline Response::operator std::string () const {
   return res.str();
 }
 
+inline Response& operator << (http::Response& res, const HeaderSet& headers) {
+  for (const auto& field : headers) {
+    res.add_header(field.first, field.second);
+  }
+  return res;
+}
+
 inline Response_ptr make_response(buffer_t buf, const size_t len) {
   return std::make_shared<Response>(std::string{reinterpret_cast<char*>(buf.get()), len});
 }
