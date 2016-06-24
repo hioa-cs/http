@@ -6,9 +6,9 @@
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
-// 
+//
 //     http://www.apache.org/licenses/LICENSE-2.0
-// 
+//
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -62,7 +62,7 @@ public:
   //                be added
   //-----------------------------------------------
   explicit Header(const Limit limit) noexcept;
-  
+
   //-----------------------------------------------
   // Constructor that takes a stream of characters
   // as a <std::string> object and parses it into a
@@ -214,6 +214,21 @@ public:
   // empty
   //-----------------------------------------------
   void clear() noexcept;
+
+  //-----------------------------------
+  // Get a string representation of this
+  // class
+  //
+  // @return - A string representation
+  //-----------------------------------
+  virtual std::string to_string() const;
+
+  //-----------------------------------
+  // Operator to transform this class
+  // into string form
+  //-----------------------------------
+  operator std::string () const;
+  //-----------------------------------
 private:
   //-----------------------------------------------
   // Class data members
@@ -430,6 +445,16 @@ inline Header::Const_Iterator Header::find(Field&& field) const noexcept {
   std::find_if(map_.begin(), map_.end(), [&field](const Header::Map_Type& f){
     return string_to_lower_case(f.first) == string_to_lower_case(field);
   });
+}
+
+inline std::string Header::to_string() const {
+  return *this;
+}
+
+inline Header::operator std::string () const {
+  std::ostringstream header;
+  header << *this;
+  return header.str();
 }
 
 inline std::ostream& operator << (std::ostream& output_device, const Header& header) {

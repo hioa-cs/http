@@ -134,6 +134,13 @@ public:
   Message& set_header(Field&& field, Value&& value);
 
   //----------------------------------------
+  // Get the header in this message
+  //
+  // @return - The header in this message
+  //----------------------------------------
+  const Header& get_header() const noexcept;
+
+  //----------------------------------------
   // Get the value associated with the
   // specified field name
   //
@@ -287,6 +294,10 @@ template <typename Field, typename Value>
 inline Message& Message::set_header(Field&& field, Value&& value) {
   header_fields_.set_field(std::forward<Field>(field), std::forward<Value>(value));
   return *this;
+}
+
+inline const Header& Message::get_header() const noexcept {
+  return header_fields_;
 }
 
 template <typename Field>
