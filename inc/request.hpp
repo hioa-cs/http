@@ -6,9 +6,9 @@
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
-// 
+//
 //     http://www.apache.org/licenses/LICENSE-2.0
-// 
+//
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -56,7 +56,7 @@ public:
   //----------------------------------------
   // Default copy constructor
   //----------------------------------------
-  Request(const Request&) = default;
+  Request(Request&) = default;
 
   //----------------------------------------
   // Default move constructor
@@ -71,7 +71,7 @@ public:
   //----------------------------------------
   // Default copy assignment operator
   //----------------------------------------
-  Request& operator = (const Request&) = default;
+  Request& operator = (Request&) = default;
 
   //----------------------------------------
   // Default move assignment operator
@@ -248,13 +248,13 @@ inline std::string Request::query_value(Name&& name) const noexcept {
 
 template <typename Name>
 inline std::string Request::post_value(Name&& name) const noexcept {
-  if (method() not_eq method::POST) return std::string{};
+  if (method() not_eq POST) return std::string{};
   return get_value(get_body(), std::forward<Name>(name));
 }
 
 inline Request& Request::reset() noexcept {
   Message::reset();
-  return set_method(method::GET)
+  return set_method(GET)
         .set_uri("/")
         .set_version(Version{1,1});
 }
@@ -289,6 +289,10 @@ inline Request::operator std::string () const {
       << Message::to_string();
  //------------------------------
   return req.str();
+}
+
+inline Request_ptr make_request(buffer_t buf, const size_t len) {
+  return std::make_shared<Request>(std::string{reinterpret_cast<char*>(buf.get()), len});
 }
 
 inline std::ostream& operator << (std::ostream& output_device, const Request& req) {

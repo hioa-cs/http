@@ -6,9 +6,9 @@
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
-// 
+//
 //     http://www.apache.org/licenses/LICENSE-2.0
-// 
+//
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -19,7 +19,7 @@
 #define HTTP_REQUEST_LINE_HPP
 
 #include <cctype>
-
+#include <regex>
 #include "common.hpp"
 #include "methods.hpp"
 #include "version.hpp"
@@ -51,29 +51,11 @@ public:
   template <typename Request>
   explicit Request_Line(Request&& request);
 
-  //-----------------------------------
-  // Default copy constructor
-  //-----------------------------------
-  Request_Line(const Request_Line&) = default;
-
-  //-----------------------------------
-  // Default move constructor
-  //-----------------------------------
+  // Copy / move constructors
+  Request_Line(Request_Line&) = default;
   Request_Line(Request_Line&&) = default;
-
-  //-----------------------------------
-  // Default destructor
-  //-----------------------------------
   ~Request_Line() noexcept = default;
-
-  //-----------------------------------
-  // Default copy assignment operator
-  //-----------------------------------
-  Request_Line& operator = (const Request_Line&) = default;
-
-  //-----------------------------------
-  // Default move assignment operator
-  //-----------------------------------
+  Request_Line& operator = (Request_Line&) = default;
   Request_Line& operator = (Request_Line&&) = default;
 
   //-----------------------------------
@@ -136,10 +118,15 @@ private:
   //-----------------------------------
   // Class data members
   //-----------------------------------
-  Method  method_  {method::GET};
+  Method  method_  { GET };
   URI     uri_     {"/"};
   Version version_ {1U, 1U};
 }; //< class Request_Line
+
+
+  class Request_line_error : public std::runtime_error {
+    using runtime_error::runtime_error;
+  };
 
 /**--v----------- Implementation Details -----------v--**/
 
@@ -148,27 +135,31 @@ inline Request_Line::Request_Line(Request&& request) {
   if (request.empty() or request.size() < 16 /*<-(16) minimum request length */) {
     return;
   }
-  //-----------------------------------
-  std::string start {request.substr(request.find_first_not_of("\f\t\v "))};
-  //-----------------------------------
-  std::string rl {start.substr(0, start.find("\r\n"))};
-  //-----------------------------------
-  method_ = rl.substr(0, rl.find_first_of(" "));
-  //-----------------------------------
-  rl = rl.substr(rl.find_first_of(" ") + 1);
-  //-----------------------------------
-  uri_ = rl.substr(0, rl.find_last_of(" "));
-  //-----------------------------------
-  rl = rl.substr(rl.find_last_of(" ") + 1);
-  //-----------------------------------
-  std::string major {rl.substr(rl.find("/") + 1, rl.find("."))};
-  std::string minor {rl.substr(rl.find(".") + 1)};
-  //-----------------------------------
-  unsigned maj = static_cast<unsigned>(std::stoul(major));
-  unsigned min = static_cast<unsigned>(std::stoul(minor));
-  //-----------------------------------
+
+  // Extract HTTP method
+  std::string request_line = {request.substr(0, request.find("\r\n"))};
+
+  // Should identify strings according to RFC 2616 sect.5.1
+  // https://tools.ietf.org/html/rfc2616#section-5.1
+  std::regex re_request_line {
+    "\\s*(GET|POST|PUT|DELETE|OPTIONS|HEAD|TRACE|CONNECT) " // Method
+      "(\\S+) " // URI
+      "HTTP/(\\d+)\\.(\\d+)" // Version Major.Minor
+      };
+
+  std::smatch m;
+  auto matched = std::regex_match(request_line,m, re_request_line);
+
+  if (not matched)
+    throw Request_line_error("Invalid request line: " + request_line);
+
+  method_ = method::code(m[1]);
+  uri_ = URI {m[2]};
+  unsigned maj = static_cast<unsigned>(std::stoul(m[3]));
+  unsigned min = static_cast<unsigned>(std::stoul(m[4]));
   version_ = Version{maj, min};
-  //-----------------------------------
+
+  // Trim the request for further processing
   request = request.substr(request.find("\r\n") + 2);
 }
 
@@ -197,7 +188,8 @@ inline void Request_Line::set_version(const Version& version) noexcept {
 }
 
 inline std::string Request_Line::to_string() const {
-  return *this;
+  return method::str(method_)+" "+uri_.to_string()+" "
+    +version_.to_string();
 }
 
 inline Request_Line::operator std::string () const {

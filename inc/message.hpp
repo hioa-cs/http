@@ -20,6 +20,7 @@
 
 #include <sstream>
 
+#include "time.hpp"
 #include "header.hpp"
 
 namespace http {
