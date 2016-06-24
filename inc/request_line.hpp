@@ -170,7 +170,7 @@ inline Request_Line::Request_Line(Request&& request) {
   version_ = Version{maj, min};
 
   // Trim the request for further processing
-  request = request.substr(request.find("\r\n") + 2);
+  request = request.substr(index + 2);
 }
 
 inline const Method& Request_Line::get_method() const noexcept {
