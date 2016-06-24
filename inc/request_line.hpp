@@ -137,7 +137,16 @@ inline Request_Line::Request_Line(Request&& request) {
   }
 
   // Extract HTTP method
-  std::string request_line = {request.substr(0, request.find("\r\n"))};
+  std::string request_line;
+  std::size_t index;
+
+  if ((index = request.find("\r\n")) != std::string::npos) {
+    request_line = {request.substr(0, index)};
+  } else if ((index = request.find('\n')) != std::string::npos) {
+    request_line = {request.substr(0, index)};
+  } else {
+    throw Request_line_error("Invalid line-ending");
+  }
 
   // Should identify strings according to RFC 2616 sect.5.1
   // https://tools.ietf.org/html/rfc2616#section-5.1
