@@ -132,8 +132,8 @@ private:
 
 template <typename Request>
 inline Request_Line::Request_Line(Request&& request) {
-  if (request.empty() or request.size() < 16 /*<-(16) minimum request length */) {
-    return;
+  if (request.empty() or request.size() < 15 /*<-(15) minimum request length */) {
+    throw Request_line_error("Invalid request line: " + request_line);
   }
 
   // Extract HTTP method
