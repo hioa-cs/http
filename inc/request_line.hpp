@@ -103,12 +103,12 @@ public:
    */
   void set_version(const Version& version) noexcept;
 
-  //-----------------------------------
-  // Get a string representation of this
-  // class
-  //
-  // @return - A string representation
-  //-----------------------------------
+  /*
+   * @brief Get a string representation of this
+   * class
+   *
+   * @return - A string representation
+   */
   std::string to_string() const;
 
   //-----------------------------------
