@@ -75,11 +75,11 @@ public:
    */
   void set_method(const Method& method);
 
-  //-----------------------------------
-  // Get the URI of the message
-  //
-  // @return - The URI of the message
-  //-----------------------------------
+  /*
+   * @brief Get the URI of the message
+   *
+   * @return - The URI of the message
+   */
   const URI& get_uri() const noexcept;
 
   //-----------------------------------
