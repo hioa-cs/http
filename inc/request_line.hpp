@@ -133,13 +133,13 @@ private:
 
 /**--v----------- Implementation Details -----------v--**/
 
-template <typename Request>
-inline Request_Line::Request_Line(Request&& request) {
+template <typename T, typename>
+inline Request_Line::Request_Line(T&& request) {
   if (request.empty() or request.size() < 15 /*<-(15) minimum request length */) {
     throw Request_line_error("Invalid request line: " + request_line);
   }
 
-  // Extract HTTP method
+  // Extract {Request-Line} from request
   std::string request_line;
   std::size_t index;
 
@@ -153,21 +153,24 @@ inline Request_Line::Request_Line(Request&& request) {
 
   // Should identify strings according to RFC 2616 sect.5.1
   // https://tools.ietf.org/html/rfc2616#section-5.1
-  std::regex re_request_line {
+  const static std::regex request_line_pattern
+  {
     "\\s*(GET|POST|PUT|DELETE|OPTIONS|HEAD|TRACE|CONNECT) " // Method
-      "(\\S+) " // URI
-      "HTTP/(\\d+)\\.(\\d+)" // Version Major.Minor
-      };
+    "(\\S+) " // URI
+    "HTTP/(\\d+)\\.(\\d+)" // Version Major.Minor
+  };
 
   std::smatch m;
-  auto matched = std::regex_match(request_line,m, re_request_line);
+  auto matched = std::regex_match(request_line, m, request_line_pattern);
 
-  if (not matched)
+  if (not matched) {
     throw Request_line_error("Invalid request line: " + request_line);
+  }
 
   method_ = method::code(m[1]);
-  //uri_ = URI {m[2]};
+
   new (&uri_) URI(m[2]);
+  
   unsigned maj = static_cast<unsigned>(std::stoul(m[3]));
   unsigned min = static_cast<unsigned>(std::stoul(m[4]));
   version_ = Version{maj, min};
