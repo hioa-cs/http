@@ -82,11 +82,11 @@ public:
    */
   const URI& get_uri() const noexcept;
 
-  //-----------------------------------
-  // Set the URI of the message
-  //
-  // @param uri - The URI of the message
-  //-----------------------------------
+  /*
+   * @brief Set the URI of the message
+   *
+   * @param uri - The URI of the message
+   */
   void set_uri(const URI& uri);
 
   //-----------------------------------
