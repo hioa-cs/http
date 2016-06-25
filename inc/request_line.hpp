@@ -26,10 +26,10 @@
 
 namespace http {
 
-//-----------------------------------
-// This class represents the request-line
-// of an incoming http request message
-//-----------------------------------
+/**
+ * @brief This class represents the {Request-Line}
+ * of an HTTP request message
+ */
 class Request_Line {
 public:
   //-----------------------------------
