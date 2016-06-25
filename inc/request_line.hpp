@@ -75,35 +75,35 @@ public:
    */
   void set_method(const Method& method);
 
-  /*
+  /**
    * @brief Get the URI of the message
    *
    * @return - The URI of the message
    */
   const URI& get_uri() const noexcept;
 
-  /*
+  /**
    * @brief Set the URI of the message
    *
    * @param uri - The URI of the message
    */
   void set_uri(const URI& uri);
 
-  /*
+  /**
    * @brief Get the version of the message
    *
    * @return - The version of the message
    */
   const Version& get_version() const noexcept;
 
-  /*
+  /**
    * @brief Set the version of the message
    *
    * @param version - The version of the message
    */
   void set_version(const Version& version) noexcept;
 
-  /*
+  /**
    * @brief Get a string representation of this
    * class
    *
@@ -111,7 +111,7 @@ public:
    */
   std::string to_string() const;
 
-  /*
+  /**
    * @brief Operator to transform this class
    * into string form
    */
