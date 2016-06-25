@@ -89,11 +89,11 @@ public:
    */
   void set_uri(const URI& uri);
 
-  //-----------------------------------
-  // Get the version of the message
-  //
-  // @return - The version of the message
-  //-----------------------------------
+  /*
+   * @brief Get the version of the message
+   *
+   * @return - The version of the message
+   */
   const Version& get_version() const noexcept;
 
   //-----------------------------------
