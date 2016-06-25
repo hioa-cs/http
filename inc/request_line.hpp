@@ -61,11 +61,11 @@ public:
   Request_Line& operator = (Request_Line&&) = default;
   ~Request_Line() = default;
 
-  //-----------------------------------
-  // Get the method of the message
-  //
-  // @return - The method of the message
-  //-----------------------------------
+  /**
+   * @brief Get the method of the message
+   *
+   * @return - The method of the message
+   */
   const Method& get_method() const noexcept;
 
   //-----------------------------------
