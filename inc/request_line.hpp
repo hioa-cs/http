@@ -18,8 +18,9 @@
 #ifndef HTTP_REQUEST_LINE_HPP
 #define HTTP_REQUEST_LINE_HPP
 
-#include <cctype>
 #include <regex>
+#include <cctype>
+
 #include "common.hpp"
 #include "methods.hpp"
 #include "version.hpp"
