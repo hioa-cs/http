@@ -37,14 +37,13 @@ public:
    */
   explicit Request_Line() = default;
 
-  //-----------------------------------
-  // Constructor to construct a request-line
-  // from the incoming character stream of
-  // data which is a <std::string> object
-  //
-  // @tparam (std::string) request - The character stream of
-  //                                 data
-  //-----------------------------------
+  /**
+   * @brief Constructor to construct a {Request-Line}
+   * from the incoming character stream of data which
+   * is a {std::string} object
+   *
+   * @tparam T request - The character stream of data
+   */
   template
   <
     typename T,
