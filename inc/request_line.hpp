@@ -68,11 +68,11 @@ public:
    */
   const Method& get_method() const noexcept;
 
-  //-----------------------------------
-  // Set the method of the message
-  //
-  // @param method - The method of the message
-  //-----------------------------------
+  /**
+   * @brief Set the method of the message
+   *
+   * @param method - The method of the message
+   */
   void set_method(const Method& method);
 
   //-----------------------------------
