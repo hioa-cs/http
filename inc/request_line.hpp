@@ -127,10 +127,13 @@ private:
   Version version_ {1U, 1U};
 }; //< class Request_Line
 
-
-  class Request_line_error : public std::runtime_error {
-    using runtime_error::runtime_error;
-  };
+/**
+ * @brief This class is used to represent an error that occurred
+ * from within the operations of class Request_Line
+ */
+class Request_line_error : public std::runtime_error {
+  using runtime_error::runtime_error;
+};
 
 /**--v----------- Implementation Details -----------v--**/
 
