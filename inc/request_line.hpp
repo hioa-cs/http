@@ -96,11 +96,11 @@ public:
    */
   const Version& get_version() const noexcept;
 
-  //-----------------------------------
-  // Set the version of the message
-  //
-  // @param version - The version of the message
-  //-----------------------------------
+  /*
+   * @brief Set the version of the message
+   *
+   * @param version - The version of the message
+   */
   void set_version(const Version& version) noexcept;
 
   //-----------------------------------
