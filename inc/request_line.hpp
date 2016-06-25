@@ -170,7 +170,7 @@ inline Request_Line::Request_Line(T&& request) {
   method_ = method::code(m[1]);
 
   new (&uri_) URI(m[2]);
-  
+
   unsigned maj = static_cast<unsigned>(std::stoul(m[3]));
   unsigned min = static_cast<unsigned>(std::stoul(m[4]));
   version_ = Version{maj, min};
@@ -192,7 +192,6 @@ inline const URI& Request_Line::get_uri() const noexcept {
 }
 
 inline void Request_Line::set_uri(const URI& uri) {
-  //uri_ = uri;
   new (&uri_) URI(uri);
 }
 
