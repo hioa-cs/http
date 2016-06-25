@@ -54,12 +54,12 @@ public:
   >
   explicit Request_Line(T&& request);
 
-  // Copy / move constructors
-  Request_Line(Request_Line&) = default;
+  // Default lifetime operations
+  Request_Line(Request_Line&)  = default;
   Request_Line(Request_Line&&) = default;
-  ~Request_Line() noexcept = default;
-  Request_Line& operator = (Request_Line&) = default;
+  Request_Line& operator = (Request_Line&)  = default;
   Request_Line& operator = (Request_Line&&) = default;
+  ~Request_Line() = default;
 
   //-----------------------------------
   // Get the method of the message
