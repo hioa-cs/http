@@ -45,8 +45,15 @@ public:
   // @tparam (std::string) request - The character stream of
   //                                 data
   //-----------------------------------
-  template <typename Request>
-  explicit Request_Line(Request&& request);
+  template
+  <
+    typename T,
+    typename = std::enable_if_t
+               <std::is_same
+               <std::string, std::remove_reference_t
+               <std::remove_const_t<T>>>::value>
+  >
+  explicit Request_Line(T&& request);
 
   // Copy / move constructors
   Request_Line(Request_Line&) = default;
