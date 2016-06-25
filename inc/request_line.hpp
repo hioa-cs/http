@@ -32,12 +32,9 @@ namespace http {
  */
 class Request_Line {
 public:
-  //-----------------------------------
-  // Constructor to create a default
-  // request-line which is as follows:
-  //
-  // <GET / HTTP/1.1>
-  //-----------------------------------
+  /**
+   * @brief Default constructor
+   */
   explicit Request_Line() = default;
 
   //-----------------------------------
