@@ -111,10 +111,10 @@ public:
    */
   std::string to_string() const;
 
-  //-----------------------------------
-  // Operator to transform this class
-  // into string form
-  //-----------------------------------
+  /*
+   * @brief Operator to transform this class
+   * into string form
+   */
   operator std::string () const;
   //-----------------------------------
 private:
