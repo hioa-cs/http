@@ -12,12 +12,12 @@ Response process_request(const Request& req) {
 
   switch (req.method()) {
     case GET:
-      if (req.uri() == "/") {
+      if (req.uri().path() == "/") {
         res.add_header(header_fields::Entity::Content_Type, extension_to_type("txt"))
            .add_body("Welcome"s);
         break;
       }
-      else if (req.uri() == "/grades.html") {
+      else if (req.uri().path() == "/grades.html") {
         res.add_header(header_fields::Entity::Content_Type, extension_to_type("html"))
            .add_body("<h2>Grades</h2>"
                      "<ol>"
@@ -29,11 +29,11 @@ Response process_request(const Request& req) {
       }
 
     case HEAD:
-      if (req.uri() == "/Unikernels.pdf") {
+      if (req.uri().path() == "/Unikernels.pdf") {
         res.add_header("X-File-Size"s, "6.2MB");
         break;
       }
-      else if (req.uri() == "/C++.pdf") {
+      else if (req.uri().path() == "/C++.pdf") {
         res.add_header("X-File-Size"s, "10.4MB");
         break;
       }
