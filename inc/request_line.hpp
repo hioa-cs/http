@@ -165,9 +165,8 @@ inline Request_Line::Request_Line(T&& request) {
   };
 
   std::smatch m;
-  auto matched = std::regex_match(request_line, m, request_line_pattern);
 
-  if (not matched) {
+  if (not std::regex_match(request_line, m, request_line_pattern)) {
     throw Request_line_error("Invalid request line: " + request_line);
   }
 
