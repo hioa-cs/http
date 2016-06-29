@@ -140,7 +140,7 @@ class Request_line_error : public std::runtime_error {
 template <typename T, typename>
 inline Request_Line::Request_Line(T&& request) {
   if (request.empty() or request.size() < 15 /*<-(15) minimum request length */) {
-    throw Request_line_error("Invalid request line: " + request_line);
+    throw Request_line_error("Invalid request");
   }
 
   // Extract {Request-Line} from request
