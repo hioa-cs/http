@@ -207,18 +207,16 @@ inline void Request_Line::set_version(const Version& version) noexcept {
 }
 
 inline std::string Request_Line::to_string() const {
-  return method::str(method_)+" "+uri_.to_string()+" "
-    +version_.to_string();
+  return method::str(method_)
+         +" "
+         +uri_.to_string()
+         +" "
+         +version_.to_string()
+         +"\r\n";
 }
 
 inline Request_Line::operator std::string () const {
-  std::ostringstream req_line;
-  //-----------------------------
-  req_line << method_  << " "
-           << uri_     << " "
-           << version_ << "\r\n";
- //------------------------------
-  return req_line.str();
+  return to_string();
 }
 
 inline std::ostream& operator << (std::ostream& output_device, const Request_Line& req_line) {
