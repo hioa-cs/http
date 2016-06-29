@@ -148,9 +148,9 @@ inline Request_Line::Request_Line(T&& request) {
   std::size_t index;
 
   if ((index = request.find("\r\n")) not_eq std::string::npos) {
-    request_line = {request.substr(0, index)};
+    request_line = request.substr(0, index);
   } else if ((index = request.find('\n')) not_eq std::string::npos) {
-    request_line = {request.substr(0, index)};
+    request_line = request.substr(0, index);
   } else {
     throw Request_line_error("Invalid line-ending");
   }
