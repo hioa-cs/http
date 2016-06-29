@@ -10,8 +10,8 @@ Response process_request(const Request& req) {
 
   Response res;
 
-  switch (http_method_code(req.method())) {
-    case HTTP_GET:
+  switch (req.method()) {
+    case GET:
       if (req.uri() == "/") {
         res.add_header(header_fields::Entity::Content_Type, extension_to_type("txt"))
            .add_body("Welcome"s);
@@ -28,7 +28,7 @@ Response process_request(const Request& req) {
         break;
       }
 
-    case HTTP_HEAD:
+    case HEAD:
       if (req.uri() == "/Unikernels.pdf") {
         res.add_header("X-File-Size"s, "6.2MB");
         break;
@@ -38,19 +38,20 @@ Response process_request(const Request& req) {
         break;
       }
 
-    default: res.set_status_code(status_t::Not_Found);
+    default: res.set_status_code(Not_Found);
   }
 
   return res;
 }
 
 int main() {
-	while (true) {
-		if (conn.has_data()) {
-			std::string data  = conn.read(1024);
-			Response response = process_request(Request{data});
-			conn.write(response);
-	  }
+  while (true) {
+    auto conn = connections.front();
+    connections.pop();
+    std::string data  = conn.read(1024);
+    Response response = process_request(Request{data});
+    conn.write(response);
+    connections.push(conn);
   }
 }
 ```
