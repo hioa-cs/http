@@ -38,7 +38,7 @@ public:
   // @param version - The version of the message
   // @param code    - The status code
   //----------------------------
-  explicit constexpr Status_Line(const Version& version, const Code code) noexcept;
+  explicit constexpr Status_Line(const Version version, const Code code) noexcept;
 
   //-----------------------------------
   // Constructor to construct a status-line
@@ -81,14 +81,14 @@ public:
   //
   // @return - Version of the message
   //----------------------------
-  constexpr const Version& get_version() const noexcept;
+  constexpr Version get_version() const noexcept;
 
   //----------------------------
   // Set the version of the message
   //
   // @param version - Version of the message
   //----------------------------
-  void set_version(const Version& version) noexcept;
+  void set_version(const Version version) noexcept;
 
   //----------------------------
   // Get message status code
@@ -128,7 +128,7 @@ private:
 
 /**--v----------- Implementation Details -----------v--**/
 
-inline constexpr Status_Line::Status_Line(const Version& version, const Code code) noexcept:
+inline constexpr Status_Line::Status_Line(const Version version, const Code code) noexcept:
   version_{version},
   code_{code}
 {}
@@ -161,11 +161,11 @@ Status_Line::Status_Line(Response&& response) {
   response = response.substr(response.find_first_of("\r\n") + 2);
 }
 
-inline constexpr const Version& Status_Line::get_version() const noexcept {
+inline constexpr Version Status_Line::get_version() const noexcept {
   return version_;
 }
 
-inline void Status_Line::set_version(const Version& version) noexcept {
+inline void Status_Line::set_version(const Version version) noexcept {
   version_ = version;
 }
 

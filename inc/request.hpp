@@ -83,7 +83,7 @@ public:
   //
   // @return - The method of the request
   //----------------------------------------
-  const Method& method() const noexcept;
+  Method method() const noexcept;
 
   //----------------------------------------
   // Set the method of the request message
@@ -93,7 +93,7 @@ public:
   // @return - The object that invoked this
   //           method
   //----------------------------------------
-  Request& set_method(const Method& method);
+  Request& set_method(const Method method);
 
   //----------------------------------------
   // Get the URI of the request message
@@ -117,7 +117,7 @@ public:
   //
   // @return - The version of the request
   //----------------------------------------
-  const Version& version() const noexcept;
+  Version version() const noexcept;
 
   //----------------------------------------
   // Set the version of the request message
@@ -127,7 +127,7 @@ public:
   // @return - The object that invoked this
   //           method
   //----------------------------------------
-  Request& set_version(const Version& version) noexcept;
+  Request& set_version(const Version version) noexcept;
 
   //----------------------------------------
   // Get the value associated with the name
@@ -214,11 +214,11 @@ inline Request::Request(Ingress&& request, const Limit limit) :
   }
 }
 
-inline const Method& Request::method() const noexcept {
+inline Method Request::method() const noexcept {
   return request_line_.get_method();
 }
 
-inline Request& Request::set_method(const Method& method) {
+inline Request& Request::set_method(const Method method) {
   request_line_.set_method(method);
   return *this;
 }
@@ -232,11 +232,11 @@ inline Request& Request::set_uri(const URI& uri) {
   return *this;
 }
 
-inline const Version& Request::version() const noexcept {
+inline Version Request::version() const noexcept {
   return request_line_.get_version();
 }
 
-inline Request& Request::set_version(const Version& version) noexcept {
+inline Request& Request::set_version(const Version version) noexcept {
   request_line_.set_version(version);
   return *this;
 }
