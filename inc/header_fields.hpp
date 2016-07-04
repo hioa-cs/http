@@ -33,7 +33,7 @@ Field Accept_Encoding     {"Accept-Encoding"};
 Field Accept_Language     {"Accept-Language"};
 Field Authorization       {"Authorization"};
 Field Connection          {"Connection"};
-Field Cookie              {"Cookie"}
+Field Cookie              {"Cookie"};
 Field Expect              {"Expect"};
 Field From                {"From"};
 Field Host                {"Host"};
@@ -60,7 +60,7 @@ Field Location            {"Location"};
 Field Proxy_Authenticate  {"Proxy-Authenticate"};
 Field Retry_After         {"Retry-After"};
 Field Server              {"Server"};
-Field Set_Cookie          {"Set-Cookie"}
+Field Set_Cookie          {"Set-Cookie"};
 Field Vary                {"Vary"};
 Field WWW_Authenticate    {"WWW-Authenticate"};
 } //< namespace Response
