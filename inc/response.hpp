@@ -43,7 +43,7 @@ public:
   // @param code    - The status code
   // @param version - The version of the message
   //------------------------------
-  explicit Response(const Code code = OK, const Version& version = Version{}) noexcept;
+  explicit Response(const Code code = OK, const Version version = Version{}) noexcept;
 
   //----------------------------------------
   // Constructor to construct a response
@@ -136,7 +136,7 @@ private:
 
 /**--v----------- Implementation Details -----------v--**/
 
-inline Response::Response(const Code code, const Version& version) noexcept:
+inline Response::Response(const Code code, const Version version) noexcept:
   status_line_{version, code}
 {}
 
