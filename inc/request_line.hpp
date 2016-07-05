@@ -67,14 +67,14 @@ public:
    *
    * @return - The method of the message
    */
-  const Method& get_method() const noexcept;
+  Method get_method() const noexcept;
 
   /**
    * @brief Set the method of the message
    *
    * @param method - The method of the message
    */
-  void set_method(const Method& method);
+  void set_method(const Method method);
 
   /**
    * @brief Get the URI of the message
@@ -95,14 +95,14 @@ public:
    *
    * @return - The version of the message
    */
-  const Version& get_version() const noexcept;
+  Version get_version() const noexcept;
 
   /**
    * @brief Set the version of the message
    *
    * @param version - The version of the message
    */
-  void set_version(const Version& version) noexcept;
+  void set_version(const Version version) noexcept;
 
   /**
    * @brief Get a string representation of this
@@ -182,11 +182,11 @@ inline Request_Line::Request_Line(T&& request) {
   request = request.substr(index + 2);
 }
 
-inline const Method& Request_Line::get_method() const noexcept {
+inline Method Request_Line::get_method() const noexcept {
   return method_;
 }
 
-inline void Request_Line::set_method(const Method& method) {
+inline void Request_Line::set_method(const Method method) {
   method_ = method;
 }
 
@@ -198,11 +198,11 @@ inline void Request_Line::set_uri(const URI& uri) {
   new (&uri_) URI(uri);
 }
 
-inline const Version& Request_Line::get_version() const noexcept {
+inline Version Request_Line::get_version() const noexcept {
   return version_;
 }
 
-inline void Request_Line::set_version(const Version& version) noexcept {
+inline void Request_Line::set_version(const Version version) noexcept {
   version_ = version;
 }
 
