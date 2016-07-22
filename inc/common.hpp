@@ -35,7 +35,7 @@ namespace http {
   using Header_set = std::vector<std::pair<std::string, std::string>>;
 
   class Request;
-  using Request_ptr = std::shared_ptr<Request>;
+  using Request_ptr = std::unique_ptr<Request>;
 
   class Response;
   using Response_ptr = std::unique_ptr<Response>;
