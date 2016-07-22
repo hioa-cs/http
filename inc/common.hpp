@@ -38,7 +38,7 @@ namespace http {
   using Request_ptr = std::shared_ptr<Request>;
 
   class Response;
-  using Response_ptr = std::shared_ptr<Response>;
+  using Response_ptr = std::unique_ptr<Response>;
 
 } //< namespace http
 
