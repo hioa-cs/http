@@ -32,7 +32,7 @@ namespace http {
 
   using buffer_t = std::shared_ptr<uint8_t>;
 
-  using HeaderSet = std::vector<std::pair<std::string, std::string>>;
+  using Header_set = std::vector<std::pair<std::string, std::string>>;
 
   class Request;
   using Request_ptr = std::shared_ptr<Request>;

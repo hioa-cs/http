@@ -179,7 +179,7 @@ inline Response::operator std::string () const {
   return res.str();
 }
 
-inline Response& operator << (http::Response& res, const HeaderSet& headers) {
+inline Response& operator << (Response& res, const Header_set& headers) {
   for (const auto& field : headers) {
     res.add_header(field.first, field.second);
   }
