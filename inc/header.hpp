@@ -76,8 +76,8 @@ public:
     typename T,
     typename = std::enable_if_t
                <std::is_same
-               <std::string, std::remove_reference_t
-               <std::remove_const_t<T>>>::value>
+               <std::string, std::remove_const_t
+               <std::remove_reference_t<T>>>::value>
   >
   explicit Header(T&& header_data, const Limit limit = 100);
 
@@ -137,11 +137,11 @@ public:
     typename F, typename V,
     typename = std::enable_if_t
                <std::is_same
-               <std::string, std::remove_reference_t
-               <std::remove_const_t<F>>>::value and
+               <std::string, std::remove_const_t
+               <std::remove_reference_t<F>>>::value and
                 std::is_same
-               <std::string, std::remove_reference_t
-               <std::remove_const_t<V>>>::value>
+               <std::string, std::remove_const_t
+               <std::remove_reference_t<V>>>::value>
   >
   bool add_field(F&& field, V&& value);
 
@@ -160,8 +160,8 @@ public:
     typename D,
     typename = std::enable_if_t
                <std::is_same
-               <std::string, std::remove_reference_t
-               <std::remove_const_t<D>>>::value>
+               <std::string, std::remove_const_t
+               <std::remove_reference_t<D>>>::value>
   >
   void add_fields(D&& data);
 
@@ -185,11 +185,11 @@ public:
     typename F, typename V,
     typename = std::enable_if_t
                <std::is_same
-               <std::string, std::remove_reference_t
-               <std::remove_const_t<F>>>::value and
+               <std::string, std::remove_const_t
+               <std::remove_reference_t<F>>>::value and
                 std::is_same
-               <std::string, std::remove_reference_t
-               <std::remove_const_t<V>>>::value>
+               <std::string, std::remove_const_t
+               <std::remove_reference_t<V>>>::value>
   >
   bool set_field(F&& field, V&& value);
 
@@ -209,8 +209,8 @@ public:
     typename F,
     typename = std::enable_if_t
                <std::is_same
-               <std::string, std::remove_reference_t
-               <std::remove_const_t<F>>>::value>
+               <std::string, std::remove_const_t
+               <std::remove_reference_t<F>>>::value>
   >
   const std::string& get_value(F&& field) const noexcept;
 
@@ -228,8 +228,8 @@ public:
     typename F,
     typename = std::enable_if_t
                <std::is_same
-               <std::string, std::remove_reference_t
-               <std::remove_const_t<F>>>::value>
+               <std::string, std::remove_const_t
+               <std::remove_reference_t<F>>>::value>
   >
   bool has_field(F&& field) const noexcept;
 
@@ -261,8 +261,8 @@ public:
     typename F,
     typename = std::enable_if_t
                <std::is_same
-               <std::string, std::remove_reference_t
-               <std::remove_const_t<F>>>::value>
+               <std::string, std::remove_const_t
+               <std::remove_reference_t<F>>>::value>
   >
   void erase(F&& field) noexcept;
 
@@ -306,8 +306,8 @@ private:
     typename F,
     typename = std::enable_if_t
                <std::is_same
-               <std::string, std::remove_reference_t
-               <std::remove_const_t<F>>>::value>
+               <std::string, std::remove_const_t
+               <std::remove_reference_t<F>>>::value>
   >
   Const_iterator find(F&& field) const noexcept;
 
