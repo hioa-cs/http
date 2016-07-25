@@ -23,7 +23,7 @@
 namespace http {
 namespace header_fields {
 //------------------------------------------------
-using Field = std::string;
+using Field = const std::string;
 //------------------------------------------------
 //------------------------------------------------
 namespace Request {

@@ -116,11 +116,11 @@ public:
     typename F, typename V,
     typename = std::enable_if_t
                <std::is_same
-               <std::string, std::remove_reference_t
-               <std::remove_const_t<F>>>::value and
+               <std::string, std::remove_const_t
+               <std::remove_reference_t<F>>>::value and
                 std::is_same
-               <std::string, std::remove_reference_t
-               <std::remove_const_t<V>>>::value>
+               <std::string, std::remove_const_t
+               <std::remove_reference_t<V>>>::value>
   >
   Message& add_header(F&& field, V&& value);
 
@@ -144,8 +144,8 @@ public:
     typename D,
     typename = std::enable_if_t
                <std::is_same
-               <std::string, std::remove_reference_t
-               <std::remove_const_t<D>>>::value>
+               <std::string, std::remove_const_t
+               <std::remove_reference_t<D>>>::value>
   >
   Message& add_headers(D&& data);
 
@@ -169,11 +169,11 @@ public:
     typename F, typename V,
     typename = std::enable_if_t
                <std::is_same
-               <std::string, std::remove_reference_t
-               <std::remove_const_t<F>>>::value and
+               <std::string, std::remove_const_t
+               <std::remove_reference_t<F>>>::value and
                 std::is_same
-               <std::string, std::remove_reference_t
-               <std::remove_const_t<V>>>::value>
+               <std::string, std::remove_const_t
+               <std::remove_reference_t<V>>>::value>
   >
   Message& set_header(F&& field, V&& value);
 
@@ -202,8 +202,8 @@ public:
     typename F,
     typename = std::enable_if_t
                <std::is_same
-               <std::string, std::remove_reference_t
-               <std::remove_const_t<F>>>::value>
+               <std::string, std::remove_const_t
+               <std::remove_reference_t<F>>>::value>
   >
   HValue header_value(F&& field) const noexcept;
 
@@ -221,8 +221,8 @@ public:
     typename F,
     typename = std::enable_if_t
                <std::is_same
-               <std::string, std::remove_reference_t
-               <std::remove_const_t<F>>>::value>
+               <std::string, std::remove_const_t
+               <std::remove_reference_t<F>>>::value>
   >
   bool has_header(F&& field) const noexcept;
 
@@ -240,8 +240,8 @@ public:
     typename F,
     typename = std::enable_if_t
                <std::is_same
-               <std::string, std::remove_reference_t
-               <std::remove_const_t<F>>>::value>
+               <std::string, std::remove_const_t
+               <std::remove_reference_t<F>>>::value>
   >
   Message& erase_header(F&& field) noexcept;
 
@@ -283,8 +283,8 @@ public:
     typename E,
     typename = std::enable_if_t
                <std::is_same
-               <std::string, std::remove_reference_t
-               <std::remove_const_t<E>>>::value>
+               <std::string, std::remove_const_t
+               <std::remove_reference_t<E>>>::value>
   >
   Message& add_body(E&& message_body);
 
