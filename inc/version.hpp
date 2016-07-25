@@ -25,15 +25,18 @@ namespace http {
 
 /**
  * @brief This class represents the version
- * of an http message
+ * of an HTTP message
  */
 class Version {
 public:
   /**
    * @brief Constructor
    *
-   * @param major - The major version number
-   * @param minor - The minor version number
+   * @param major:
+   * The major version number
+
+   * @param minor:
+   * The minor version number
    */
   explicit constexpr Version(const unsigned major = 1, const unsigned minor = 1) noexcept;
 
@@ -65,28 +68,30 @@ public:
   /**
    * @brief Get the major version number
    *
-   * @return - The major version number
+   * @return The major version number
    */
   constexpr unsigned get_major() const noexcept;
 
   /**
    * @brief Set the major version number
    *
-   * @param major - The major version number
+   * @param major:
+   * The major version number
    */
   void set_major(const unsigned major) noexcept;
 
   /**
    * @brief Get the minor version number
    *
-   * @return - The minor version number
+   * @return The minor version number
    */
   constexpr unsigned get_minor() const noexcept;
 
   /**
    * @brief Set the minor version number
    *
-   * @param minor - The minor version number
+   * @param minor:
+   * The minor version number
    */
   void set_minor(const unsigned minor) noexcept;
 
@@ -94,7 +99,7 @@ public:
    * @brief Get a string representation of this
    * class
    *
-   * @return - A string representation
+   * @return A string representation
    */
   std::string to_string() const;
 
@@ -106,7 +111,6 @@ public:
 private:
   //-----------------------------------
   // Class data members
-  //-----------------------------------
   unsigned major_;
   unsigned minor_;
   //-----------------------------------
@@ -114,9 +118,9 @@ private:
 
 /**--v----------- Implementation Details -----------v--**/
 
-inline constexpr Version::Version(const unsigned major, const unsigned minor) noexcept:
-  major_{major},
-  minor_{minor}
+inline constexpr Version::Version(const unsigned major, const unsigned minor) noexcept
+  : major_{major}
+  , minor_{minor}
 {}
 
 inline constexpr unsigned Version::get_major() const noexcept {
@@ -136,66 +140,81 @@ inline void Version::set_minor(const unsigned minor) noexcept {
 }
 
 inline std::string Version::to_string() const {
-  return *this;
-}
-
-inline Version::operator std::string () const {
   std::ostringstream ver_data;
   //----------------------------
   ver_data << "HTTP/" << major_
            << "."     << minor_;
- //-----------------------------
+  //-----------------------------
   return ver_data.str();
 }
 
+inline Version::operator std::string () const {
+  return to_string();
+}
+
+
+/**
+ * @brief Operator to stream the contents of this class
+ * into the specified output device
+ *
+ *
+ * @param output_device:
+ * The output device to stream the contents from an instance of this
+ * class into
+ *
+ * @param version:
+ * An instance of this class
+ *
+ * @return Reference to the specified output device
+ */
 inline std::ostream& operator << (std::ostream& output_device, const Version& version) {
   return output_device << version.to_string();
 }
 
-//-----------------------------------
-// Operator to check for equality
-//-----------------------------------
+/**
+ * @brief Operator to check for equality
+ */
 inline bool operator == (const Version& lhs, const Version& rhs) noexcept {
   return lhs.get_major() == rhs.get_major()
          and
          lhs.get_minor() == rhs.get_minor();
 }
 
-//-----------------------------------
-// Operator to check for inequality
-//-----------------------------------
+/**
+ * @brief Operator to check for inequality
+ */
 inline bool operator != (const Version& lhs, const Version& rhs) noexcept {
   return not (lhs == rhs);
 }
 
-//-----------------------------------
-// Operator to check for less than relationship
-//-----------------------------------
+/**
+ * @brief Operator to check for less than relationship
+ */
 inline bool operator < (const Version& lhs, const Version& rhs) noexcept {
   return lhs.get_major() < rhs.get_major()
          or
          lhs.get_minor() < rhs.get_minor();
 }
 
-//-----------------------------------
-// Operator to check for greater than relationship
-//-----------------------------------
+/**
+ * @brief Operator to check for greater than relationship
+ */
 inline bool operator > (const Version& lhs, const Version& rhs) noexcept {
   return lhs.get_major() > rhs.get_major()
          or
          lhs.get_minor() > rhs.get_minor();
 }
 
-//-----------------------------------
-// Operator to check for less than or equal to relationship
-//-----------------------------------
+/**
+ * @brief Operator to check for less than or equal to relationship
+ */
 inline bool operator <= (const Version& lhs, const Version& rhs) noexcept {
   return (lhs < rhs) or (lhs == rhs);
 }
 
-//-----------------------------------
-// Operator to check for greater than or equal to relationship
-//-----------------------------------
+/**
+ * @brief Operator to check for greater than or equal to relationship
+ */
 inline bool operator >= (const Version& lhs, const Version& rhs) noexcept {
   return (lhs > rhs) or (lhs == rhs);
 }
