@@ -23,87 +23,86 @@
 
 namespace http {
 
-//-----------------------------------
-// This class represents the version
-// of an http message
-//-----------------------------------
+/**
+ * @brief This class represents the version
+ * of an http message
+ */
 class Version {
 public:
-  //----------------------------------------
-  // Constructor
-  //
-  // @param major - The major version number
-  // @param minor - The minor version number
-  //----------------------------------------
+  /**
+   * @brief Constructor
+   *
+   * @param major - The major version number
+   * @param minor - The minor version number
+   */
   explicit constexpr Version(const unsigned major = 1, const unsigned minor = 1) noexcept;
 
-  //-----------------------------------
-  // Default destructor
-  //-----------------------------------
+  /**
+   * @brief Default destructor
+   */
   ~Version() noexcept = default;
 
-  //-----------------------------------
-  // Default copy constructor
-  //-----------------------------------
+  /**
+   * @brief Default copy constructor
+   */
   Version(const Version&) noexcept = default;
 
-  //-----------------------------------
-  // Default move constructor
-  //-----------------------------------
+  /**
+   * @brief Default move constructor
+   */
   Version(Version&&) noexcept = default;
 
-  //-----------------------------------
-  // Default assignment operator
-  //-----------------------------------
+  /**
+   * @brief Default assignment operator
+   */
   Version& operator = (const Version&) noexcept = default;
 
-  //-----------------------------------
-  // Default move assignment operator
-  //-----------------------------------
+  /**
+   * @brief Default move assignment operator
+   */
   Version& operator = (Version&&) noexcept = default;
 
-  //-----------------------------------
-  // Get the major version number
-  //
-  // @return - The major version number
-  //-----------------------------------
+  /**
+   * @brief Get the major version number
+   *
+   * @return - The major version number
+   */
   constexpr unsigned get_major() const noexcept;
 
-  //-----------------------------------
-  // Set the major version number
-  //
-  // @param major - The major version number
-  //-----------------------------------
+  /**
+   * @brief Set the major version number
+   *
+   * @param major - The major version number
+   */
   void set_major(const unsigned major) noexcept;
 
-  //-----------------------------------
-  // Get the minor version number
-  //
-  // @return - The minor version number
-  //-----------------------------------
+  /**
+   * @brief Get the minor version number
+   *
+   * @return - The minor version number
+   */
   constexpr unsigned get_minor() const noexcept;
 
-  //-----------------------------------
-  // Set the minor version number
-  //
-  // @param minor - The minor version number
-  //-----------------------------------
+  /**
+   * @brief Set the minor version number
+   *
+   * @param minor - The minor version number
+   */
   void set_minor(const unsigned minor) noexcept;
 
-  //-----------------------------------
-  // Get a string representation of this
-  // class
-  //
-  // @return - A string representation
-  //-----------------------------------
+  /**
+   * @brief Get a string representation of this
+   * class
+   *
+   * @return - A string representation
+   */
   std::string to_string() const;
 
-  //-----------------------------------
-  // Operator to transform this class
-  // into string form
-  //-----------------------------------
+  /**
+   * @brief Operator to transform this class
+   * into string form
+   */
   operator std::string () const;
-  //-----------------------------------
 private:
   //-----------------------------------
   // Class data members

@@ -292,7 +292,7 @@ inline Request::operator std::string () const {
 }
 
 inline Request_ptr make_request(buffer_t buf, const size_t len) {
-  return std::make_shared<Request>(std::string{reinterpret_cast<char*>(buf.get()), len});
+  return std::make_unique<Request>(std::string{reinterpret_cast<char*>(buf.get()), len});
 }
 
 inline std::ostream& operator << (std::ostream& output_device, const Request& req) {

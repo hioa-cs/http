@@ -27,18 +27,18 @@
 
 namespace http {
 
-  using URI     = uri::URI;
-  using Limit   = std::size_t;
+  using URI          = uri::URI;
+  using Limit        = std::size_t;
 
-  using buffer_t = std::shared_ptr<uint8_t>;
+  using buffer_t     = std::shared_ptr<uint8_t>;
 
-  using HeaderSet = std::vector<std::pair<std::string, std::string>>;
+  using Header_set   = std::vector<std::pair<std::string, std::string>>;
 
   class Request;
-  using Request_ptr = std::shared_ptr<Request>;
+  using Request_ptr  = std::unique_ptr<Request>;
 
   class Response;
-  using Response_ptr = std::shared_ptr<Response>;
+  using Response_ptr = std::unique_ptr<Response>;
 
 } //< namespace http
 

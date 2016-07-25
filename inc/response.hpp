@@ -179,7 +179,7 @@ inline Response::operator std::string () const {
   return res.str();
 }
 
-inline Response& operator << (http::Response& res, const HeaderSet& headers) {
+inline Response& operator << (Response& res, const Header_set& headers) {
   for (const auto& field : headers) {
     res.add_header(field.first, field.second);
   }
@@ -187,7 +187,7 @@ inline Response& operator << (http::Response& res, const HeaderSet& headers) {
 }
 
 inline Response_ptr make_response(buffer_t buf, const size_t len) {
-  return std::make_shared<Response>(std::string{reinterpret_cast<char*>(buf.get()), len});
+  return std::make_unique<Response>(std::string{reinterpret_cast<char*>(buf.get()), len});
 }
 
 inline std::ostream& operator << (std::ostream& output_device, const Response& res) {
