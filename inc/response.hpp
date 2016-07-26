@@ -130,8 +130,8 @@ public:
 private:
   //------------------------------
   // Class data members
+  Status_line status_line_;
   //------------------------------
-  Status_Line status_line_;
 }; //< class Response
 
 /**--v----------- Implementation Details -----------v--**/
