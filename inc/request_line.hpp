@@ -31,17 +31,17 @@ namespace http {
  * @brief This class represents the {Request-Line}
  * of an HTTP request message
  */
-class Request_Line {
+class Request_line {
 public:
   /**
    * @brief Default constructor
    */
-  explicit Request_Line() = default;
+  explicit Request_line() = default;
 
   /**
-   * @brief Constructor to construct a {Request-Line}
-   * from the incoming character stream of data which
-   * is a {std::string} object
+   * @brief Construct a {Request-Line} from the incoming
+   * character stream of data which is a {std::string}
+   * object
    *
    * @tparam T request:
    * The character stream of data
@@ -54,14 +54,32 @@ public:
                <std::string, std::remove_const_t
                <std::remove_reference_t<T>>>::value>
   >
-  explicit Request_Line(T&& request);
+  explicit Request_line(T&& request);
 
-  // Default lifetime operations
-  Request_Line(Request_Line&)  = default;
-  Request_Line(Request_Line&&) = default;
-  Request_Line& operator = (Request_Line&)  = default;
-  Request_Line& operator = (Request_Line&&) = default;
-  ~Request_Line() = default;
+  /**
+   * @brief Default copy constructor
+   */
+  Request_line(Request_line&)  = default;
+
+  /**
+   * @brief Default move constructor
+   */
+  Request_line(Request_line&&) = default;
+
+  /**
+   * @brief Default destructor
+   */
+  ~Request_line() noexcept = default;
+
+  /**
+   * @brief Default copy assignment operator
+   */
+  Request_line& operator = (Request_line&)  = default;
+
+  /**
+   * @brief Default move assignment operator
+   */
+  Request_line& operator = (Request_line&&) = default;
 
   /**
    * @brief Get the method of the message
@@ -125,15 +143,15 @@ public:
 private:
   //-----------------------------------
   // Class data members
-  Method  method_  { GET };
+  Method  method_  {GET};
   URI     uri_     {"/"};
   Version version_ {1U, 1U};
   //-----------------------------------
-}; //< class Request_Line
+}; //< class Request_line
 
 /**
  * @brief This class is used to represent an error that occurred
- * from within the operations of class Request_Line
+ * from within the operations of class Request_line
  */
 class Request_line_error : public std::runtime_error {
   using runtime_error::runtime_error;
@@ -142,7 +160,7 @@ class Request_line_error : public std::runtime_error {
 /**--v----------- Implementation Details -----------v--**/
 
 template <typename T, typename>
-inline Request_Line::Request_Line(T&& request) {
+inline Request_line::Request_line(T&& request) {
   if (request.empty() or request.size() < 15 /*<-(15) minimum request length */) {
     throw Request_line_error("Invalid request");
   }
@@ -193,31 +211,31 @@ inline Request_Line::Request_Line(T&& request) {
   }
 }
 
-inline Method Request_Line::get_method() const noexcept {
+inline Method Request_line::get_method() const noexcept {
   return method_;
 }
 
-inline void Request_Line::set_method(const Method method) noexcept {
+inline void Request_line::set_method(const Method method) noexcept {
   method_ = method;
 }
 
-inline const URI& Request_Line::get_uri() const noexcept {
+inline const URI& Request_line::get_uri() const noexcept {
   return uri_;
 }
 
-inline void Request_Line::set_uri(const URI& uri) {
+inline void Request_line::set_uri(const URI& uri) {
   new (&uri_) URI(uri);
 }
 
-inline Version Request_Line::get_version() const noexcept {
+inline Version Request_line::get_version() const noexcept {
   return version_;
 }
 
-inline void Request_Line::set_version(const Version version) noexcept {
+inline void Request_line::set_version(const Version version) noexcept {
   version_ = version;
 }
 
-inline std::string Request_Line::to_string() const {
+inline std::string Request_line::to_string() const {
   std::ostringstream req_line;
   //----------------------------
   req_line << method::str(method_)
@@ -227,11 +245,11 @@ inline std::string Request_Line::to_string() const {
   return req_line.str();
 }
 
-inline Request_Line::operator std::string () const {
+inline Request_line::operator std::string () const {
   return to_string();
 }
 
-inline std::ostream& operator << (std::ostream& output_device, const Request_Line& req_line) {
+inline std::ostream& operator << (std::ostream& output_device, const Request_line& req_line) {
   return output_device << req_line.to_string();
 }
 
