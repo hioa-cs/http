@@ -97,9 +97,18 @@ public:
   void set_method(const Method method) noexcept;
 
   /**
-   * @brief Get the URI of the message
+   * @brief Get a reference to the URI object in
+   * the message
    *
-   * @return The URI of the message
+   * @return A reference to the URI object
+   */
+  URI& get_uri() noexcept;
+
+  /**
+   * @brief Get a read-only reference to the URI object
+   * in the message
+   *
+   * @return A read-only reference to the URI object
    */
   const URI& get_uri() const noexcept;
 
@@ -217,6 +226,10 @@ inline Method Request_line::get_method() const noexcept {
 
 inline void Request_line::set_method(const Method method) noexcept {
   method_ = method;
+}
+
+inline URI& Request_line::get_uri() noexcept {
+  return uri_;
 }
 
 inline const URI& Request_line::get_uri() const noexcept {
