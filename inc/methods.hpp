@@ -38,6 +38,11 @@ namespace http {
     /**
      * @brief Get the string representation from an HTTP
      * method code
+     *
+     * @param m:
+     * The HTTP method code
+     *
+     * @return The string representation of the code
      */
     inline const std::string& str(const Method m) {
 
