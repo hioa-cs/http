@@ -28,7 +28,7 @@ namespace http {
  * @brief This class respresents a 
  * response message status-line
  */
-class Status_Line {
+class Status_line {
 public:
   /**
    * @brief Constructor to create the status line
@@ -41,7 +41,7 @@ public:
    * @param code:
    * The status code
    */
-  explicit constexpr Status_Line(const Version version, const Code code) noexcept;
+  explicit constexpr Status_line(const Version version, const Code code) noexcept;
 
   /**
    * @brief Constructor to construct a status-line
@@ -59,32 +59,32 @@ public:
                <std::string, std::remove_const_t
                <std::remove_reference_t<T>>>::value>
   >
-  explicit Status_Line(T&& response);
+  explicit Status_line(T&& response);
 
   /**
    * @brief Default copy constructor
    */
-  Status_Line(const Status_Line&) noexcept = default;
+  Status_line(const Status_line&) noexcept = default;
 
   /**
    * @brief Default move constructor
    */
-  Status_Line(Status_Line&&) noexcept = default;
+  Status_line(Status_line&&) noexcept = default;
 
   /**
    * @brief Default destructor
    */
-  ~Status_Line() noexcept = default;
+  ~Status_line() noexcept = default;
 
   /**
    * @brief Default copy assignment operator
    */
-  Status_Line& operator = (const Status_Line&) noexcept = default;
+  Status_line& operator = (const Status_line&) noexcept = default;
 
   /**
    * @brief Default move assignment operator
    */
-  Status_Line& operator = (Status_Line&&) noexcept = default;
+  Status_line& operator = (Status_line&&) noexcept = default;
 
   /**
    * @brief Get the version of the message
@@ -135,17 +135,17 @@ private:
   Version version_;
   Code    code_;
   //---------------------------
-}; //< class Status_Line
+}; //< class Status_line
 
 /**--v----------- Implementation Details -----------v--**/
 
-inline constexpr Status_Line::Status_Line(const Version version, const Code code) noexcept:
+inline constexpr Status_line::Status_line(const Version version, const Code code) noexcept:
   version_{version},
   code_{code}
 {}
 
 template <typename Response>
-Status_Line::Status_Line(Response&& response) {
+Status_line::Status_line(Response&& response) {
   if (response.empty() or response.size() < 19 /*<-(19) minimum response length */) {
     return;
   }
@@ -172,27 +172,27 @@ Status_Line::Status_Line(Response&& response) {
   response = response.substr(response.find_first_of("\r\n") + 2);
 }
 
-inline constexpr Version Status_Line::get_version() const noexcept {
+inline constexpr Version Status_line::get_version() const noexcept {
   return version_;
 }
 
-inline void Status_Line::set_version(const Version version) noexcept {
+inline void Status_line::set_version(const Version version) noexcept {
   version_ = version;
 }
 
-inline constexpr Code Status_Line::get_code() const noexcept {
+inline constexpr Code Status_line::get_code() const noexcept {
   return code_;
 }
 
-inline void Status_Line::set_code(const Code code) noexcept {
+inline void Status_line::set_code(const Code code) noexcept {
   code_ = code;
 }
 
-inline std::string Status_Line::to_string() const {
+inline std::string Status_line::to_string() const {
   return *this;
 }
 
-inline Status_Line::operator std::string () const {
+inline Status_line::operator std::string () const {
   std::ostringstream status_info;
   //---------------------------
   status_info << version_                << " "
@@ -202,7 +202,7 @@ inline Status_Line::operator std::string () const {
   return status_info.str();
 }
 
-inline std::ostream& operator << (std::ostream& output_device, const Status_Line& stat_line) {
+inline std::ostream& operator << (std::ostream& output_device, const Status_line& stat_line) {
   return output_device << stat_line.to_string();
 }
 
