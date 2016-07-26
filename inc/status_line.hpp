@@ -179,7 +179,7 @@ Status_line::Status_line(Response&& response) {
   {
     "HTTP/(\\d+)\\.(\\d+) " //< Protocol Version {Major.Minor}
     "(\\d{3}) "             //< Response Code
-    "(\\S+)"                //< Response Code Description
+    "[a-z A-Z]+"            //< Response Code Description
   };
 
   std::smatch m;
