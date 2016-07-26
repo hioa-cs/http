@@ -24,106 +24,117 @@
 
 namespace http {
 
-//------------------------------
-// This class respresents a 
-// response message status-line
-//------------------------------
+/**
+ * @brief This class respresents a 
+ * response message status-line
+ */
 class Status_Line {
 public:
-  //----------------------------
-  // Constructor to create the status line
-  // by supplying the version of the message
-  // and the status code
-  //
-  // @param version - The version of the message
-  // @param code    - The status code
-  //----------------------------
+  /**
+   * @brief Constructor to create the status line
+   * by supplying the version of the message
+   * and the status code
+   *
+   * @param version:
+   * The version of the message
+   *
+   * @param code:
+   * The status code
+   */
   explicit constexpr Status_Line(const Version version, const Code code) noexcept;
 
-  //-----------------------------------
-  // Constructor to construct a status-line
-  // from the incoming character stream of
-  // data which is a <std::string> object
-  //
-  // @tparam (std::string) response - The character stream of
-  //                                  data
-  //-----------------------------------
-  template <typename Response>
-  explicit Status_Line(Response&& response);
+  /**
+   * @brief Constructor to construct a status-line
+   * from the incoming character stream of
+   * data which is a {std::string} object
+   *
+   * @tparam T response:
+   * The character stream of data
+   */
+  template
+  <
+    typename T,
+    typename = std::enable_if_t
+               <std::is_same
+               <std::string, std::remove_const_t
+               <std::remove_reference_t<T>>>::value>
+  >
+  explicit Status_Line(T&& response);
 
-  //----------------------------
-  // Default destructor
-  //----------------------------
-  ~Status_Line() noexcept = default;
-
-  //----------------------------
-  // Default copy constructor
-  //----------------------------
+  /**
+   * @brief Default copy constructor
+   */
   Status_Line(const Status_Line&) noexcept = default;
 
-  //----------------------------
-  // Default move constructor
-  //----------------------------
+  /**
+   * @brief Default move constructor
+   */
   Status_Line(Status_Line&&) noexcept = default;
 
-  //----------------------------
-  // Default assignment operator
-  //----------------------------
+  /**
+   * @brief Default destructor
+   */
+  ~Status_Line() noexcept = default;
+
+  /**
+   * @brief Default copy assignment operator
+   */
   Status_Line& operator = (const Status_Line&) noexcept = default;
 
-  //-----------------------------------
-  // Default move assignment operator
-  //-----------------------------------
+  /**
+   * @brief Default move assignment operator
+   */
   Status_Line& operator = (Status_Line&&) noexcept = default;
 
-  //----------------------------
-  // Get the version of the message
-  //
-  // @return - Version of the message
-  //----------------------------
+  /**
+   * @brief Get the version of the message
+   *
+   * @return Version of the message
+   */
   constexpr Version get_version() const noexcept;
 
-  //----------------------------
-  // Set the version of the message
-  //
-  // @param version - Version of the message
-  //----------------------------
+  /**
+   * @brief Set the version of the message
+   *
+   * @param version:
+   * Version of the message
+   */
   void set_version(const Version version) noexcept;
 
-  //----------------------------
-  // Get message status code
-  //
-  // @return - Status code of the message
-  //----------------------------
+  /**
+   * @brief Get message status code
+   *
+   * @return Status code of the message
+   */
   constexpr Code get_code() const noexcept;
 
-  //----------------------------
-  // Set the message status code
-  //
-  // @param code - Status code of the message
-  //----------------------------
+  /**
+   * @brief Set the message status code
+   *
+   * @param code:
+   * Status code of the message
+   */
   void set_code(const Code code) noexcept;
 
-  //----------------------------
-  // Get a string representation of
-  // this class
-  //
-  // @return - A string representation
-  //----------------------------
+  /**
+   * @brief Get a string representation of
+   * this class
+   *
+   * @return A string representation
+   */
   std::string to_string() const;
 
-  //----------------------------
-  // Operator to transform this class
-  // into string form
-  //----------------------------
+  /**
+   * @brief Operator to transform this class
+   * into string form
+   */
   operator std::string () const;
-  //---------------------------
 private:
   //---------------------------
   // Class data members
-  //---------------------------
   Version version_;
   Code    code_;
+  //---------------------------
 }; //< class Status_Line
 
 /**--v----------- Implementation Details -----------v--**/
