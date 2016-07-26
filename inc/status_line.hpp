@@ -18,6 +18,8 @@
 #ifndef HTTP_STATUS_LINE_HPP
 #define HTTP_STATUS_LINE_HPP
 
+#include <regex>
+
 #include "version.hpp"
 #include "status_codes.hpp"
 #include "status_code_constants.hpp"
@@ -137,39 +139,65 @@ private:
   //---------------------------
 }; //< class Status_line
 
+/**
+ * @brief This class is used to represent an error that occurred
+ * from within the operations of class Status_line
+ */
+class Status_line_error : public std::runtime_error {
+  using runtime_error::runtime_error;
+};
+
 /**--v----------- Implementation Details -----------v--**/
 
-inline constexpr Status_line::Status_line(const Version version, const Code code) noexcept:
-  version_{version},
-  code_{code}
+inline constexpr Status_line::Status_line(const Version version, const Code code) noexcept
+  : version_{version}
+  , code_{code}
 {}
 
-template <typename Response>
+template <typename Response, typename>
 Status_line::Status_line(Response&& response) {
-  if (response.empty() or response.size() < 19 /*<-(19) minimum response length */) {
-    return;
+  if (response.empty() or response.size() < 16 /*<-(16) minimum response length */) {
+    throw Status_line_error {"Invalid response"};
   }
-  //-----------------------------------
-  std::string start {response.substr(response.find_first_not_of("\f\t\v "))};
-  //-----------------------------------
-  std::string sl {start.substr(0, start.find("\r\n"))};
-  //-----------------------------------
-  auto version_data = sl.substr(sl.find_first_of("/") + 1);
-  //-----------------------------------
-  std::string major {version_data.substr(0, version_data.find("."))};
-  std::string minor {version_data.substr(version_data.find(".") + 1),
-                                         version_data.find_first_of(' ')};
-  //-----------------------------------
-  unsigned maj = static_cast<unsigned>(std::stoul(major));
-  unsigned min = static_cast<unsigned>(std::stoul(minor));
-  //-----------------------------------
-  version_ = Version{maj, min};
-  //-----------------------------------
-  auto code = sl.substr(sl.find_first_of(' ') + 1, 3 /*<-(3) number of digits in code */);
-  //-----------------------------------
-  code_ = std::stoi(code);
-  //-----------------------------------
-  response = response.substr(response.find_first_of("\r\n") + 2);
+
+  bool is_canonical_line_ending {false};
+
+  // Extract {Status-Line} from response
+  std::string status_line;
+  std::size_t index;
+
+  if ((index = response.find("\r\n")) not_eq std::string::npos) {
+    status_line = response.substr(0, index);
+    is_canonical_line_ending = true;
+  } else if ((index = response.find('\n')) not_eq std::string::npos) {
+    status_line = response.substr(0, index);
+  } else {
+    throw Status_line_error {"Invalid line-ending"};
+  }
+
+  const static std::regex status_line_pattern
+  {
+    "HTTP/(\\d+)\\.(\\d+) " //< Protocol Version {Major.Minor}
+    "(\\d{3}) "             //< Response Code
+    "(\\S+)"                //< Response Code Description
+  };
+
+  std::smatch m;
+
+  if (not std::regex_match(status_line, m, status_line_pattern)) {
+    throw Status_line_error {"Invalid response line: " + status_line};
+  }
+
+  version_ = Version(std::stoi(m[1]), std::stoi(m[2]));
+
+  code_ = std::stoi(m[3]);
+
+  // Trim the response for further processing
+  if (is_canonical_line_ending) {
+    response = response.substr(index + 2);
+  } else {
+    response = response.substr(index + 1);
+  }
 }
 
 inline constexpr Version Status_line::get_version() const noexcept {
@@ -189,17 +217,17 @@ inline void Status_line::set_code(const Code code) noexcept {
 }
 
 inline std::string Status_line::to_string() const {
-  return *this;
+  std::ostringstream stat_line;
+  //---------------------------
+  stat_line << version_                << " "
+            << code_                   << " "
+            << code_description(code_) << "\r\n";
+  //---------------------------
+  return stat_line.str();
 }
 
 inline Status_line::operator std::string () const {
-  std::ostringstream status_info;
-  //---------------------------
-  status_info << version_                << " "
-              << code_                   << " "
-              << code_description(code_) << "\r\n";
-  //---------------------------
-  return status_info.str();
+  return to_string();
 }
 
 inline std::ostream& operator << (std::ostream& output_device, const Status_line& stat_line) {
