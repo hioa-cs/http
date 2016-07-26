@@ -238,9 +238,9 @@ inline void Request_line::set_version(const Version version) noexcept {
 inline std::string Request_line::to_string() const {
   std::ostringstream req_line;
   //----------------------------
-  req_line << method::str(method_)
-           << uri_
-           << version_ << "\r\n";
+  req_line << method::str(method_) << " "
+           << uri_                 << " "
+           << version_             << "\r\n";
   //-----------------------------
   return req_line.str();
 }
