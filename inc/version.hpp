@@ -152,7 +152,6 @@ inline Version::operator std::string () const {
   return to_string();
 }
 
-
 /**
  * @brief Operator to stream the contents of this class
  * into the specified output device
