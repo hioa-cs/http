@@ -155,7 +155,7 @@ inline constexpr Status_line::Status_line(const Version version, const Code code
 {}
 
 template <typename Response, typename>
-Status_line::Status_line(Response&& response) {
+inline Status_line::Status_line(Response&& response) {
   if (response.empty() or response.size() < 16 /*<-(16) minimum response length */) {
     throw Status_line_error {"Invalid response"};
   }
