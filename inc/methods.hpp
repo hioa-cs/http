@@ -44,9 +44,9 @@ namespace http {
      *
      * @return The string representation of the code
      */
-    inline const std::string& str(const Method m) {
+    static const std::string& str(const Method m) {
 
-      static std::array<std::string, 10> strings
+      const static std::array<std::string, 10> strings
       {
         {
          "GET", "POST", "PUT", "DELETE", "OPTIONS",
