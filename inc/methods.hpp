@@ -24,17 +24,29 @@
 
 namespace http {
 
+  /**
+   * @enum This type consist of mappings from HTTP method strings
+   * to their respective internal code values
+   */
   enum Method {
     GET, POST, PUT, DELETE, OPTIONS, HEAD, TRACE, CONNECT, PATCH,
     INVALID = 0xffff
-  };
+  }; //< enum Method
 
   namespace method {
 
-    /** Get method string from method code **/
-    inline const std::string& str(const Method m) {
+    /**
+     * @brief Get the string representation from an HTTP
+     * method code
+     *
+     * @param m:
+     * The HTTP method code
+     *
+     * @return The string representation of the code
+     */
+    static const std::string& str(const Method m) {
 
-      static std::array<std::string, 10> strings
+      const static std::array<std::string, 10> strings
       {
         {
          "GET", "POST", "PUT", "DELETE", "OPTIONS",
@@ -50,12 +62,13 @@ namespace http {
     }
 
     /**
-     * Get a code mapping from an HTTP
-     * method
+     * @brief Get a code mapping from an HTTP
+     * method string
      *
-     * @param method - The HTTP method
+     * @param method:
+     * The HTTP method code
      *
-     * @return - The code mapped to the method
+     * @return The code mapped to the method string
      **/
     inline Method code(const std::string& method) noexcept {
 
@@ -72,12 +85,24 @@ namespace http {
       return INVALID;
     }
 
-  } // namespace method
+  } //< namespace method
 
+  /**
+   * @brief Operator to stream an HTTP method code into the specified
+   * output device
+   *
+   * @param output_device:
+   * The output device to stream the HTTP method code into
+   *
+   * @param m:
+   * An HTTP method code
+   *
+   * @return Reference to the specified output device
+   */
   inline std::ostream& operator << (std::ostream& output_device, const Method m) {
     return output_device << http::method::str(m);
   }
 
-} // namespace http
+} //< namespace http
 
-#endif // HTTP_METHODS_HPP
+#endif //< HTTP_METHODS_HPP
