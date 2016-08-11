@@ -15,14 +15,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-CPP=clang++-3.6
+CPP=$(shell command -v clang++ || command -v clang++-3.8 || command -v clang++-3.7 || command -v clang++-3.6)
 CFLAGS=-std=c++14 -Ofast -Wall -Wextra
-INC=-I. -I../inc
+INC=-I. -I../inc -I../uri/include -I../uri/GSL/include
+SRC=../uri/src/percent_encoding.cpp ../uri/src/uri.cpp
 
 all: request response
 	
 request: request_test.cpp test_machine.o
-	$(CPP) $(CFLAGS) $(INC) -orequest request_test.cpp test_machine.o
+	$(CPP) $(CFLAGS) $(INC) -orequest request_test.cpp test_machine.o $(SRC)
 
 response: response_test.cpp test_machine.o
 	$(CPP) $(CFLAGS) $(INC) -oresponse response_test.cpp test_machine.o

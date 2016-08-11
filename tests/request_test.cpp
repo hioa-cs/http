@@ -39,8 +39,8 @@ TEST_CASE("Constructor to parse a character stream", "[Request]") {
   //-------------------------                   
   Request request {std::move(ingress)};
   //-------------------------
-  REQUIRE(request.method()                    == "GET");
-  REQUIRE(request.uri()                       == "https://github.com/hioa-cs/IncludeOS");
+  REQUIRE(request.method()                    == GET);
+  REQUIRE(request.uri().to_string()           == "https://github.com/hioa-cs/IncludeOS");
   REQUIRE(request.version()                   == Version(1, 1));
   REQUIRE(request.has_header("Connection"s)   == true);
   REQUIRE(request.header_value("Connection"s) == "close");
