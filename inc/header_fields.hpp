@@ -37,6 +37,7 @@ Field Cookie              {"Cookie"};
 Field Expect              {"Expect"};
 Field From                {"From"};
 Field Host                {"Host"};
+Field HTTP2_Settings      {"HTTP2-Settings"};
 Field If_Match            {"If-Match"};
 Field If_Modified_Since   {"If-Modified-Since"};
 Field If_None_Match       {"If-None-Match"};
@@ -47,6 +48,7 @@ Field Proxy_Authorization {"Proxy-Authorization"};
 Field Range               {"Range"};
 Field Referer             {"Referer"};
 Field TE                  {"TE"};
+Field Upgrade             {"Upgrade"};
 Field User_Agent          {"User-Agent"};
 } //< namespace Request
 //------------------------------------------------
@@ -61,6 +63,7 @@ Field Proxy_Authenticate  {"Proxy-Authenticate"};
 Field Retry_After         {"Retry-After"};
 Field Server              {"Server"};
 Field Set_Cookie          {"Set-Cookie"};
+Field Upgrade             {"Upgrade"};
 Field Vary                {"Vary"};
 Field WWW_Authenticate    {"WWW-Authenticate"};
 } //< namespace Response
