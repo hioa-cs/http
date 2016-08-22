@@ -18,16 +18,21 @@
 #ifndef HTTP_MIME_TYPES_HPP
 #define HTTP_MIME_TYPES_HPP
 
-#include <string>
+#include <cstring>
 #include <unordered_map>
 
 namespace http {
 //------------------------------------------------
-using Extension       = std::string;
-using Mime_Type       = std::string;
-using Mime_Type_Table = std::unordered_map<Extension, Mime_Type>;
+struct Mime_type_table_key_comparator {
+  bool operator()(const char* lhs, const char* rhs) const noexcept
+  { return std::strcmp(lhs, rhs) == 0; }
+};
 //------------------------------------------------
-const Mime_Type_Table mime_types {
+using Extension       = const char*;
+using Mime_type       = const char*;
+using Mime_type_table = std::unordered_map<Extension, Mime_type, std::hash<Extension>, Mime_type_table_key_comparator>;
+//------------------------------------------------
+const Mime_type_table mime_types {
   //< Text mimes
   {"html", "text/html"},
   {"htm" , "text/html"},
@@ -95,12 +100,10 @@ const Mime_Type_Table mime_types {
   {"msm" , "application/octet-stream"}
 }; //< mime_types
 
-inline const Mime_Type& extension_to_type(const Extension& extension) noexcept {
+inline Mime_type ext_to_mime_type(Extension extension) noexcept {
   auto iter = mime_types.find(extension);
   //------------------------------------------------
-  return (iter not_eq mime_types.end())
-          ? iter->second
-          : const_cast<Mime_Type_Table&>(mime_types)["txt"];
+  return (iter not_eq mime_types.end()) ? iter->second : "application/octet-stream";
 }
 
 } //< namespace http
