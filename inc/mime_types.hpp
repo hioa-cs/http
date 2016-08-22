@@ -44,9 +44,55 @@ const Mime_Type_Table mime_types {
   {"jpeg", "image/jpeg"},
   {"ico" , "image/x-icon"},
 
+  //< Audio mimes
+  {"mid" , "audio/midi"},
+  {"midi", "audio/midi"},
+  {"kar" , "audio/midi"},
+  {"mp3" , "audio/mpeg"},
+  {"ogg" , "audio/ogg"},
+  {"m4a" , "audio/x-m4a"},
+  {"ra"  , "audio/x-realaudio"},
+
+  //< Video mimes
+  {"3gp" , "video/3gpp"},
+  {"3gpp", "video/3gpp"},
+  {"ts"  , "video/mp2t"},
+  {"mp4" , "video/mp4"},
+  {"mpg" , "video/mpeg"},
+  {"mpeg", "video/mpeg"},
+  {"mov" , "video/quicktime"},
+  {"webm", "video/webm"},
+  {"flv" , "video/x-flv"},
+  {"m4v" , "video/x-m4v"},
+  {"mng" , "video/x-mng"},
+  {"asf" , "video/x-ms-asf"},
+  {"asx" , "video/x-ms-asf"},
+  {"wmv" , "video/x-ms-wmv"},
+  {"avi" , "video/x-msvideo"},
+
   //< Application mimes
-  {"json", "application/json"},
-  {"bin" , "application/octet-stream"}
+  {"zip"  , "application/zip"},
+  {"7z"   , "application/x-7z-compressed"},
+  {"jar"  , "application/java-archive"},
+  {"war"  , "application/java-archive"},
+  {"ear"  , "application/java-archive"},
+  {"json" , "application/json"},
+  {"pdf"  , "application/pdf"},
+  {"xhtml", "application/xhtml+xml"},
+  {"xspf" , "application/xspf+xml"},
+  {"der" , "application/x-x509-ca-cert"},
+  {"pem" , "application/x-x509-ca-cert"},
+  {"crt" , "application/x-x509-ca-cert"},
+  {"bin" , "application/octet-stream"},
+  {"exe" , "application/octet-stream"},
+  {"dll" , "application/octet-stream"},
+  {"deb" , "application/octet-stream"},
+  {"dmg" , "application/octet-stream"},
+  {"iso" , "application/octet-stream"},
+  {"img" , "application/octet-stream"},
+  {"msi" , "application/octet-stream"},
+  {"msp" , "application/octet-stream"},
+  {"msm" , "application/octet-stream"}
 }; //< mime_types
 
 inline const Mime_Type& extension_to_type(const Extension& extension) noexcept {

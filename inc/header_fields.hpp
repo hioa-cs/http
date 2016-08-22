@@ -6,9 +6,9 @@
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
-// 
+//
 //     http://www.apache.org/licenses/LICENSE-2.0
-// 
+//
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -33,9 +33,11 @@ Field Accept_Encoding     {"Accept-Encoding"};
 Field Accept_Language     {"Accept-Language"};
 Field Authorization       {"Authorization"};
 Field Connection          {"Connection"};
+Field Cookie              {"Cookie"};
 Field Expect              {"Expect"};
 Field From                {"From"};
 Field Host                {"Host"};
+Field HTTP2_Settings      {"HTTP2-Settings"};
 Field If_Match            {"If-Match"};
 Field If_Modified_Since   {"If-Modified-Since"};
 Field If_None_Match       {"If-None-Match"};
@@ -46,6 +48,7 @@ Field Proxy_Authorization {"Proxy-Authorization"};
 Field Range               {"Range"};
 Field Referer             {"Referer"};
 Field TE                  {"TE"};
+Field Upgrade             {"Upgrade"};
 Field User_Agent          {"User-Agent"};
 } //< namespace Request
 //------------------------------------------------
@@ -59,6 +62,8 @@ Field Location            {"Location"};
 Field Proxy_Authenticate  {"Proxy-Authenticate"};
 Field Retry_After         {"Retry-After"};
 Field Server              {"Server"};
+Field Set_Cookie          {"Set-Cookie"};
+Field Upgrade             {"Upgrade"};
 Field Vary                {"Vary"};
 Field WWW_Authenticate    {"WWW-Authenticate"};
 } //< namespace Response

@@ -23,202 +23,210 @@
 
 namespace http {
 
-//----------------------------------------
-// This class is used to represent
-// an http request message
-//----------------------------------------
+/**
+ * @brief This class is used to represent
+ * an HTTP request message
+ */
 class Request : public Message {
 public:
-  //----------------------------------------
-  // Default constructor
-  //
-  // Constructs a request message as follows:
-  //
-  // <GET / HTTP/1.1>
-  //----------------------------------------
+  /**
+   * @brief Default constructor
+   *
+   * Constructs a request message as follows:
+   *
+   * <GET / HTTP/1.1>
+   */
   explicit Request() = default;
 
-  //----------------------------------------
-  // Constructor to construct a request
-  // message from the incoming character
-  // stream of data which is a <std::string>
-  // object
-  //
-  // @tparam (std::string) request - The character stream
-  //                                 of data
-  //
-  // @param limit - Capacity of how many fields can
-  //                be added
-  //----------------------------------------
-  template <typename Ingress>
-  explicit Request(Ingress&& request, const Limit limit = 100);
+  /**
+   * @brief Construct a request message from the
+   * incoming character stream of data which is
+   * a {std::string} object
+   *
+   * @tparam T request:
+   * The character stream of data
+   *
+   * @param limit:
+   * Capacity of how many fields can be added to
+   * the header section
+   */
+  template
+  <
+    typename T,
+    typename = std::enable_if_t
+               <std::is_same
+               <std::string, std::remove_const_t
+               <std::remove_reference_t<T>>>::value>
+  >
+  explicit Request(T&& request, const Limit limit = 100);
 
-  //----------------------------------------
-  // Default copy constructor
-  //----------------------------------------
+  /**
+   * @brief Default copy constructor
+   */
   Request(Request&) = default;
 
-  //----------------------------------------
-  // Default move constructor
-  //----------------------------------------
+  /**
+   * @brief Default move constructor
+   */
   Request(Request&&) = default;
 
-  //----------------------------------------
-  // Default destructor
-  //----------------------------------------
+  /**
+   * @brief Default destructor
+   */
   ~Request() noexcept = default;
 
-  //----------------------------------------
-  // Default copy assignment operator
-  //----------------------------------------
+  /**
+   * @brief Default copy assignment operator
+   */
   Request& operator = (Request&) = default;
 
-  //----------------------------------------
-  // Default move assignment operator
-  //----------------------------------------
+  /**
+   * @brief Default move assignment operator
+   */
   Request& operator = (Request&&) = default;
 
-  //----------------------------------------
-  // Get the method of the request message
-  //
-  // @return - The method of the request
-  //----------------------------------------
-  const Method& method() const noexcept;
+  /**
+   * @brief Get the method of the request message
+   *
+   * @return The method of the request
+   */
+  Method method() const noexcept;
 
-  //----------------------------------------
-  // Set the method of the request message
-  //
-  // @param method - The method to set
-  //
-  // @return - The object that invoked this
-  //           method
-  //----------------------------------------
-  Request& set_method(const Method& method);
+  /**
+   * @brief Set the method of the request message
+   *
+   * @param method:
+   * The method to set
+   *
+   * @return The object that invoked this method
+   */
+  Request& set_method(const Method method);
 
-  //----------------------------------------
-  // Get the URI of the request message
-  //
-  // @return - The URI of the request
-  //----------------------------------------
+  /**
+   * @brief Get read-only reference to the URI of
+   * the request message
+   *
+   * @return Read-only reference to the URI of
+   * the request message
+   */
   const URI& uri() const noexcept;
 
-  //----------------------------------------
-  // Set the URI of the request message
-  //
-  // @param uri - The URI to set
-  //
-  // @return - The object that invoked this
-  //           method
-  //----------------------------------------
+  /**
+   * @brief Set the URI of the request message
+   *
+   * @param uri:
+   * The URI to set
+   *
+   * @return The object that invoked this method
+   */
   Request& set_uri(const URI& uri);
 
-  //----------------------------------------
-  // Get the version of the request message
-  //
-  // @return - The version of the request
-  //----------------------------------------
-  const Version& version() const noexcept;
+  /**
+   * @brief Get the version of the request message
+   *
+   * @return The version of the request
+   */
+  Version version() const noexcept;
 
-  //----------------------------------------
-  // Set the version of the request message
-  //
-  // @param version - The version to set
-  //
-  // @return - The object that invoked this
-  //           method
-  //----------------------------------------
-  Request& set_version(const Version& version) noexcept;
+  /**
+   * @brief Set the version of the request message
+   *
+   * @param version:
+   * The version to set
+   *
+   * @return The object that invoked this method
+   */
+  Request& set_version(const Version version) noexcept;
 
-  //----------------------------------------
-  // Get the value associated with the name
-  // field from a query string
-  //
-  // @tparam (std::string) name - The name to find the associated
-  //                              value
-  //
-  // @return - The associated value if name was found,
-  //           an empty string otherwise
-  //----------------------------------------
-  template <typename Name>
-  std::string query_value(Name&& name) const noexcept;
+  /**
+   * @brief Get the value associated with the name
+   * field from a query string
+   *
+   * @tparam T name:
+   * The name to find the associated value
+   *
+   * @return The associated value if name was found,
+   * an empty string otherwise
+   */
+  template
+  <
+    typename T,
+    typename = std::enable_if_t
+               <std::is_same
+               <std::string, std::remove_const_t
+               <std::remove_reference_t<T>>>::value>
+  >
+  const std::string& query_value(T&& name) noexcept;
 
-  //----------------------------------------
-  // Get the value associated with the name
-  // field from the message body in a post request
-  //
-  // @tparam (std::string) name - The name to find the associated
-  //                              value
-  //
-  // @return - The associated value if name was found,
-  //           an empty string otherwise
-  //----------------------------------------
-  template <typename Name>
-  std::string post_value(Name&& name) const noexcept;
+  /**
+   * @brief Get the value associated with the name
+   * field from the message body in a post request
+   *
+   * @tparam T name:
+   * The name to find the associated value
+   *
+   * @return The associated value if name was found,
+   * an empty string otherwise
+   */
+  template
+  <
+    typename T,
+    typename = std::enable_if_t
+               <std::is_same
+               <std::string, std::remove_const_t
+               <std::remove_reference_t<T>>>::value>
+  >
+  std::string post_value(T&& name) const noexcept;
 
-  //----------------------------------------
-  // Reset the request message as if it was now
-  // default constructed
-  //
-  // @return - The object that invoked this method
-  //----------------------------------------
+  /**
+   * @brief Reset the request message as if it was now
+   * default constructed
+   *
+   * @return The object that invoked this method
+   */
   virtual Request& reset() noexcept override;
 
-  //----------------------------------------
-  // Get a string representation of this
-  // class
-  //
-  // @return - A string representation
-  //----------------------------------------
+  /**
+   * @brief Get a string representation of this
+   * class
+   *
+   * @return A string representation
+   */
   virtual std::string to_string() const override;
 
-  //----------------------------------------
-  // Operator to transform this class
-  // into string form
-  //----------------------------------------
+  /**
+   * @brief Operator to transform this class
+   * into string form
+   */
   operator std::string () const;
-  //----------------------------------------
 private:
   //----------------------------------------
   // Class data members
+  Request_line request_line_;
   //----------------------------------------
-  Request_Line request_line_;
-
-  //----------------------------------------
-  // Find the value associated with a name
-  // in the following format:
-  //
-  // name=value
-  //
-  // @tparam (std::string) data - The data to search through
-  // @tparam (std::string) name - The name to find the associated
-  //                              value
-  //
-  // @return - The associated value if name was found,
-  //           an empty string otherwise
-  //----------------------------------------
-  template <typename Data, typename Name>
-  std::string get_value(Data&& data, Name&& name) const noexcept;
 }; //< class Request
 
 /**--v----------- Implementation Details -----------v--**/
 
-template <typename Ingress>
-inline Request::Request(Ingress&& request, const Limit limit) :
-  Message{limit},
-  request_line_{std::forward<Ingress>(request)}
+template <typename Ingress, typename>
+inline Request::Request(Ingress&& request, const Limit limit)
+  : Message{limit}
+  , request_line_{request}
 {
-  add_headers(std::forward<Ingress>(request));
-  auto start_of_body = request.find("\r\n\r\n");
-  if (start_of_body not_eq std::string::npos) {
+  add_headers(request);
+  std::size_t start_of_body;
+  if ((start_of_body = request.find("\r\n\r\n")) not_eq std::string::npos) {
     add_body(request.substr(start_of_body + 4));
+  } else if ((start_of_body = request.find("\n\n")) not_eq std::string::npos) {
+    add_body(request.substr(start_of_body + 2));
   }
 }
 
-inline const Method& Request::method() const noexcept {
+inline Method Request::method() const noexcept {
   return request_line_.get_method();
 }
 
-inline Request& Request::set_method(const Method& method) {
+inline Request& Request::set_method(const Method method) {
   request_line_.set_method(method);
   return *this;
 }
@@ -232,42 +240,31 @@ inline Request& Request::set_uri(const URI& uri) {
   return *this;
 }
 
-inline const Version& Request::version() const noexcept {
+inline Version Request::version() const noexcept {
   return request_line_.get_version();
 }
 
-inline Request& Request::set_version(const Version& version) noexcept {
+inline Request& Request::set_version(const Version version) noexcept {
   request_line_.set_version(version);
   return *this;
 }
 
-template <typename Name>
-inline std::string Request::query_value(Name&& name) const noexcept {
-  return get_value(uri(), std::forward<Name>(name));
+template <typename Name, typename>
+inline const std::string& Request::query_value(Name&& name) noexcept {
+  return request_line_.get_uri().query(std::forward<Name>(name));
 }
 
-template <typename Name>
+template <typename Name, typename>
 inline std::string Request::post_value(Name&& name) const noexcept {
-  if (method() not_eq POST) return std::string{};
-  return get_value(get_body(), std::forward<Name>(name));
-}
-
-inline Request& Request::reset() noexcept {
-  Message::reset();
-  return set_method(GET)
-        .set_uri("/")
-        .set_version(Version{1,1});
-}
-
-template <typename Data, typename Name>
-inline std::string Request::get_value(Data&& data, Name&& name) const noexcept {
-  if (data.empty() || name.empty()) return std::string{};
+  if ((method() not_eq POST) || get_body().empty() || name.empty()) {
+    return std::string{};
+  }
   //---------------------------------
-  auto target = data.find(std::forward<Name>(name));
+  auto target = get_body().find(std::forward<Name>(name));
   //---------------------------------
   if (target == std::string::npos) return std::string{};
   //---------------------------------
-  auto focal_point = data.substr(target);
+  auto focal_point = get_body().substr(target);
   //---------------------------------
   focal_point = focal_point.substr(0, focal_point.find_first_of('&'));
   //---------------------------------
@@ -278,21 +275,28 @@ inline std::string Request::get_value(Data&& data, Name&& name) const noexcept {
   return focal_point.substr(lock_and_load + 1);
 }
 
-inline std::string Request::to_string() const {
-  return *this;
+inline Request& Request::reset() noexcept {
+  Message::reset();
+  return set_method(GET)
+        .set_uri("/")
+        .set_version(Version{1,1});
 }
 
-inline Request::operator std::string () const {
+inline std::string Request::to_string() const {
   std::ostringstream req;
   //-----------------------------
   req << request_line_
       << Message::to_string();
- //------------------------------
+  //------------------------------
   return req.str();
 }
 
+inline Request::operator std::string () const {
+  return to_string();
+}
+
 inline Request_ptr make_request(buffer_t buf, const size_t len) {
-  return std::make_shared<Request>(std::string{reinterpret_cast<char*>(buf.get()), len});
+  return std::make_unique<Request>(std::string{reinterpret_cast<char*>(buf.get()), len});
 }
 
 inline std::ostream& operator << (std::ostream& output_device, const Request& req) {

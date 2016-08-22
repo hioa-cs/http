@@ -18,180 +18,219 @@
 #ifndef HTTP_STATUS_LINE_HPP
 #define HTTP_STATUS_LINE_HPP
 
+#include <regex>
+
 #include "version.hpp"
 #include "status_codes.hpp"
 #include "status_code_constants.hpp"
 
 namespace http {
 
-//------------------------------
-// This class respresents a 
-// response message status-line
-//------------------------------
-class Status_Line {
+/**
+ * @brief This class respresents a 
+ * response message status-line
+ */
+class Status_line {
 public:
-  //----------------------------
-  // Constructor to create the status line
-  // by supplying the version of the message
-  // and the status code
-  //
-  // @param version - The version of the message
-  // @param code    - The status code
-  //----------------------------
-  explicit constexpr Status_Line(const Version& version, const Code code) noexcept;
+  /**
+   * @brief Constructor to create the status line
+   * by supplying the version of the message
+   * and the status code
+   *
+   * @param version:
+   * The version of the message
+   *
+   * @param code:
+   * The status code
+   */
+  explicit constexpr Status_line(const Version version, const Code code) noexcept;
 
-  //-----------------------------------
-  // Constructor to construct a status-line
-  // from the incoming character stream of
-  // data which is a <std::string> object
-  //
-  // @tparam (std::string) response - The character stream of
-  //                                  data
-  //-----------------------------------
-  template <typename Response>
-  explicit Status_Line(Response&& response);
+  /**
+   * @brief Constructor to construct a status-line
+   * from the incoming character stream of
+   * data which is a {std::string} object
+   *
+   * @tparam T response:
+   * The character stream of data
+   */
+  template
+  <
+    typename T,
+    typename = std::enable_if_t
+               <std::is_same
+               <std::string, std::remove_const_t
+               <std::remove_reference_t<T>>>::value>
+  >
+  explicit Status_line(T&& response);
 
-  //----------------------------
-  // Default destructor
-  //----------------------------
-  ~Status_Line() noexcept = default;
+  /**
+   * @brief Default copy constructor
+   */
+  Status_line(const Status_line&) noexcept = default;
 
-  //----------------------------
-  // Default copy constructor
-  //----------------------------
-  Status_Line(const Status_Line&) noexcept = default;
+  /**
+   * @brief Default move constructor
+   */
+  Status_line(Status_line&&) noexcept = default;
 
-  //----------------------------
-  // Default move constructor
-  //----------------------------
-  Status_Line(Status_Line&&) noexcept = default;
+  /**
+   * @brief Default destructor
+   */
+  ~Status_line() noexcept = default;
 
-  //----------------------------
-  // Default assignment operator
-  //----------------------------
-  Status_Line& operator = (const Status_Line&) noexcept = default;
+  /**
+   * @brief Default copy assignment operator
+   */
+  Status_line& operator = (const Status_line&) noexcept = default;
 
-  //-----------------------------------
-  // Default move assignment operator
-  //-----------------------------------
-  Status_Line& operator = (Status_Line&&) noexcept = default;
+  /**
+   * @brief Default move assignment operator
+   */
+  Status_line& operator = (Status_line&&) noexcept = default;
 
-  //----------------------------
-  // Get the version of the message
-  //
-  // @return - Version of the message
-  //----------------------------
-  constexpr const Version& get_version() const noexcept;
+  /**
+   * @brief Get the version of the message
+   *
+   * @return Version of the message
+   */
+  constexpr Version get_version() const noexcept;
 
-  //----------------------------
-  // Set the version of the message
-  //
-  // @param version - Version of the message
-  //----------------------------
-  void set_version(const Version& version) noexcept;
+  /**
+   * @brief Set the version of the message
+   *
+   * @param version:
+   * Version of the message
+   */
+  void set_version(const Version version) noexcept;
 
-  //----------------------------
-  // Get message status code
-  //
-  // @return - Status code of the message
-  //----------------------------
+  /**
+   * @brief Get message status code
+   *
+   * @return Status code of the message
+   */
   constexpr Code get_code() const noexcept;
 
-  //----------------------------
-  // Set the message status code
-  //
-  // @param code - Status code of the message
-  //----------------------------
+  /**
+   * @brief Set the message status code
+   *
+   * @param code:
+   * Status code of the message
+   */
   void set_code(const Code code) noexcept;
 
-  //----------------------------
-  // Get a string representation of
-  // this class
-  //
-  // @return - A string representation
-  //----------------------------
+  /**
+   * @brief Get a string representation of
+   * this class
+   *
+   * @return A string representation
+   */
   std::string to_string() const;
 
-  //----------------------------
-  // Operator to transform this class
-  // into string form
-  //----------------------------
+  /**
+   * @brief Operator to transform this class
+   * into string form
+   */
   operator std::string () const;
-  //---------------------------
 private:
   //---------------------------
   // Class data members
-  //---------------------------
   Version version_;
   Code    code_;
-}; //< class Status_Line
+  //---------------------------
+}; //< class Status_line
+
+/**
+ * @brief This class is used to represent an error that occurred
+ * from within the operations of class Status_line
+ */
+class Status_line_error : public std::runtime_error {
+  using runtime_error::runtime_error;
+};
 
 /**--v----------- Implementation Details -----------v--**/
 
-inline constexpr Status_Line::Status_Line(const Version& version, const Code code) noexcept:
-  version_{version},
-  code_{code}
+inline constexpr Status_line::Status_line(const Version version, const Code code) noexcept
+  : version_{version}
+  , code_{code}
 {}
 
-template <typename Response>
-Status_Line::Status_Line(Response&& response) {
-  if (response.empty() or response.size() < 19 /*<-(19) minimum response length */) {
-    return;
+template <typename Response, typename>
+inline Status_line::Status_line(Response&& response) {
+  if (response.empty() or response.size() < 16 /*<-(16) minimum response length */) {
+    throw Status_line_error {"Invalid response"};
   }
-  //-----------------------------------
-  std::string start {response.substr(response.find_first_not_of("\f\t\v "))};
-  //-----------------------------------
-  std::string sl {start.substr(0, start.find("\r\n"))};
-  //-----------------------------------
-  auto version_data = sl.substr(sl.find_first_of("/") + 1);
-  //-----------------------------------
-  std::string major {version_data.substr(0, version_data.find("."))};
-  std::string minor {version_data.substr(version_data.find(".") + 1),
-                                         version_data.find_first_of(' ')};
-  //-----------------------------------
-  unsigned maj = static_cast<unsigned>(std::stoul(major));
-  unsigned min = static_cast<unsigned>(std::stoul(minor));
-  //-----------------------------------
-  version_ = Version{maj, min};
-  //-----------------------------------
-  auto code = sl.substr(sl.find_first_of(' ') + 1, 3 /*<-(3) number of digits in code */);
-  //-----------------------------------
-  code_ = std::stoi(code);
-  //-----------------------------------
-  response = response.substr(response.find_first_of("\r\n") + 2);
+
+  bool is_canonical_line_ending {false};
+
+  // Extract {Status-Line} from response
+  std::string status_line;
+  std::size_t index;
+
+  if ((index = response.find("\r\n")) not_eq std::string::npos) {
+    status_line = response.substr(0, index);
+    is_canonical_line_ending = true;
+  } else if ((index = response.find('\n')) not_eq std::string::npos) {
+    status_line = response.substr(0, index);
+  } else {
+    throw Status_line_error {"Invalid line-ending"};
+  }
+
+  const static std::regex status_line_pattern
+  {
+    "HTTP/(\\d+)\\.(\\d+) " //< Protocol Version {Major.Minor}
+    "(\\d{3}) "             //< Response Code
+    "[a-z A-Z]+"            //< Response Code Description
+  };
+
+  std::smatch m;
+
+  if (not std::regex_match(status_line, m, status_line_pattern)) {
+    throw Status_line_error {"Invalid response line: " + status_line};
+  }
+
+  version_ = Version(std::stoi(m[1]), std::stoi(m[2]));
+
+  code_ = std::stoi(m[3]);
+
+  // Trim the response for further processing
+  if (is_canonical_line_ending) {
+    response = response.substr(index + 2);
+  } else {
+    response = response.substr(index + 1);
+  }
 }
 
-inline constexpr const Version& Status_Line::get_version() const noexcept {
+inline constexpr Version Status_line::get_version() const noexcept {
   return version_;
 }
 
-inline void Status_Line::set_version(const Version& version) noexcept {
+inline void Status_line::set_version(const Version version) noexcept {
   version_ = version;
 }
 
-inline constexpr Code Status_Line::get_code() const noexcept {
+inline constexpr Code Status_line::get_code() const noexcept {
   return code_;
 }
 
-inline void Status_Line::set_code(const Code code) noexcept {
+inline void Status_line::set_code(const Code code) noexcept {
   code_ = code;
 }
 
-inline std::string Status_Line::to_string() const {
-  return *this;
+inline std::string Status_line::to_string() const {
+  std::ostringstream stat_line;
+  //---------------------------
+  stat_line << version_                << " "
+            << code_                   << " "
+            << code_description(code_) << "\r\n";
+  //---------------------------
+  return stat_line.str();
 }
 
-inline Status_Line::operator std::string () const {
-  std::ostringstream status_info;
-  //---------------------------
-  status_info << version_                << " "
-              << code_                   << " "
-              << code_description(code_) << "\r\n";
-  //---------------------------
-  return status_info.str();
+inline Status_line::operator std::string () const {
+  return to_string();
 }
 
-inline std::ostream& operator << (std::ostream& output_device, const Status_Line& stat_line) {
+inline std::ostream& operator << (std::ostream& output_device, const Status_line& stat_line) {
   return output_device << stat_line.to_string();
 }
 

@@ -24,9 +24,9 @@ namespace http {
 //------------------------------------------------
 using Code              = int;
 using Description       = const char*;
-using Status_Code_Table = std::unordered_map<Code, Description>;
+using Status_code_table = std::unordered_map<Code, Description>;
 //------------------------------------------------
-const Status_Code_Table status_codes {
+const Status_code_table status_codes {
   //< 1xx: Informational - Request received, continuing process
   {100, "Continue"},
   {101, "Switching Protocols"},
