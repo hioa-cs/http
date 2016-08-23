@@ -19,6 +19,7 @@
 #define HTTP2_FRAME_HEADER_HPP
 
 #include <cstdint>
+#include <ostream>
 #include <stdexcept>
 
 namespace http2 {
@@ -171,6 +172,14 @@ private:
 }; //< class Frame_header
 
 /**
+ * @brief This class is used to represent an error when an
+ * unknown frame type is encountered
+ */
+class Frame_type_error : public std::runtime_error {
+  using runtime_error::runtime_error;
+};
+
+/**
  * @brief This class is used to represent an error that occurred
  * from within the operations of class Frame_header
  */
@@ -199,6 +208,34 @@ inline Frame_header& Frame_header::set_length(const uint32_t length)
   length_ = length;
 
   return *this;
+}
+
+/**
+ * @brief Operator to stream a frame header type into the specified
+ * output device
+ *
+ * @param output_device:
+ * The output device to stream a frame header type into
+ *
+ * @param type:
+ * A frame header type
+ *
+ * @return Reference to the specified output device
+ */
+inline std::ostream& operator << (std::ostream& output_device, const Type type) {
+  switch (type) {
+    case Type::DATA:          return output_device << "DATA";
+    case Type::HEADERS:       return output_device << "HEADERS";
+    case Type::PRIORITY:      return output_device << "PRIORITY";
+    case Type::RST_STREAM:    return output_device << "RST_STREAM";
+    case Type::SETTINGS:      return output_device << "SETTINGS";
+    case Type::PUSH_PROMISE:  return output_device << "PUSH_PROMISE";
+    case Type::PING:          return output_device << "PING";
+    case Type::GOAWAY:        return output_device << "GOAWAY";
+    case Type::WINDOW_UPDATE: return output_device << "WINDOW_UPDATE";
+    case Type::CONTINUATION:  return output_device << "CONTINUATION";
+    default: throw Frame_type_error {"Unkown frame type"};
+  }
 }
 
 /**--^----------- Implementation Details -----------^--**/
