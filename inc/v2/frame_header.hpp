@@ -117,7 +117,7 @@ public:
    * @return The object that invoked this method
    */
   Frame_header& set_type(const Type type) noexcept
-  { type_ = type; return *this; }
+  { validate_frame_type(type); type_ = type; return *this; }
 
   /**
    * @brief Get the flags set on the frame
@@ -169,6 +169,16 @@ private:
 
   static constexpr uint32_t MAX_FRAME_SIZE {16777215};
   //------------------------------
+
+  /**
+   * @brief Make sure that the frame type is valid
+   *
+   * @param type
+   * The type to validate
+   *
+   * @return The object that invoked this method
+   */
+  Frame_header& validate_frame_type(const Type type);
 }; //< class Frame_header
 
 /**
@@ -192,7 +202,7 @@ class Frame_header_error : public std::runtime_error {
 inline Frame_header::Frame_header(const uint32_t length, const Type     type,
                                   const uint8_t  flags,  const uint32_t sid)
 {
-  set_length(length);
+  set_length(length).validate_frame_type(type);
 
   type_  = type;
   flags_ = flags;
@@ -208,6 +218,23 @@ inline Frame_header& Frame_header::set_length(const uint32_t length)
   length_ = length;
 
   return *this;
+}
+
+
+inline Frame_header& Frame_header::validate_frame_type(const Type type) {
+  switch (type) {
+    case Type::DATA:
+    case Type::HEADERS:
+    case Type::PRIORITY:
+    case Type::RST_STREAM:
+    case Type::SETTINGS:
+    case Type::PUSH_PROMISE:
+    case Type::PING:
+    case Type::GOAWAY:
+    case Type::WINDOW_UPDATE:
+    case Type::CONTINUATION:  return *this;
+    default: throw Frame_type_error {"Unkown frame type"};
+  }
 }
 
 /**
