@@ -76,6 +76,7 @@ public:
    * The id of the associated stream
    *
    * @note Throws {Frame_header_error} if length > 16777215 (protocol's max payload size)
+   * @note Throws {Frame_type_error} if an unknown type is specified
    */
   Frame_header(const uint32_t length, const Type     type,
                const uint8_t  flags,  const uint32_t sid);
@@ -113,6 +114,8 @@ public:
    *
    * @param type
    * The type of frame
+   *
+   * @note Throws {Frame_type_error} if an unknown type is specified
    *
    * @return The object that invoked this method
    */
