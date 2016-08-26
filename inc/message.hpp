@@ -289,6 +289,24 @@ public:
   Message& add_body(E&& message_body);
 
   /**
+   * @brief Append data to the entity of the message
+   *
+   * @tparam D data:
+   * The data to append to the entity of the message
+   *
+   * @return The object that invoked this method
+   */
+  template
+  <
+    typename D,
+    typename = std::enable_if_t
+               <std::is_same
+               <std::string, std::remove_const_t
+               <std::remove_reference_t<D>>>::value>
+  >
+  Message& append_body(D&& data);
+
+  /**
    * @brief Get a read-only reference to the entity in
    * this the message
    *
@@ -407,6 +425,16 @@ inline Message& Message::add_body(Entity&& message_body) {
   message_body_ = std::forward<Entity>(message_body);
   //-----------------------------------
   return add_header(header_fields::Entity::Content_Length,
+                    std::to_string(message_body_.size()));
+}
+
+template<typename Data, typename>
+inline Message& Message::append_body(Data&& data) {
+  if (data.empty()) return *this;
+  //-----------------------------------
+  message_body_.insert(message_body_.cend(), data.cbegin(), data.cend());
+  //-----------------------------------
+  return set_header(header_fields::Entity::Content_Length,
                     std::to_string(message_body_.size()));
 }
 
