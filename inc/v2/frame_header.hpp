@@ -205,11 +205,10 @@ class Frame_header_error : public std::runtime_error {
 inline Frame_header::Frame_header(const uint32_t length, const Type     type,
                                   const uint8_t  flags,  const uint32_t sid)
 {
-  set_length(length).validate_frame_type(type);
+  set_length(length).validate_frame_type(type).set_sid(sid);
 
   type_  = type;
   flags_ = flags;
-  sid_   = sid;
 }
 
 inline Frame_header& Frame_header::set_length(const uint32_t length)
