@@ -24,10 +24,10 @@
 namespace http {
 //------------------------------------------------
 using Extension       = std::string;
-using Mime_Type       = std::string;
-using Mime_Type_Table = std::unordered_map<Extension, Mime_Type>;
+using Mime_type       = std::string;
+using Mime_type_table = std::unordered_map<Extension, Mime_type>;
 //------------------------------------------------
-const Mime_Type_Table mime_types {
+const Mime_type_table mime_types {
   //< Text mimes
   {"html", "text/html"},
   {"htm" , "text/html"},
@@ -96,12 +96,12 @@ const Mime_Type_Table mime_types {
   {"msm" , "application/octet-stream"}
 }; //< mime_types
 
-inline const Mime_Type& extension_to_type(const Extension& extension) noexcept {
-  auto iter = mime_types.find(extension);
+inline const Mime_type& extension_to_type(const Extension& extension) noexcept {
+  auto it = mime_types.find(extension);
   //------------------------------------------------
-  return (iter not_eq mime_types.end())
-          ? iter->second
-          : const_cast<Mime_Type_Table&>(mime_types)["txt"];
+  return (it not_eq mime_types.end())
+          ? it->second
+          : const_cast<Mime_type_table&>(mime_types)["bin"];
 }
 
 } //< namespace http
