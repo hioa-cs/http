@@ -21,6 +21,7 @@
 #include <array>
 #include <string>
 #include <ostream>
+#include <unordered_map>
 
 namespace http {
 
@@ -54,11 +55,13 @@ namespace http {
         }
       };
 
-      if ((m >= 0) and (m < (strings.size() - 1))) {
+      auto e = strings.size() - 1;
+
+      if ((m >= 0) and (m < e)) {
         return strings[m];
       }
 
-      return strings[strings.size() - 1];
+      return strings[e];
     }
 
     /**
@@ -72,17 +75,21 @@ namespace http {
      **/
     inline Method code(const std::string& method) noexcept {
 
-      if (method == str(GET))     return GET;
-      if (method == str(POST))    return POST;
-      if (method == str(PUT))     return PUT;
-      if (method == str(DELETE))  return DELETE;
-      if (method == str(OPTIONS)) return OPTIONS;
-      if (method == str(HEAD))    return HEAD;
-      if (method == str(TRACE))   return TRACE;
-      if (method == str(CONNECT)) return CONNECT;
-      if (method == str(PATCH))   return PATCH;
+      const static std::unordered_map<std::string, Method> code_map {
+        {"GET",     GET},
+        {"POST",    POST},
+        {"PUT",     PUT},
+        {"DELETE",  DELETE},
+        {"OPTIONS", OPTIONS},
+        {"HEAD",    HEAD},
+        {"TRACE",   TRACE},
+        {"CONNECT", CONNECT},
+        {"PATCH",   PATCH}
+      };
 
-      return INVALID;
+      auto it = code_map.find(method);
+
+      return (it not_eq code_map.end()) ? it->second : INVALID;
     }
 
   } //< namespace method
