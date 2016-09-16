@@ -20,6 +20,8 @@
 
 #include <unordered_map>
 
+#include "status_code_constants.hpp"
+
 namespace http {
 //------------------------------------------------
 using Code              = int;
@@ -99,6 +101,26 @@ const Status_code_table status_codes {
 inline Description code_description(const Code code) noexcept {
   auto iter = status_codes.find(code);
   return (iter not_eq status_codes.end()) ? iter->second : "Internal Server Error";
+}
+
+inline bool is_informational(const status_t status_code) noexcept {
+  return (status_code >= Continue) && (status_code <= Processing);
+}
+
+inline bool is_success(const status_t status_code) noexcept {
+  return (status_code >= OK) && (status_code <= IM_Used);
+}
+
+inline bool is_redirection(const status_t status_code) noexcept {
+  return (status_code >= Multiple_Choices) && (status_code <= Permanent_Redirect);
+}
+
+inline bool is_client_error(const status_t status_code) noexcept {
+  return (status_code >= Bad_Request) && (status_code <= Request_Header_Fields_Too_Large);
+}
+
+inline bool is_server_error(const status_t status_code) noexcept {
+  return (status_code >= Internal_Server_Error) && (status_code <= Network_Authentication_Required);
 }
 
 } //< namespace http
