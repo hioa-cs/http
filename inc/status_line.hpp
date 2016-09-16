@@ -22,7 +22,6 @@
 
 #include "version.hpp"
 #include "status_codes.hpp"
-#include "status_code_constants.hpp"
 
 namespace http {
 
