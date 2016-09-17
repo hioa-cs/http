@@ -92,6 +92,14 @@ namespace http {
       return (it not_eq code_map.end()) ? it->second : INVALID;
     }
 
+    inline bool is_content_length_allowed(const Method method) noexcept {
+      return (method == POST) || (method == PUT);
+    }
+
+    inline bool is_content_length_required(const Method method) noexcept {
+      return (method == POST) || (method == PUT);
+    }
+
   } //< namespace method
 
   /**
