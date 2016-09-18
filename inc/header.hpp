@@ -351,7 +351,7 @@ inline Header::Header(T&& header_data, const Limit limit)
 }
 
 inline void Header::set_limit(const Limit limit) noexcept {
-  fields_.resize(limit);
+  fields_.reserve(limit);
 }
 
 inline Limit Header::get_limit() const noexcept {
