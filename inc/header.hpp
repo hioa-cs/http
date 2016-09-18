@@ -34,9 +34,9 @@ namespace http {
  * @brief This class is used to store header information
  * associated with an HTTP message
  *
- * By default it is limited to 100 fields
- * but the amount can be specified by using the
- * appropriate constructor and provided method
+ * By default it is limited to 25 fields but the amount
+ * can be specified by using the appropriate constructor
+ * and provided method
  */
 class Header {
 private:
@@ -47,7 +47,7 @@ private:
 public:
   /**
    * @brief Default constructor that limits the amount
-   * of fields that can be added to 100
+   * of fields that can be added to 25
    */
   explicit Header() noexcept;
 
@@ -79,7 +79,7 @@ public:
                <std::string, std::remove_const_t
                <std::remove_reference_t<T>>>::value>
   >
-  explicit Header(T&& header_data, const Limit limit = 100);
+  explicit Header(T&& header_data, const Limit limit = 25);
 
   /**
    * Default destructor
@@ -336,7 +336,7 @@ private:
 /**--v----------- Implementation Details -----------v--**/
 
 inline Header::Header() noexcept {
-  set_limit(100);
+  set_limit(25);
 }
 
 inline Header::Header(const Limit limit) noexcept {
@@ -351,7 +351,7 @@ inline Header::Header(T&& header_data, const Limit limit)
 }
 
 inline void Header::set_limit(const Limit limit) noexcept {
-  fields_.reserve(limit);
+  fields_.resize(limit);
 }
 
 inline Limit Header::get_limit() const noexcept {

@@ -58,7 +58,7 @@ public:
                <std::string, std::remove_const_t
                <std::remove_reference_t<T>>>::value>
   >
-  explicit Request(T&& request, const Limit limit = 100);
+  explicit Request(T&& request, const Limit limit = 25);
 
   /**
    * @brief Default copy constructor
