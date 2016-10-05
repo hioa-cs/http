@@ -18,13 +18,13 @@
 #ifndef HTTP_MIME_TYPES_HPP
 #define HTTP_MIME_TYPES_HPP
 
-#include <string>
+#include <experimental/string_view>
 #include <unordered_map>
 
 namespace http {
 //------------------------------------------------
-using Extension       = std::string;
-using Mime_type       = std::string;
+using Extension       = std::experimental::string_view;
+using Mime_type       = std::experimental::string_view;
 using Mime_type_table = std::unordered_map<Extension, Mime_type>;
 //------------------------------------------------
 const Mime_type_table mime_types {
@@ -96,12 +96,12 @@ const Mime_type_table mime_types {
   {"msm" , "application/octet-stream"}
 }; //< mime_types
 
-inline const Mime_type& extension_to_type(const Extension& extension) noexcept {
-  auto it = mime_types.find(extension);
+inline std::experimental::string_view ext_to_mime_type(const std::experimental::string_view extension) noexcept {
+  const auto it = mime_types.find(extension);
   //------------------------------------------------
-  return (it not_eq mime_types.end())
+  return (it not_eq mime_types.cend())
           ? it->second
-          : const_cast<Mime_type_table&>(mime_types)["bin"];
+          : "application/octet-stream";
 }
 
 } //< namespace http

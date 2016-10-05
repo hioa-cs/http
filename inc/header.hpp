@@ -18,11 +18,9 @@
 #ifndef HTTP_HEADER_HPP
 #define HTTP_HEADER_HPP
 
-#include <cctype>
-#include <utility>
-#include <ostream>
-#include <sstream>
 #include <algorithm>
+#include <cctype>
+#include <sstream>
 #include <type_traits>
 
 #include "common.hpp"
@@ -39,16 +37,12 @@ namespace http {
  * and provided method
  */
 class Header {
-private:
-  //-----------------------------------------------
-  // Internal class type aliases
-  using Const_iterator = Header_set::const_iterator;
-  //-----------------------------------------------
 public:
   /**
    * @brief Default constructor that limits the amount
    * of fields that can be added to 25
    */
+  template<typename = void>
   explicit Header() noexcept;
 
   /**
@@ -58,28 +52,21 @@ public:
    * @param limit:
    * Capacity of how many fields that can be added
    */
+  template<typename = void>
   explicit Header(const Limit limit) noexcept;
 
   /**
    * @brief Constructor that takes a stream of characters
-   * as a {std::string} object and parses it into a set
-   * of name-value pairs
+   * and parses it into a set of name-value pairs
    *
-   * @tparam T header_data:
+   * @param header_data:
    * The character stream of data to parse
    *
    * @param limit:
    * Capacity of how many fields can be added
    */
-  template
-  <
-    typename T,
-    typename = std::enable_if_t
-               <std::is_same
-               <std::string, std::remove_const_t
-               <std::remove_reference_t<T>>>::value>
-  >
-  explicit Header(T&& header_data, const Limit limit = 25);
+  template<typename = void>
+  explicit Header(const std::experimental::string_view header_data, const Limit limit = 25);
 
   /**
    * Default destructor
@@ -104,172 +91,115 @@ public:
   /**
    * Default move assignemt operator
    */
-  Header& operator = (Header&&) = default;
-
-  /**
-   * @brief Set the limit of how many fields can be added
-   *
-   * @param limit:
-   * Capacity of how many fields can be added
-   */
-  void set_limit(const Limit limit) noexcept;
+  Header& operator = (Header&&) noexcept = default;
 
   /**
    * @brief Get the current capacity
    *
    * @return The current capacity of the set
    */
-  Limit get_limit() const noexcept;
+  template<typename = void>
+  Limit limit() const noexcept;
 
   /**
    * @brief Add a new field to the current set
    *
-   * @tparam F field:
+   * @param field:
    * The name of the field
    *
-   * @tparam V value:
+   * @param value:
    * The field value
    *
    * @return true if the field was added, false otherwise
    */
-  template
-  <
-    typename F, typename V,
-    typename = std::enable_if_t
-               <std::is_same
-               <std::string, std::remove_const_t
-               <std::remove_reference_t<F>>>::value and
-                std::is_same
-               <std::string, std::remove_const_t
-               <std::remove_reference_t<V>>>::value>
-  >
-  bool add_field(F&& field, V&& value);
+  template<typename = void>
+  bool add_field(const std::experimental::string_view field, const std::experimental::string_view value);
 
   /**
    * @brief Add a set of fields to the current set from
-   * a {std::string} object in the following format:
+   * a stream of characters in the following format:
    *
    * "name: value\r\n"
    * "name: value\r\n"
    * ...
    *
-   * @tparam D data - The set of fields to add
+   * @param data
+   * The set of fields to add
    */
-  template
-  <
-    typename D,
-    typename = std::enable_if_t
-               <std::is_same
-               <std::string, std::remove_const_t
-               <std::remove_reference_t<D>>>::value>
-  >
-  void add_fields(D&& data);
+  void add_fields(const std::experimental::string_view data);
 
   /**
    * @brief Change the value of the specified field
    *
-   * If the field is absent from the set it will
-   * be added with the associated value once its
-   * within capacity
+   * If the field is absent it will be added with
+   * the associated value once its within capacity
    *
-   * @tparam F field:
+   * @param field:
    * The name of the field
 
-   * @tparam V value:
+   * @param value:
    * The field value
    *
    * @return true if successful, false otherwise
    */
-  template
-  <
-    typename F, typename V,
-    typename = std::enable_if_t
-               <std::is_same
-               <std::string, std::remove_const_t
-               <std::remove_reference_t<F>>>::value and
-                std::is_same
-               <std::string, std::remove_const_t
-               <std::remove_reference_t<V>>>::value>
-  >
-  bool set_field(F&& field, V&& value);
+  template<typename = void>
+  bool set_field(const std::experimental::string_view field, const std::experimental::string_view value);
 
   /**
    * @brief Get the value associated with a field
    *
-   * Should call <has_field> before calling this
-   *
-   * @tparam F field:
+   * @param field:
    * The name of the field
    *
    * @return The value associated with the specified
-   * field name
+   * field name if exist, empty view otherwise
    */
-  template
-  <
-    typename F,
-    typename = std::enable_if_t
-               <std::is_same
-               <std::string, std::remove_const_t
-               <std::remove_reference_t<F>>>::value>
-  >
-  const std::string& get_value(F&& field) const noexcept;
+  template<typename = void>
+  std::experimental::string_view value(const std::experimental::string_view field) const noexcept;
 
   /**
-   * @brief Check to see if the specified field is a
-   * member of the set of fields
+   * @brief Check to see if the specified field is present
    *
-   * @tparam F field:
+   * @param field:
    * The name of the field
    *
    * @return true if the field is a member, false otherwise
    */
-  template
-  <
-    typename F,
-    typename = std::enable_if_t
-               <std::is_same
-               <std::string, std::remove_const_t
-               <std::remove_reference_t<F>>>::value>
-  >
-  bool has_field(F&& field) const noexcept;
+  template<typename = void>
+  bool has_field(const std::experimental::string_view field) const noexcept;
 
   /**
-   * @brief Check to see if the set of fields is empty
+   * @brief Check to see if there are no fields present
    *
-   * @return true if there are no fields within the set,
+   * @return true if there are no fields present,
    * false otherwise
    */
+  template<typename = void>
   bool is_empty() const noexcept;
 
   /**
    * @brief Check to see how many fields are currently
-   * in the set of fields
+   * present
    *
-   * @return The amount of fields currently in the set
+   * @return The amount of fields currently present
    */
+  template<typename = void>
   Limit size() const noexcept;
 
   /**
-   * @brief Remove all fields from the set of fields with the
+   * @brief Remove all fields currently present with the
    * specified name
    *
-   * @tparam F field:
+   * @param field:
    * The name of the field to remove
    */
-  template
-  <
-    typename F,
-    typename = std::enable_if_t
-               <std::is_same
-               <std::string, std::remove_const_t
-               <std::remove_reference_t<F>>>::value>
-  >
-  void erase(F&& field) noexcept;
+  template<typename = void>
+  void erase(const std::experimental::string_view field) noexcept;
 
   /**
-   * @brief Remove all fields from the set of fields leaving
-   * it empty
+   * @brief Remove all fields leaving none present
    */
+  template<typename = void>
   void clear() noexcept;
 
   /**
@@ -278,7 +208,7 @@ public:
    *
    * @return A string representation
    */
-  virtual std::string to_string() const;
+  std::string to_string() const;
 
   /**
    * @brief Operator to transform this class
@@ -292,252 +222,208 @@ private:
   //-----------------------------------------------
 
   /**
+   * @brief Set the limit of how many fields can be added
+   *
+   * @param limit:
+   * Capacity of how many fields can be added
+   */
+  template<typename = void>
+  void set_limit(const Limit limit) noexcept;
+
+  /**
    * @brief Find the location of a field within the set of
    * fields
    *
-   * @tparam F field:
-   * The field name to locate a field within the set of fields
+   * @param field:
+   * The field name to locate a field if present
    *
    * @return Iterator to the location of the field, else
    * location to the end of the sequence
    */
-  template
-  <
-    typename F,
-    typename = std::enable_if_t
-               <std::is_same
-               <std::string, std::remove_const_t
-               <std::remove_reference_t<F>>>::value>
-  >
-  Const_iterator find(F&& field) const noexcept;
-
-  /**
-   * @brief Operator to stream the contents of the set of fields
-   * into the specified output device
-   *
-   * The output format is as follows:
-   * field : value "\r\n"
-   * field : value "\r\n"
-   * ...
-   * "\r\n"
-   *
-   * @param output_device:
-   * The output device to stream the contents from an instance of this
-   * class into
-   *
-   * @param header:
-   * An instance of this class
-   *
-   * @return Reference to the specified output device
-   */
-  friend std::ostream& operator << (std::ostream& output_device, const Header& header);
-}; //< class Header
+  template<typename = void>
+  Header_set::const_iterator find(const std::experimental::string_view field) const noexcept;
+};
 
 /**--v----------- Implementation Details -----------v--**/
 
+template<typename>
 inline Header::Header() noexcept {
-  set_limit(25);
+  set_limit(25U);
 }
 
+template<typename>
 inline Header::Header(const Limit limit) noexcept {
   set_limit(limit);
 }
 
-template <typename T, typename>
-inline Header::Header(T&& header_data, const Limit limit)
+template<typename>
+inline Header::Header(const std::experimental::string_view header_data, const Limit limit)
   : Header {limit}
 {
   add_fields(header_data);
 }
 
-inline void Header::set_limit(const Limit limit) noexcept {
-  fields_.reserve(limit);
-}
-
-inline Limit Header::get_limit() const noexcept {
+template<typename>
+inline Limit Header::limit() const noexcept {
   return fields_.capacity();
 }
 
-template <typename Field, typename Value, typename>
-inline bool Header::add_field(Field&& field, Value&& value) {
-  if (field.empty()) return false;
-  //-----------------------------------
-  if (size() < fields_.capacity()) {
-    fields_.emplace_back(std::forward<Field>(field), std::forward<Value>(value));
+template<typename>
+inline bool Header::add_field(const std::experimental::string_view field, const std::experimental::string_view value) {
+  if ((not field.empty()) and (size() < limit())) {
+    fields_.emplace_back(field, value);
     return true;
   }
-  //-----------------------------------
+
   return false;
 }
 
-template <typename Data, typename>
-inline void Header::add_fields(Data&& data) {
-  if (data.empty()) return;
+inline void Header::add_fields(std::experimental::string_view fields_view) {
+  if (fields_view.empty() or (size() == limit())) return;
   //-----------------------------------
-  auto iterator = data.cbegin();
-  auto sentinel = data.cend();
+  std::experimental::string_view field {};
+  std::experimental::string_view value {};
+  std::experimental::string_view::size_type base {0U};
+  std::experimental::string_view::size_type break_point {};
   //-----------------------------------
-  std::string field;
-  std::string value;
-  field.reserve(24);
-  value.reserve(64);
+  fields_view.remove_prefix(fields_view.find_first_not_of(' '));
   //-----------------------------------
-  Limit limit {0};
-  int character = *iterator;
-  const int stop_char = std::char_traits<std::string::value_type>::eof();
-  //-----------------------------------
-  while (iterator not_eq sentinel
-         and character not_eq stop_char
-         and limit < fields_.capacity())
-  {
-    field.clear();
-    value.clear();
-    //-----------------------------------
-    while (iterator not_eq sentinel and isspace(character)) {
-      character = *++iterator;
-    }
-    //-----------------------------------
-    while (iterator not_eq sentinel
-           and character not_eq stop_char
-           and character not_eq ':'
-           and not iscntrl(character)
-           and not isspace(character))
-    {
-      field += character;
-      character = *++iterator;
-    }
-    //-----------------------------------
-    while (iterator not_eq sentinel and isspace(character)) {
-      character = *++iterator;
-    }
-    //-----------------------------------
-    if (character not_eq ':') return;
-    //-----------------------------------
-    if (iterator not_eq sentinel) character = *++iterator;
-    //-----------------------------------
-    while (iterator not_eq sentinel and isspace(character)) {
-      character = *++iterator;
-    }
-    //-----------------------------------
-parse_value:
-    while (iterator not_eq sentinel
-           and character not_eq stop_char
-           and not iscntrl(character)
-           and character not_eq '\r'
-           and character not_eq '\n')
-    {
-      value += character;
-      character = *++iterator;
-    }
-    //-----------------------------------
-    int lws_count {0};
-    //-----------------------------------
-    while (iterator not_eq sentinel
-           and (character == '\r' || character == '\n'))
-    {
-      character = *++iterator;
-      ++lws_count;
-    }
-    //-----------------------------------
-    if (lws_count == 3) break;
-    //-----------------------------------
-    while (iterator not_eq sentinel and isspace(character)) {
-      character = *++iterator;
+  while (size() < limit()) {
+    if ((break_point = fields_view.find(':')) not_eq std::experimental::string_view::npos) {
+      field = fields_view.substr(base, break_point);
       //-----------------------------------
-      if (iterator not_eq sentinel
-          and ((iterator + 1) not_eq sentinel)
-          and isspace(*(iterator + 1)))
-        continue;
-      //-----------------------------------
-      goto parse_value;
+      fields_view.remove_prefix(field.length() + 1U);
+      fields_view.remove_prefix(fields_view.find_first_not_of(' '));
     }
-    //-----------------------------------
-    add_field(field, value);
-    //-----------------------------------
-    ++limit;
-    //-----------------------------------
+    else {
+      break;
+    }
+
+    if ((break_point = fields_view.find("\r\n")) not_eq std::experimental::string_view::npos) {
+      value = fields_view.substr(base, break_point);
+      fields_.emplace_back(field, value);
+      fields_view.remove_prefix(value.length() + 2U);
+    }
+    else if ((break_point = fields_view.find('\n')) not_eq std::experimental::string_view::npos) {
+      value = fields_view.substr(base, break_point);
+      fields_.emplace_back(field, value);
+      fields_view.remove_prefix(value.length() + 1U);
+    }
+
+    if (fields_view[0] == '\r' or fields_view[0] == '\n') {
+      break;
+    }
   }
 }
 
-template <typename Field, typename Value, typename>
-inline bool Header::set_field(Field&& field, Value&& value) {
+template<typename>
+inline bool Header::set_field(const std::experimental::string_view field, const std::experimental::string_view value) {
   if (field.empty() || value.empty()) return false;
   //-----------------------------------
-  auto target = find(field);
+  const auto target = find(field);
   //-----------------------------------
-  if (target not_eq fields_.end()) {
-    const_cast<std::string&>((*target).second) = std::forward<Value>(value);
+  if (target not_eq fields_.cend()) {
+    const_cast<std::experimental::string_view&>(target->second) = value;
     return true;
   }
-  else return add_field(std::forward<Field>(field), std::forward<Value>(value));
+  else return add_field(field, value);
 }
 
-template <typename Field, typename>
-inline const std::string& Header::get_value(Field&& field) const noexcept {
+template<typename>
+inline std::experimental::string_view Header::value(const std::experimental::string_view field) const noexcept {
   if (field.empty()) return field;
-  //-----------------------------------
-  return find(std::forward<Field>(field))->second;
+  const auto it = find(field);
+  return (it not_eq fields_.cend()) ? it->second : std::experimental::string_view{};
 }
 
-template <typename Field, typename>
-inline bool Header::has_field(Field&& field) const noexcept {
+template<typename>
+inline bool Header::has_field(const std::experimental::string_view field) const noexcept {
   if (field.empty()) return false;
   //-----------------------------------
-  return find(std::forward<Field>(field)) not_eq fields_.end();
+  return find(field) not_eq fields_.cend();
 }
 
+template<typename>
 inline bool Header::is_empty() const noexcept {
   return fields_.empty();
 }
 
+template<typename>
 inline Limit Header::size() const noexcept {
   return fields_.size();
 }
 
-template <typename Field, typename>
-inline void Header::erase(Field&& field) noexcept {
+template<typename>
+inline void Header::erase(const std::experimental::string_view field) noexcept {
   if (field.empty()) return;
   //-----------------------------------
-  auto target = find(std::forward<Field>(field));
-  //-----------------------------------
-  if (target not_eq fields_.end()) fields_.erase(target);
+  Header_set::const_iterator target;
+  while ((target = find(field)) not_eq fields_.cend()) {
+    fields_.erase(target);
+  }
 }
 
+template<typename>
 inline void Header::clear() noexcept {
   fields_.clear();
 }
 
-inline static std::string string_to_lower_case(std::string s) {
-  std::transform(s.begin(), s.end(), s.begin(), ::tolower);
-  return s;
-}
-
-template <typename Field, typename>
-inline Header::Const_iterator Header::find(Field&& field) const noexcept {
-  if (field.empty()) return fields_.end();
-  //-----------------------------------
-  return
-  std::find_if(fields_.begin(), fields_.end(), [&field](const auto& f) {
-    return string_to_lower_case(f.first) == string_to_lower_case(field);
-  });
-}
-
 inline std::string Header::to_string() const {
-  std::ostringstream header;
-  //-----------------------------------
-  for (const auto& field : fields_) {
-    header << field.first << ": " << field.second << "\r\n";
+  if (size()) {
+    std::ostringstream header;
+    //-----------------------------------
+    for (const auto& field : fields_) {
+      header << field.first << ": " << field.second << "\r\n";
+    }
+    header << "\r\n";
+    //-----------------------------------
+    return header.str();
   }
-  //-----------------------------------
-  header << "\r\n";
-  //-----------------------------------
-  return header.str();
+
+  return {};
 }
 
 inline Header::operator std::string () const {
   return to_string();
 }
 
+template<typename>
+inline void Header::set_limit(const Limit limit) noexcept {
+  fields_.reserve(limit);
+}
+
+template<typename>
+inline Header_set::const_iterator Header::find(const std::experimental::string_view field) const noexcept {
+  if (field.empty()) return fields_.cend();
+  //-----------------------------------
+  return
+    std::find_if(fields_.cbegin(), fields_.cend(), [&field](const auto __) {
+      return (__.first.length() == field.length())
+        and std::equal(__.first.data(), __.first.data() + __.first.length(), field.data(), [](const auto a, const auto b) {
+          return std::tolower(a) == std::tolower(b);
+        });
+    });
+}
+
+/**
+ * @brief Operator to stream the of this class into the
+ * specified output device
+ *
+ * The output format is as follows:
+ * field : value "\r\n"
+ * field : value "\r\n"
+ * ...
+ * "\r\n"
+ *
+ * @param output_device:
+ * The output device to stream the contents from an instance of this
+ * class into
+ *
+ * @param header:
+ * An instance of this class
+ *
+ * @return Reference to the specified output device
+ */
 inline std::ostream& operator << (std::ostream& output_device, const Header& header) {
   return output_device << header.to_string();
 }

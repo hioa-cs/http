@@ -18,71 +18,58 @@
 #ifndef HTTP_HEADER_FIELDS_HPP
 #define HTTP_HEADER_FIELDS_HPP
 
-#include <string>
+#include <experimental/string_view>
 
 namespace http {
 namespace header_fields {
 //------------------------------------------------
-using Field = const std::string;
+using Field = const std::experimental::string_view;
 //------------------------------------------------
 //------------------------------------------------
-namespace Request {
-Field Accept              {"Accept"};
-Field Accept_Charset      {"Accept-Charset"};
-Field Accept_Encoding     {"Accept-Encoding"};
-Field Accept_Language     {"Accept-Language"};
-Field Authorization       {"Authorization"};
-Field Connection          {"Connection"};
-Field Cookie              {"Cookie"};
-Field Expect              {"Expect"};
-Field From                {"From"};
-Field Host                {"Host"};
-Field HTTP2_Settings      {"HTTP2-Settings"};
-Field If_Match            {"If-Match"};
-Field If_Modified_Since   {"If-Modified-Since"};
-Field If_None_Match       {"If-None-Match"};
-Field If_Range            {"If-Range"};
-Field If_Unmodified_Since {"If-Unmodified-Since"};
-Field Max_Forwards        {"Max-Forwards"};
-Field Proxy_Authorization {"Proxy-Authorization"};
-Field Range               {"Range"};
-Field Referer             {"Referer"};
-Field TE                  {"TE"};
-Field Upgrade             {"Upgrade"};
-Field User_Agent          {"User-Agent"};
-} //< namespace Request
-//------------------------------------------------
-//------------------------------------------------
-namespace Response {
-Field Accept_Ranges       {"Accept-Ranges"};
-Field Age                 {"Age"};
-Field Connection          {"Connection"};
-Field ETag                {"ETag"};
-Field Location            {"Location"};
-Field Proxy_Authenticate  {"Proxy-Authenticate"};
-Field Retry_After         {"Retry-After"};
-Field Server              {"Server"};
-Field Set_Cookie          {"Set-Cookie"};
-Field Upgrade             {"Upgrade"};
-Field Vary                {"Vary"};
-Field WWW_Authenticate    {"WWW-Authenticate"};
-} //< namespace Response
-//------------------------------------------------
-//------------------------------------------------
-namespace Entity {
-Field Allow               {"Allow"};
-Field Content_Encoding    {"Content-Encoding"};
-Field Content_Language    {"Content-Language"};
-Field Content_Length      {"Content-Length"};
-Field Content_Location    {"Content-Location"};
-Field Content_MD5         {"Content-MD5"};
-Field Content_Range       {"Content-Range"};
-Field Content_Type        {"Content-Type"};
-Field Expires             {"Expires"};
-Field Last_Modified       {"Last-Modified"};
-} //< namespace Entity
-//------------------------------------------------
-//------------------------------------------------
+Field accept              {"Accept"};
+Field accept_charset      {"Accept-Charset"};
+Field accept_encoding     {"Accept-Encoding"};
+Field accept_ranges       {"Accept-Ranges"};
+Field accept_language     {"Accept-Language"};
+Field allow               {"Allow"};
+Field age                 {"Age"};
+Field authorization       {"Authorization"};
+Field connection          {"Connection"};
+Field cookie              {"Cookie"};
+Field content_encoding    {"Content-Encoding"};
+Field content_language    {"Content-Language"};
+Field content_length      {"Content-Length"};
+Field content_location    {"Content-Location"};
+Field content_md5         {"Content-MD5"};
+Field content_range       {"Content-Range"};
+Field content_type        {"Content-Type"};
+Field date                {"Date"};
+Field etag                {"ETag"};
+Field expect              {"Expect"};
+Field expires             {"Expires"};
+Field from                {"From"};
+Field host                {"Host"};
+Field http2_settings      {"HTTP2-Settings"};
+Field if_match            {"If-Match"};
+Field if_modified_since   {"If-Modified-Since"};
+Field if_none_match       {"If-None-Match"};
+Field if_range            {"If-Range"};
+Field if_unmodified_since {"If-Unmodified-Since"};
+Field last_modified       {"Last-Modified"};
+Field location            {"Location"};
+Field max_forwards        {"Max-Forwards"};
+Field proxy_authorization {"Proxy-Authorization"};
+Field proxy_authenticate  {"Proxy-Authenticate"};
+Field range               {"Range"};
+Field referer             {"Referer"};
+Field retry_after         {"Retry-After"};
+Field server              {"Server"};
+Field set_cookie          {"Set-Cookie"};
+Field te                  {"TE"};
+Field upgrade             {"Upgrade"};
+Field user_agent          {"User-Agent"};
+Field vary                {"Vary"};
+Field www_authenticate    {"WWW-Authenticate"};
 } //< namespace header_fields
 } //< namespace http
 

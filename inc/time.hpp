@@ -16,9 +16,10 @@
 // limitations under the License.
 
 #include <ctime>
-#include <string>
-#include <sstream>
+#include <experimental/string_view>
 #include <iomanip>
+#include <sstream>
+#include <string>
 
 namespace http {
 namespace time {
@@ -58,23 +59,23 @@ inline std::string from_time_t(const std::time_t time) {
  *
  * @note Returns a default initialized {time_t} object if an error occurred
  */
-inline std::time_t to_time_t(const std::string& time) {
+inline std::time_t to_time_t(const std::experimental::string_view time) {
   std::tm tm {};
 
   if (time.empty()) goto error;
 
   // Format: Sun, 06 Nov 1994 08:49:37 GMT
-  if (strptime(time.c_str(), "%a, %d %b %Y %H:%M:%S %Z", &tm) not_eq nullptr) {
+  if (strptime(time.data(), "%a, %d %b %Y %H:%M:%S %Z", &tm) not_eq nullptr) {
     return std::mktime(&tm);
   }
 
   // Format: Sunday, 06-Nov-94 08:49:37 GMT
-  if (strptime(time.c_str(), "%a, %d-%b-%y %H:%M:%S %Z", &tm) not_eq nullptr) {
+  if (strptime(time.data(), "%a, %d-%b-%y %H:%M:%S %Z", &tm) not_eq nullptr) {
     return std::mktime(&tm);
   }
 
   // Format: Sun Nov 6 08:49:37 1994
-  if(strptime(time.c_str(), "%a %b %d %H:%M:%S %Y", &tm) not_eq nullptr) {
+  if(strptime(time.data(), "%a %b %d %H:%M:%S %Y", &tm) not_eq nullptr) {
     return std::mktime(&tm);
   }
 
@@ -90,8 +91,7 @@ inline std::time_t to_time_t(const std::string& time) {
  * @note Returns an empty string if an error occurred
  */
 inline std::string now() {
-  auto time_object = std::time(nullptr);
-  return from_time_t(time_object);
+  return from_time_t(std::time(nullptr));
 }
 
 } //< namespace time

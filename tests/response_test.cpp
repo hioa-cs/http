@@ -6,9 +6,9 @@
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
-// 
+//
 //     http://www.apache.org/licenses/LICENSE-2.0
-// 
+//
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -21,33 +21,30 @@
 #define CRLF "\r\n"
 
 using namespace std;
-using namespace http::header_fields;
 
 ///////////////////////////////////////////////////////////////////////////////
 TEST_CASE("Default constructor only creates status line", "[Response]") {
-  http::Response response;
-  //-------------------------
-  string test_string = "HTTP/1.1 200 OK" CRLF CRLF;
-  //-------------------------
+  const http::Response response;
+  const std::string test_string {"HTTP/1.1 200 OK" CRLF};
   REQUIRE(test_string == response.to_string());
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 TEST_CASE("Get status code", "[Response]") {
-  http::Response response;
-  //-------------------------
-  REQUIRE(response.status_code() == http::status_t::OK);
+  const http::Response response;
+  REQUIRE(http::OK == response.status_code());
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 SCENARIO("Given a Response object") {
    http::Response response;
-   //-------------------------
+
    WHEN("We set it's status code") {
-    response.set_status_code(http::status_t::Not_Found);
-    //-------------------------
+    response.set_status_code(http::Not_Found);
+
     THEN("It should be reflected") {
-      REQUIRE(response.to_string() == "HTTP/1.1 404 Not Found" CRLF CRLF);
+      const std::string test_string {"HTTP/1.1 404 Not Found" CRLF};
+      REQUIRE(test_string == response.to_string());
     }
    }
 }
@@ -55,84 +52,98 @@ SCENARIO("Given a Response object") {
 ///////////////////////////////////////////////////////////////////////////////
 TEST_CASE("Add header field", "[Response]") {
   http::Response response;
-  //-------------------------
-  response.add_header(Response::Server, "IncludeOS/0.7.0"s);
-  //-------------------------
-  string test_string = "HTTP/1.1 200 OK" CRLF
-                       "Server: IncludeOS/0.7.0" CRLF CRLF;
-  //-------------------------
+  response.header().add_field(http::header_fields::server, "IncludeOS/Acorn v0.7.0");
+
+  const std::string test_string {
+    "HTTP/1.1 200 OK" CRLF
+    "Server: IncludeOS/Acorn v0.7.0" CRLF CRLF
+  };
+
   REQUIRE(test_string == response.to_string());
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 TEST_CASE("{Date} header field", "[Response]") {
   http::Response response;
-  auto time_stamp = http::time::now();
-  //-------------------------
-  response.add_header(Response::Server, "IncludeOS/0.7.0"s)
-          .add_header("Date"s, time_stamp);
-  //-------------------------
-  string test_string = "HTTP/1.1 200 OK"s + "\r\n"s +
-                       "Server: IncludeOS/0.7.0"s + "\r\n"s +
-                       "Date: "s + time_stamp + "\r\n"s + "\r\n"s;
-  //-------------------------
+  const auto time_stamp = http::time::now();
+
+  response.header().add_field(http::header_fields::server, "IncludeOS/Acorn v0.7.0");
+  response.header().add_field(http::header_fields::date, time_stamp);
+
+  const std::string test_string {
+    "HTTP/1.1 200 OK"s + CRLF +
+    "Server: IncludeOS/Acorn v0.7.0" + CRLF +
+    "Date: " + time_stamp + CRLF + CRLF
+  };
+
   REQUIRE(test_string == response.to_string());
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 TEST_CASE("Change header field value", "[Response]") {
   http::Response response;
-  //-------------------------
-  response.add_header(Entity::Content_Type, "text/plain"s)
-          .set_header(Entity::Content_Type, "text/html"s);
-  //-------------------------
-  string test_string = "HTTP/1.1 200 OK" CRLF
-                       "Content-Type: text/html" CRLF CRLF;
-  //-------------------------
+
+  response.header().add_field(http::header_fields::content_type, "text/plain");
+  response.header().set_field(http::header_fields::content_type, "text/html");
+
+  const std::string test_string {
+    "HTTP/1.1 200 OK" CRLF
+    "Content-Type: text/html" CRLF CRLF
+  };
+
   REQUIRE(test_string == response.to_string());
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 TEST_CASE("Erase header field", "[Response]") {
-  http::Response response{http::status_t::Bad_Request};
-  //-------------------------
-  response.add_header(Response::Server, "IncludeOS/0.7.0"s)
-          .erase_header(Response::Server);
-  //-------------------------
-  string test_string = "HTTP/1.1 400 Bad Request" CRLF CRLF;
-  //-------------------------
+  http::Response response{http::Bad_Request};
+
+  response.header().add_field(http::header_fields::server, "IncludeOS/Acorn v0.7.0");
+  response.header().erase(http::header_fields::server);
+
+  const std::string test_string {"HTTP/1.1 400 Bad Request" CRLF};
+
   REQUIRE(test_string == response.to_string());
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 TEST_CASE("Clear headers", "[Response]") {
-  http::Response response{http::status_t::Bad_Request};
-  //-------------------------
-  response.add_header(Response::Server,     "IncludeOS/0.7.0"s)
-          .add_header(Entity::Content_Type, "text/javascript"s)
-          .clear_headers();
-  //-------------------------
-  string test_string = "HTTP/1.1 400 Bad Request" CRLF CRLF;
-  //-------------------------
+  http::Response response{http::Bad_Request};
+
+  response.header().add_field(http::header_fields::server, "IncludeOS/Acorn v0.7.0");
+  response.header().add_field(http::header_fields::content_type, "text/javascript");
+  response.header().clear();
+
+  const std::string test_string {"HTTP/1.1 400 Bad Request" CRLF};
+
   REQUIRE(test_string == response.to_string());
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 TEST_CASE("Add message body", "[Response]") {
   http::Response response;
-  //-------------------------
-  response.add_header(Response::Server,     "IncludeOS/0.7.0"s)
-          .add_header(Entity::Content_Type, "text/javascript"s);
-  //-------------------------
-  string javascript_file = "document.write('Hello from IncludeOS');";
-  //-------------------------
+
+  response.header().add_field(http::header_fields::server, "IncludeOS/Acorn v0.7.0");
+  response.header().add_field(http::header_fields::content_type, "text/javascript");
+
+  const std::string javascript_file {"document.write('Hello from IncludeOS');"};
+
   response.add_body(javascript_file);
-  //-------------------------
-  string test_string = "HTTP/1.1 200 OK" CRLF
-                       "Server: IncludeOS/0.7.0" CRLF
-                       "Content-Type: text/javascript" CRLF
-                       "Content-Length: 39" CRLF CRLF
-                       "document.write('Hello from IncludeOS');";
-  //-------------------------
+
+  const std::string test_string {
+    "HTTP/1.1 200 OK" CRLF
+    "Server: IncludeOS/Acorn v0.7.0" CRLF
+    "Content-Type: text/javascript" CRLF
+    "Content-Length: 39" CRLF CRLF
+    "document.write('Hello from IncludeOS');"
+  };
+
   REQUIRE(test_string == response.to_string());
+}
+
+///////////////////////////////////////////////////////////////////////////////
+TEST_CASE("Make Response_ptr", "[Response]") {
+  const auto response = http::make_response("HTTP/1.1 200 OK\r\n");
+  const std::string test_string {"HTTP/1.1 200 OK\r\n"};
+  REQUIRE(test_string == response->to_string());
 }

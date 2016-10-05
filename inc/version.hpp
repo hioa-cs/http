@@ -6,9 +6,9 @@
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
-// 
+//
 //     http://www.apache.org/licenses/LICENSE-2.0
-// 
+//
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,7 +18,6 @@
 #ifndef HTTP_VERSION_HPP
 #define HTTP_VERSION_HPP
 
-#include <string>
 #include <sstream>
 
 namespace http {
@@ -38,7 +37,7 @@ public:
    * @param minor:
    * The minor version number
    */
-  explicit constexpr Version(const unsigned major = 1, const unsigned minor = 1) noexcept;
+  explicit constexpr Version(const unsigned major = 1U, const unsigned minor = 1U) noexcept;
 
   /**
    * @brief Default destructor
@@ -70,30 +69,38 @@ public:
    *
    * @return The major version number
    */
-  constexpr unsigned get_major() const noexcept;
+  template <typename = void>
+  constexpr unsigned major() const noexcept;
 
   /**
    * @brief Set the major version number
    *
    * @param major:
    * The major version number
+   *
+   * @return The object that invoked this method
    */
-  void set_major(const unsigned major) noexcept;
+  template <typename = void>
+  Version& set_major(const unsigned major) noexcept;
 
   /**
    * @brief Get the minor version number
    *
    * @return The minor version number
    */
-  constexpr unsigned get_minor() const noexcept;
+  template <typename = void>
+  constexpr unsigned minor() const noexcept;
 
   /**
    * @brief Set the minor version number
    *
    * @param minor:
    * The minor version number
+   *
+   * @return The object that invoked this method
    */
-  void set_minor(const unsigned minor) noexcept;
+  template <typename = void>
+  Version& set_minor(const unsigned minor) noexcept;
 
   /**
    * @brief Get a string representation of this
@@ -123,20 +130,26 @@ inline constexpr Version::Version(const unsigned major, const unsigned minor) no
   , minor_{minor}
 {}
 
-inline constexpr unsigned Version::get_major() const noexcept {
+template<typename>
+inline constexpr unsigned Version::major() const noexcept {
   return major_;
 }
 
-inline void Version::set_major(const unsigned major) noexcept {
+template<typename>
+inline Version& Version::set_major(const unsigned major) noexcept {
   major_ = major;
+  return *this;
 }
 
-inline constexpr unsigned Version::get_minor() const noexcept {
+template<typename>
+inline constexpr unsigned Version::minor() const noexcept {
   return minor_;
 }
 
-inline void Version::set_minor(const unsigned minor) noexcept {
+template<typename>
+inline Version& Version::set_minor(const unsigned minor) noexcept {
   minor_ = minor;
+  return *this;
 }
 
 inline std::string Version::to_string() const {
@@ -173,48 +186,54 @@ inline std::ostream& operator << (std::ostream& output_device, const Version& ve
 /**
  * @brief Operator to check for equality
  */
-inline bool operator == (const Version& lhs, const Version& rhs) noexcept {
-  return lhs.get_major() == rhs.get_major()
+template<typename = void>
+inline constexpr bool operator == (const Version lhs, const Version rhs) noexcept {
+  return lhs.major() == rhs.major()
          and
-         lhs.get_minor() == rhs.get_minor();
+         lhs.minor() == rhs.minor();
 }
 
 /**
  * @brief Operator to check for inequality
  */
-inline bool operator != (const Version& lhs, const Version& rhs) noexcept {
+template<typename = void>
+inline constexpr bool operator != (const Version lhs, const Version rhs) noexcept {
   return not (lhs == rhs);
 }
 
 /**
  * @brief Operator to check for less than relationship
  */
-inline bool operator < (const Version& lhs, const Version& rhs) noexcept {
-  return lhs.get_major() < rhs.get_major()
+template<typename = void>
+inline constexpr bool operator < (const Version lhs, const Version rhs) noexcept {
+  return lhs.major() < rhs.major()
          or
-         lhs.get_minor() < rhs.get_minor();
+         lhs.minor() < rhs.minor();
 }
 
 /**
  * @brief Operator to check for greater than relationship
  */
-inline bool operator > (const Version& lhs, const Version& rhs) noexcept {
-  return lhs.get_major() > rhs.get_major()
+template<typename = void>
+inline constexpr bool operator > (const Version lhs, const Version rhs) noexcept {
+  return lhs.major() > rhs.major()
          or
-         lhs.get_minor() > rhs.get_minor();
+         lhs.minor() > rhs.minor();
 }
 
 /**
  * @brief Operator to check for less than or equal to relationship
  */
-inline bool operator <= (const Version& lhs, const Version& rhs) noexcept {
+template<typename = void>
+inline constexpr bool operator <= (const Version lhs, const Version rhs) noexcept {
   return (lhs < rhs) or (lhs == rhs);
 }
 
 /**
  * @brief Operator to check for greater than or equal to relationship
  */
-inline bool operator >= (const Version& lhs, const Version& rhs) noexcept {
+template<typename = void>
+inline constexpr bool operator >= (const Version lhs, const Version rhs) noexcept {
   return (lhs > rhs) or (lhs == rhs);
 }
 

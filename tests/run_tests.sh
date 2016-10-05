@@ -6,9 +6,9 @@
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
-# 
+#
 #     http://www.apache.org/licenses/LICENSE-2.0
-# 
+#
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -21,6 +21,22 @@ echo "About to run the test suite...";
 echo "Building...";
 make;
 echo "";
+echo "Testing mime_types module...";
+./mime_types;
+echo "Testing status_codes module...";
+./status_codes;
+echo "Testing version module...";
+./version;
+echo "Testing methods module...";
+./methods;
+echo "Testing header module...";
+./header;
+echo "Testing message module...";
+./message;
+echo "Testing status_line module...";
+./status_line;
+echo "Testing request_line module...";
+./request_line;
 echo "Testing request module...";
 ./request;
 echo "Testing response module...";
