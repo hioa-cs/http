@@ -36,25 +36,17 @@ public:
   /**
    * @brief Default constructor
    */
-  explicit Request_line() = default;
+  template<typename = void>
+  explicit Request_line();
 
   /**
    * @brief Construct a {Request-Line} from the incoming
-   * character stream of data which is a {std::string}
-   * object
+   * character stream of data
    *
-   * @tparam T request:
+   * @param request:
    * The character stream of data
    */
-  template
-  <
-    typename T,
-    typename = std::enable_if_t
-               <std::is_same
-               <std::string, std::remove_const_t
-               <std::remove_reference_t<T>>>::value>
-  >
-  explicit Request_line(T&& request);
+  explicit Request_line(std::experimental::string_view request);
 
   /**
    * @brief Default copy constructor
@@ -86,7 +78,8 @@ public:
    *
    * @return The method of the message
    */
-  Method get_method() const noexcept;
+  template<typename = void>
+  Method method() const noexcept;
 
   /**
    * @brief Set the method of the message
@@ -94,6 +87,7 @@ public:
    * @param method:
    * The method of the message
    */
+  template<typename = void>
   void set_method(const Method method) noexcept;
 
   /**
@@ -102,7 +96,8 @@ public:
    *
    * @return A reference to the URI object
    */
-  URI& get_uri() noexcept;
+  template<typename = void>
+  URI& uri() noexcept;
 
   /**
    * @brief Get a read-only reference to the URI object
@@ -110,7 +105,8 @@ public:
    *
    * @return A read-only reference to the URI object
    */
-  const URI& get_uri() const noexcept;
+  template<typename = void>
+  const URI& uri() const noexcept;
 
   /**
    * @brief Set the URI of the message
@@ -118,6 +114,7 @@ public:
    * @param uri:
    * The URI of the message
    */
+  template<typename = void>
   void set_uri(const URI& uri);
 
   /**
@@ -125,7 +122,8 @@ public:
    *
    * @return The version of the message
    */
-  Version get_version() const noexcept;
+  template<typename = void>
+  Version version() const noexcept;
 
   /**
    * @brief Set the version of the message
@@ -133,6 +131,7 @@ public:
    * @param version:
    * The version of the message
    */
+  template<typename = void>
   void set_version(const Version version) noexcept;
 
   /**
@@ -168,29 +167,29 @@ class Request_line_error : public std::runtime_error {
 
 /**--v----------- Implementation Details -----------v--**/
 
-template <typename T, typename>
-inline Request_line::Request_line(T&& request) {
-  if (request.empty() or request.size() < 15 /*<-(15) minimum request length */) {
-    throw Request_line_error("Invalid request");
+template<typename>
+inline Request_line::Request_line() {}
+
+inline Request_line::Request_line(std::experimental::string_view request) {
+  if (request.empty() or (request.length() < 15) /*<-(15) minimum request length */) {
+    throw Request_line_error{"Invalid request: " + request.to_string()};
   }
+
+  // Extract {Request-Line} from request
+  std::size_t index;
+  std::experimental::string_view request_line;
 
   bool is_canonical_line_ending {false};
 
-  // Extract {Request-Line} from request
-  std::string request_line;
-  std::size_t index;
-
-  if ((index = request.find("\r\n")) not_eq std::string::npos) {
+  if ((index = request.find("\r\n")) not_eq std::experimental::string_view::npos) {
     request_line = request.substr(0, index);
     is_canonical_line_ending = true;
-  } else if ((index = request.find('\n')) not_eq std::string::npos) {
+  } else if ((index = request.find('\n')) not_eq std::experimental::string_view::npos) {
     request_line = request.substr(0, index);
   } else {
-    throw Request_line_error("Invalid line-ending");
+    throw Request_line_error{"Invalid line-ending"};
   }
 
-  // Should identify strings according to RFC 2616 sect.5.1
-  // https://tools.ietf.org/html/rfc2616#section-5.1
   const static std::regex request_line_pattern
   {
     "\\s*(GET|POST|PUT|DELETE|OPTIONS|HEAD|TRACE|CONNECT) " // Method
@@ -198,13 +197,13 @@ inline Request_line::Request_line(T&& request) {
     "HTTP/(\\d+)\\.(\\d+)" // Version Major.Minor
   };
 
-  std::smatch m;
+  std::cmatch m;
 
-  if (not std::regex_match(request_line, m, request_line_pattern)) {
-    throw Request_line_error("Invalid request line: " + request_line);
+  if (not std::regex_match(request_line.data(), request_line.data() + request_line.length(), m, request_line_pattern)) {
+    throw Request_line_error{"Invalid request line: " + request_line.to_string()};
   }
 
-  method_ = method::code(m[1]);
+  method_ = method::code(m[1].str());
 
   new (&uri_) URI(m[2]);
 
@@ -220,30 +219,37 @@ inline Request_line::Request_line(T&& request) {
   }
 }
 
-inline Method Request_line::get_method() const noexcept {
+template<typename>
+inline Method Request_line::method() const noexcept {
   return method_;
 }
 
+template<typename>
 inline void Request_line::set_method(const Method method) noexcept {
   method_ = method;
 }
 
-inline URI& Request_line::get_uri() noexcept {
+template<typename>
+inline URI& Request_line::uri() noexcept {
   return uri_;
 }
 
-inline const URI& Request_line::get_uri() const noexcept {
+template<typename>
+inline const URI& Request_line::uri() const noexcept {
   return uri_;
 }
 
+template<typename>
 inline void Request_line::set_uri(const URI& uri) {
   new (&uri_) URI(uri);
 }
 
-inline Version Request_line::get_version() const noexcept {
+template<typename>
+inline Version Request_line::version() const noexcept {
   return version_;
 }
 
+template<typename>
 inline void Request_line::set_version(const Version version) noexcept {
   version_ = version;
 }

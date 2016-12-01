@@ -18,8 +18,6 @@
 #ifndef HTTP_MESSAGE_HPP
 #define HTTP_MESSAGE_HPP
 
-#include <sstream>
-
 #include "time.hpp"
 #include "header.hpp"
 
@@ -30,18 +28,12 @@ namespace http {
  * HTTP message
  */
 class Message {
-private:
-  //----------------------------------------
-  // Internal class type aliases
-  using HSize        = Limit;
-  using HValue       = const std::string&;
-  using Message_Body = std::string;
-  //----------------------------------------
 public:
   /**
    * @brief Default constructor
    */
-  explicit Message() = default;
+  template<typename = void>
+  explicit Message();
 
   /**
    * @brief Constructor to specify the limit of how many
@@ -49,8 +41,9 @@ public:
    *
    * @param limit:
    * Maximum number of fields that can be added to the
-   * message             
+   * message
    */
+  template<typename = void>
   explicit Message(const Limit limit) noexcept;
 
   /**
@@ -76,235 +69,47 @@ public:
   /**
    * @brief Default move assignment operator
    */
-  Message& operator = (Message&&) = default;
+  Message& operator = (Message&&) noexcept = default;
 
   /**
-   * @brief Set the maximum number of fields that
-   * can be added to the header section for an instance
-   * of this class
+   * @brief Get a modifiable reference to the object that
+   * represents the header section
    *
-   * @param limit:
-   * The maximum number of fields that can be added to
-   * the header section
-   *
-   * @return The object that invoked this method
+   * @return Modifiable reference to the header object
    */
-  Message& set_header_limit(const Limit limit) noexcept;
-
-  /**
-   * @brief Get the current field limit for this
-   * message
-   *
-   * @return The current field limit
-   */
-  Limit get_header_limit() const noexcept;
-
-  /**
-   * @brief Add a new field to the current set of
-   * headers
-   *
-   * @tparam F field:
-   * The name of the field
-   *
-   * @tparam V value:
-   * The field value
-   *
-   * @return The object that invoked this method
-   */
-  template
-  <
-    typename F, typename V,
-    typename = std::enable_if_t
-               <std::is_same
-               <std::string, std::remove_const_t
-               <std::remove_reference_t<F>>>::value and
-                std::is_same
-               <std::string, std::remove_const_t
-               <std::remove_reference_t<V>>>::value>
-  >
-  Message& add_header(F&& field, V&& value);
-
-  /**
-   * @brief Add a set of fields to the header section of
-   * the message from a {std::string} object in the
-   * following format:
-   *
-   * "name: value\r\n"
-   * "name: value\r\n"
-   * ...
-   *
-   * @tparam D data:
-   * The set of fields to add to the header section of this
-   * message                     
-   *
-   * @return The object that invoked this method
-   */
-  template
-  <
-    typename D,
-    typename = std::enable_if_t
-               <std::is_same
-               <std::string, std::remove_const_t
-               <std::remove_reference_t<D>>>::value>
-  >
-  Message& add_headers(D&& data);
-
-  /**
-   * @brief Change the value of the specified field
-   *
-   * If the field is absent from the message it
-   * will be added with the associated value if
-   * within capacity of maximum allowable limit
-   *
-   * @tparam F field:
-   * The name of the field
-
-   * @tparam V value:
-   * The field value
-   *
-   * @return The object that invoked this method
-   */
-  template
-  <
-    typename F, typename V,
-    typename = std::enable_if_t
-               <std::is_same
-               <std::string, std::remove_const_t
-               <std::remove_reference_t<F>>>::value and
-                std::is_same
-               <std::string, std::remove_const_t
-               <std::remove_reference_t<V>>>::value>
-  >
-  Message& set_header(F&& field, V&& value);
+  template<typename = void>
+  Header& header() noexcept;
 
   /**
    * @brief Get a read-only reference to the object that
-   * represents the header section in this message
+   * represents the header section
    *
-   * @return The header in this message
+   * @return Read-only reference to the header object
    */
-  const Header& get_header() const noexcept;
-
-  /**
-   * @brief Get the value associated with the
-   * specified field name
-   *
-   * Should call <has_header> before calling this
-   *
-   * @tparam F field:
-   * The field name to get associated value
-   *
-   * @return The value associated with the specified
-   * field name
-   */
-  template
-  <
-    typename F,
-    typename = std::enable_if_t
-               <std::is_same
-               <std::string, std::remove_const_t
-               <std::remove_reference_t<F>>>::value>
-  >
-  HValue header_value(F&& field) const noexcept;
-
-  /**
-   * @brief Check if the specified field is within
-   * this message
-   *
-   * @tparam F field:
-   * The field name to search for
-   *
-   * @return true is present, false otherwise
-   */
-  template
-  <
-    typename F,
-    typename = std::enable_if_t
-               <std::is_same
-               <std::string, std::remove_const_t
-               <std::remove_reference_t<F>>>::value>
-  >
-  bool has_header(F&& field) const noexcept;
-
-  /**
-   * @brief Remove the specified field from this
-   * message
-   *
-   * @tparam F field:
-   * The header field to remove from this message
-   *
-   * @return The object that invoked this method
-   */
-  template
-  <
-    typename F,
-    typename = std::enable_if_t
-               <std::is_same
-               <std::string, std::remove_const_t
-               <std::remove_reference_t<F>>>::value>
-  >
-  Message& erase_header(F&& field) noexcept;
-
-  /**
-   * @brief Remove all header fields from this
-   * message
-   *
-   * @return The object that invoked this method
-   */
-  Message& clear_headers() noexcept;
-
-  /**
-   * @brief Check if there are no fields in this
-   * message
-   *
-   * @return true if the message has no fields,
-   * false otherwise
-   */
-  bool is_header_empty() const noexcept;
-
-  /**
-   * @brief Get the number of fields in this
-   * message
-   *
-   * @return The number of fields in this message
-   */
-  HSize header_size() const noexcept;
+  template<typename = void>
+  const Header& header() const noexcept;
 
   /**
    * @brief Add an entity to the message
    *
-   * @tparam E message_body:
-   * The entity to be sent with the message
+   * @param view:
+   * A view of the entity to be sent with the message
    *
    * @return The object that invoked this method
    */
-  template
-  <
-    typename E,
-    typename = std::enable_if_t
-               <std::is_same
-               <std::string, std::remove_const_t
-               <std::remove_reference_t<E>>>::value>
-  >
-  Message& add_body(E&& message_body);
+  template<typename = void>
+  Message& add_body(const std::experimental::string_view view);
 
   /**
    * @brief Append data to the entity of the message
    *
-   * @tparam D data:
-   * The data to append to the entity of the message
+   * @param view:
+   * A view of the data to append to the entity of the message
    *
    * @return The object that invoked this method
    */
-  template
-  <
-    typename D,
-    typename = std::enable_if_t
-               <std::is_same
-               <std::string, std::remove_const_t
-               <std::remove_reference_t<D>>>::value>
-  >
-  Message& append_body(D&& data);
+  template<typename = void>
+  Message& append_body(const std::experimental::string_view view);
 
   /**
    * @brief Get a read-only reference to the entity in
@@ -313,13 +118,15 @@ public:
    * @return A read-only reference to the entity in
    * this the message
    */
-  const Message_Body& get_body() const noexcept;
+  template<typename = void>
+  std::experimental::string_view body() const noexcept;
 
   /**
    * @brief Remove the entity from the message
    *
    * @return The object that invoked this method
    */
+  template<typename = void>
   Message& clear_body() noexcept;
 
   /**
@@ -346,109 +153,72 @@ public:
 private:
   //------------------------------
   // Class data members
-  Header       header_fields_;
-  Message_Body message_body_;
+  Header header_fields_;
+  std::string content_length_;
+  std::experimental::string_view message_body_;
+
+  std::string extended_body_;
   //------------------------------
 }; //< class Message
 
 /**--v----------- Implementation Details -----------v--**/
 
+template<typename>
+inline Message::Message() {}
+
+template<typename>
 inline Message::Message(const Limit limit) noexcept:
-  header_fields_{limit},
-  message_body_{}
+  header_fields_{limit}
 {}
 
-inline Message& Message::set_header_limit(const Limit limit) noexcept {
-  header_fields_.set_limit(limit);
-  return *this;
-}
-
-inline Limit Message::get_header_limit() const noexcept {
-  return header_fields_.get_limit();
-}
-
-template <typename Field, typename Value, typename>
-inline Message& Message::add_header(Field&& field, Value&& value) {
-  header_fields_.add_field(std::forward<Field>(field), std::forward<Value>(value));
-  return *this;
-}
-
-template <typename Data, typename>
-inline Message& Message::add_headers(Data&& data) {
-  header_fields_.add_fields(std::forward<Data>(data));
-  return *this;
-}
-
-template <typename Field, typename Value, typename>
-inline Message& Message::set_header(Field&& field, Value&& value) {
-  header_fields_.set_field(std::forward<Field>(field), std::forward<Value>(value));
-  return *this;
-}
-
-inline const Header& Message::get_header() const noexcept {
+template<typename>
+inline Header& Message::header() noexcept {
   return header_fields_;
 }
 
-template <typename Field, typename>
-inline Message::HValue Message::header_value(Field&& field) const noexcept {
-  return header_fields_.get_value(std::forward<Field>(field));
+template<typename>
+inline const Header& Message::header() const noexcept {
+  return header_fields_;
 }
 
-template <typename Field, typename>
-inline bool Message::has_header(Field&& field) const noexcept {
-  return header_fields_.has_field(std::forward<Field>(field));
-}
-
-template <typename Field, typename>
-inline Message& Message::erase_header(Field&& field) noexcept {
-  header_fields_.erase(std::forward<Field>(field));
+template<typename>
+inline Message& Message::add_body(const std::experimental::string_view view) {
+  if (view.empty()) return *this;
+  message_body_   = view;
+  content_length_ = std::to_string(message_body_.length());
+  header_fields_.add_field(header_fields::content_length, content_length_);
   return *this;
 }
 
-inline Message& Message::clear_headers() noexcept {
-  header_fields_.clear();
+template<typename>
+inline Message& Message::append_body(const std::experimental::string_view view) {
+  if (view.empty()) return *this;
+  //-----------------------------------
+  extended_body_ = message_body_.to_string();
+  extended_body_.insert(extended_body_.cend(), view.data(), view.data() + view.length());
+  message_body_ = extended_body_;
+  content_length_ = std::to_string(message_body_.length());
+  //-----------------------------------
+  header_fields_.set_field(header_fields::content_length, content_length_);
   return *this;
 }
 
-inline bool Message::is_header_empty() const noexcept {
-  return header_fields_.is_empty();
-}
-
-inline Message::HSize Message::header_size() const noexcept {
-  return header_fields_.size();
-}
-
-template<typename Entity, typename>
-inline Message& Message::add_body(Entity&& message_body) {
-  if (message_body.empty()) return *this;
-  //-----------------------------------
-  message_body_ = std::forward<Entity>(message_body);
-  //-----------------------------------
-  return add_header(header_fields::Entity::Content_Length,
-                    std::to_string(message_body_.size()));
-}
-
-template<typename Data, typename>
-inline Message& Message::append_body(Data&& data) {
-  if (data.empty()) return *this;
-  //-----------------------------------
-  message_body_.insert(message_body_.cend(), data.cbegin(), data.cend());
-  //-----------------------------------
-  return set_header(header_fields::Entity::Content_Length,
-                    std::to_string(message_body_.size()));
-}
-
-inline const Message::Message_Body& Message::get_body() const noexcept {
+template<typename>
+inline std::experimental::string_view Message::body() const noexcept {
   return message_body_;
 }
 
+template<typename>
 inline Message& Message::clear_body() noexcept {
-  message_body_.clear();
-  return erase_header(header_fields::Entity::Content_Length);
+  message_body_ = {};
+  extended_body_.clear();
+  header_fields_.erase(header_fields::content_length);
+  return *this;
 }
 
 inline Message& Message::reset() noexcept {
-  return clear_headers().clear_body();
+  header_fields_.clear();
+  return clear_body();
 }
 
 inline std::string Message::to_string() const {

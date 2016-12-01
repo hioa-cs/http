@@ -19,7 +19,7 @@
 #define HTTP_METHODS_HPP
 
 #include <array>
-#include <string>
+#include <experimental/string_view>
 #include <ostream>
 #include <unordered_map>
 
@@ -45,9 +45,10 @@ namespace http {
      *
      * @return The string representation of the code
      */
-    static const std::string& str(const Method m) {
+    template<typename = void>
+    std::experimental::string_view str(const Method m) noexcept {
 
-      const static std::array<std::string, 10> strings
+      const static std::array<std::experimental::string_view, 10> views
       {
         {
          "GET", "POST", "PUT", "DELETE", "OPTIONS",
@@ -55,13 +56,13 @@ namespace http {
         }
       };
 
-      auto e = strings.size() - 1;
+      const auto e = (views.size() - 1);
 
       if ((m >= 0) and (m < e)) {
-        return strings[m];
+        return views[m];
       }
 
-      return strings[e];
+      return views[e];
     }
 
     /**
@@ -73,9 +74,10 @@ namespace http {
      *
      * @return The code mapped to the method string
      **/
-    inline Method code(const std::string& method) noexcept {
+    template<typename = void>
+    Method code(const std::experimental::string_view method) noexcept {
 
-      const static std::unordered_map<std::string, Method> code_map {
+      const static std::unordered_map<std::experimental::string_view, Method> code_map {
         {"GET",     GET},
         {"POST",    POST},
         {"PUT",     PUT},
@@ -87,17 +89,19 @@ namespace http {
         {"PATCH",   PATCH}
       };
 
-      auto it = code_map.find(method);
+      const auto it = code_map.find(method);
 
-      return (it not_eq code_map.end()) ? it->second : INVALID;
+      return (it not_eq code_map.cend()) ? it->second : INVALID;
     }
 
+    template<typename = void>
     inline bool is_content_length_allowed(const Method method) noexcept {
-      return (method == POST) || (method == PUT);
+      return (method == POST) or (method == PUT);
     }
 
+    template<typename = void>
     inline bool is_content_length_required(const Method method) noexcept {
-      return (method == POST) || (method == PUT);
+      return (method == POST) or (method == PUT);
     }
 
   } //< namespace method

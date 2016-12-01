@@ -1,0 +1,55 @@
+// This file is a part of the IncludeOS unikernel - www.includeos.org
+//
+// Copyright 2015-2016 Oslo and Akershus University College of Applied Sciences
+// and Alfred Bratterud
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+#include <catch.hpp>
+#include <methods.hpp>
+
+///////////////////////////////////////////////////////////////////////////////
+TEST_CASE("Valid HTTP code to string conversion", "[Methods]") {
+  const std::string test_string {"GET"};
+  REQUIRE(test_string == http::method::str(http::GET));
+}
+
+///////////////////////////////////////////////////////////////////////////////
+TEST_CASE("Invalid HTTP code to string conversion", "[Methods]") {
+  const std::string test_string {"INVALID"};
+  REQUIRE(test_string == http::method::str(static_cast<http::Method>(600)));
+}
+
+///////////////////////////////////////////////////////////////////////////////
+TEST_CASE("Valid HTTP method string to code conversion", "[Methods]") {
+  REQUIRE(http::GET == http::method::code("GET"));
+}
+
+///////////////////////////////////////////////////////////////////////////////
+TEST_CASE("Invalid HTTP method string to code conversion", "[Methods]") {
+  REQUIRE(http::INVALID == http::method::code("CALL"));
+}
+
+///////////////////////////////////////////////////////////////////////////////
+TEST_CASE("HTTP method require Content-Length header field", "[Methods]") {
+  REQUIRE(true == http::method::is_content_length_required(http::PUT));
+  REQUIRE(true == http::method::is_content_length_required(http::POST));
+  REQUIRE(false == http::method::is_content_length_required(http::HEAD));
+}
+
+///////////////////////////////////////////////////////////////////////////////
+TEST_CASE("HTTP method allowed Content-Length header field", "[Methods]") {
+  REQUIRE(true == http::method::is_content_length_allowed(http::PUT));
+  REQUIRE(true == http::method::is_content_length_allowed(http::POST));
+  REQUIRE(false == http::method::is_content_length_allowed(http::HEAD));
+}

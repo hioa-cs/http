@@ -6,9 +6,9 @@
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
-// 
+//
 //     http://www.apache.org/licenses/LICENSE-2.0
-// 
+//
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -26,15 +26,20 @@
 namespace http {
 
 /**
- * @brief This class respresents a 
+ * @brief This class respresents a
  * response message status-line
  */
 class Status_line {
 public:
   /**
+   * @brief Default constructor
+   */
+  explicit constexpr Status_line() noexcept = default;
+
+  /**
    * @brief Constructor to create the status line
-   * by supplying the version of the message
-   * and the status code
+   * by supplying the version of the message and
+   * the status code
    *
    * @param version:
    * The version of the message
@@ -42,25 +47,17 @@ public:
    * @param code:
    * The status code
    */
+  template<typename = void>
   explicit constexpr Status_line(const Version version, const Code code) noexcept;
 
   /**
    * @brief Constructor to construct a status-line
-   * from the incoming character stream of
-   * data which is a {std::string} object
+   * from the incoming character stream of data
    *
-   * @tparam T response:
+   * @param response:
    * The character stream of data
    */
-  template
-  <
-    typename T,
-    typename = std::enable_if_t
-               <std::is_same
-               <std::string, std::remove_const_t
-               <std::remove_reference_t<T>>>::value>
-  >
-  explicit Status_line(T&& response);
+  explicit Status_line(std::experimental::string_view response);
 
   /**
    * @brief Default copy constructor
@@ -92,7 +89,8 @@ public:
    *
    * @return Version of the message
    */
-  constexpr Version get_version() const noexcept;
+  template<typename = void>
+  constexpr Version version() const noexcept;
 
   /**
    * @brief Set the version of the message
@@ -100,6 +98,7 @@ public:
    * @param version:
    * Version of the message
    */
+  template<typename = void>
   void set_version(const Version version) noexcept;
 
   /**
@@ -107,7 +106,8 @@ public:
    *
    * @return Status code of the message
    */
-  constexpr Code get_code() const noexcept;
+  template<typename = void>
+  constexpr Code code() const noexcept;
 
   /**
    * @brief Set the message status code
@@ -115,6 +115,7 @@ public:
    * @param code:
    * Status code of the message
    */
+  template<typename = void>
   void set_code(const Code code) noexcept;
 
   /**
@@ -133,8 +134,8 @@ public:
 private:
   //---------------------------
   // Class data members
-  Version version_;
-  Code    code_;
+  Version version_ {1U, 1U};
+  Code    code_    {http::OK};
   //---------------------------
 }; //< class Status_line
 
@@ -148,27 +149,27 @@ class Status_line_error : public std::runtime_error {
 
 /**--v----------- Implementation Details -----------v--**/
 
+template<typename>
 inline constexpr Status_line::Status_line(const Version version, const Code code) noexcept
   : version_{version}
   , code_{code}
 {}
 
-template <typename Response, typename>
-inline Status_line::Status_line(Response&& response) {
-  if (response.empty() or response.size() < 16 /*<-(16) minimum response length */) {
-    throw Status_line_error {"Invalid response"};
+inline Status_line::Status_line(std::experimental::string_view response) {
+  if (response.empty() or (response.length() < 16) /*<-(16) minimum response length */) {
+    throw Status_line_error {"Invalid response: " + response.to_string()};
   }
 
   bool is_canonical_line_ending {false};
 
   // Extract {Status-Line} from response
-  std::string status_line;
   std::size_t index;
+  std::experimental::string_view status_line;
 
-  if ((index = response.find("\r\n")) not_eq std::string::npos) {
+  if ((index = response.find("\r\n")) not_eq std::experimental::string_view::npos) {
     status_line = response.substr(0, index);
     is_canonical_line_ending = true;
-  } else if ((index = response.find('\n')) not_eq std::string::npos) {
+  } else if ((index = response.find('\n')) not_eq std::experimental::string_view::npos) {
     status_line = response.substr(0, index);
   } else {
     throw Status_line_error {"Invalid line-ending"};
@@ -181,10 +182,10 @@ inline Status_line::Status_line(Response&& response) {
     "[a-z A-Z]+"            //< Response Code Description
   };
 
-  std::smatch m;
+  std::cmatch m;
 
-  if (not std::regex_match(status_line, m, status_line_pattern)) {
-    throw Status_line_error {"Invalid response line: " + status_line};
+  if (not std::regex_match(status_line.data(), status_line.data() + status_line.length(), m, status_line_pattern)) {
+    throw Status_line_error {"Invalid response line: " + status_line.to_string()};
   }
 
   version_ = Version(std::stoi(m[1]), std::stoi(m[2]));
@@ -199,18 +200,22 @@ inline Status_line::Status_line(Response&& response) {
   }
 }
 
-inline constexpr Version Status_line::get_version() const noexcept {
+template<typename>
+inline constexpr Version Status_line::version() const noexcept {
   return version_;
 }
 
+template<typename>
 inline void Status_line::set_version(const Version version) noexcept {
   version_ = version;
 }
 
-inline constexpr Code Status_line::get_code() const noexcept {
+template<typename>
+inline constexpr Code Status_line::code() const noexcept {
   return code_;
 }
 
+template<typename>
 inline void Status_line::set_code(const Code code) noexcept {
   code_ = code;
 }

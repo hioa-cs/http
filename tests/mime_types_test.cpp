@@ -15,28 +15,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef HTTP_COMMON_HPP
-#define HTTP_COMMON_HPP
+#include <catch.hpp>
+#include <mime_types.hpp>
 
-#include <cstdint>
-#include <experimental/string_view>
-#include <memory>
-#include <uri>
-#include <utility>
-#include <vector>
+///////////////////////////////////////////////////////////////////////////////
+TEST_CASE("Extension that exist within the table", "[Mime_type_table]") {
+  REQUIRE(http::ext_to_mime_type("mpg") == "video/mpeg");
+}
 
-namespace http {
-
-  using URI        = uri::URI;
-  using Limit      = std::size_t;
-  using Header_set = std::vector<std::pair<std::experimental::string_view, std::experimental::string_view>>;
-
-  class Request;
-  using Request_ptr  = std::unique_ptr<Request>;
-
-  class Response;
-  using Response_ptr = std::unique_ptr<Response>;
-
-} //< namespace http
-
-#endif //< HTTP_COMMON_HPP
+///////////////////////////////////////////////////////////////////////////////
+TEST_CASE("Extension that doesn't exist within the table", "[Mime_type_table]") {
+  REQUIRE(http::ext_to_mime_type("zpr") == "application/octet-stream");
+}
